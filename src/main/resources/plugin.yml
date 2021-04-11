@@ -1,0 +1,4 @@
+name: ProBending
+version: ${project.version}
+main: com.probending.probending.ProBending
+depend: [ProjectKorra, WorldEdit]
