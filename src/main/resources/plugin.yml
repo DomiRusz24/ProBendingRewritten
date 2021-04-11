@@ -2,3 +2,9 @@ name: ProBending
 version: ${project.version}
 main: com.probending.probending.ProBending
 depend: [ProjectKorra, WorldEdit]
+softdepend: [Multiverse-Core]
+authors: [Zeph, DomiRusz24]
+commands:
+  Spectate:
+    usage: "Usage: /<command> [arena]"
+    description: "Allows you spectate the arena if it is in progress."
