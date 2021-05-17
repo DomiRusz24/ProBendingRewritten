@@ -1,10 +1,45 @@
 name: ProBending
 version: ${project.version}
 main: com.probending.probending.ProBending
-depend: [ProjectKorra, WorldEdit]
+depend: [ProjectKorra, RollbackCore, ProtocolLib, WorldEdit, PlaceholderAPI]
 softdepend: [Multiverse-Core]
-authors: [Zeph, DomiRusz24]
-commands:
-  Spectate:
-    usage: "Usage: /<command> [arena]"
-    description: "Allows you spectate the arena if it is in progress."
+authors: [DomiRusz24]
+
+
+permissions:
+  probending.command.pbc:
+    default: op
+    description: "Allows you to use the PBC command."
+    children:
+      probending.command.pbc.rules:
+        default: op
+
+      probending.command.pbc.start:
+        default: op
+
+      probending.command.pbc.spectate:
+        default: op
+
+      probending.command.pbc.teleport:
+        default: op
+
+      probending.command.pbc.forcestart:
+        default: op
+
+      probending.command.pbc.autostart:
+        default: op
+
+      probending.command.pbc.stop:
+        default: op
+
+      probending.command.pbc.resetteams:
+        default: op
+
+      probending.command.pbc.forcenextround:
+        default: op
+
+      probending.command.pbc.modifyplayers:
+        default: op
+
+
+

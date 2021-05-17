@@ -19,17 +19,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: junit:junit:4.10" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.guava:guava:21.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.19" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.12-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="PlaceholderAPI-2.10.3" level="project" />
+    <orderEntry type="library" name="Holograms-2.13" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: com.projectkorra:projectkorra:1.8.7">
         <CLASSES>
@@ -40,7 +34,16 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: com.sk89q.worldedit:worldedit:6.1.9">
+      <library name="Maven: me.clip:placeholderapi:2.10.3">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/PlaceholderAPI-2.10.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: com.sk89q:worldedit:6.1.9">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/worldedit-bukkit-6.1.9.jar!/" />
         </CLASSES>
@@ -49,7 +52,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: com.onarandombox.MultiverseCore:MultiverseCore:2.5.0">
+      <library name="Maven: com.onarandombox:MultiverseCore:2.5.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/Multiverse-Core-2.5.0.jar!/" />
         </CLASSES>
@@ -57,5 +60,15 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Maven: net.shadowxcraft.rollbackcore:rollbackcore:2.4.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/RollbackCore-2.4.2 (for 1.12.2 or older).jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.comphenix.protocol:ProtocolLib:4.6.0" level="project" />
   </component>
 </module>

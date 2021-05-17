@@ -14,6 +14,8 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <build>
@@ -24,8 +26,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -62,12 +64,24 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
+        </repository>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <artifactId>spigot</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
@@ -79,18 +93,38 @@
             <systemPath>${project.basedir}/lib/ProjectKorra-1.8.7.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/PlaceholderAPI-2.10.3.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
             <version>6.1.9</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/worldedit-bukkit-6.1.9.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.onarandombox.MultiverseCore</groupId>
+            <groupId>com.onarandombox</groupId>
             <artifactId>MultiverseCore</artifactId>
             <version>2.5.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/Multiverse-Core-2.5.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.shadowxcraft.rollbackcore</groupId>
+            <artifactId>rollbackcore</artifactId>
+            <version>2.4.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/RollbackCore-2.4.2 (for 1.12.2 or older).jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.6.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

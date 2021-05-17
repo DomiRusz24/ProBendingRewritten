@@ -4,7 +4,6 @@ import com.probending.probending.ProBending;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.util.UtilMethods;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -22,17 +21,20 @@ public class LanguageConfig extends AbstractConfig {
     }
 
     @Override
-    public void reload() {
-        super.reload();
-        reloadAnnotations();
+    public boolean reload() {
+        boolean success = super.reload();
+        if (success) {
+            return reloadAnnotations();
+        }
+        return false;
     }
 
-    private void registerAnnotations() {
+    private boolean registerAnnotations() {
         List<Class<?>> classes = UtilMethods.findClasses();
 
         if (classes == null) {
             ProBending.plugin.log(Level.WARNING, "Failed getting all classes!");
-            return;
+            return false;
         }
 
         Language annotation;
@@ -47,7 +49,11 @@ public class LanguageConfig extends AbstractConfig {
                         ANNOTATIONS_BY_CLASS.get(clazz).add(field);
                         try {
                             addDefault(annotation.value(), field.get(null));
-                            field.set(null, get(annotation.value()));
+                            if (isString(annotation.value())) {
+                                field.set(null, UtilMethods.translateColor((String) get(annotation.value())));
+                            } else {
+                                field.set(null, get(annotation.value()));
+                            }
                         } catch (Exception e) {
                             ProBending.plugin.log(Level.WARNING, "Error loading language annotations in " + field.getName() + ", in class " + clazz.getName());
                             e.printStackTrace();
@@ -57,19 +63,26 @@ public class LanguageConfig extends AbstractConfig {
                 }
             }
         }
-        save();
+        return save();
     }
 
-    private void reloadAnnotations() {
+    private boolean reloadAnnotations() {
+        boolean success = true;
         for (Class<?> clazz : ANNOTATIONS_BY_CLASS.keySet()) {
             for (Field field : ANNOTATIONS_BY_CLASS.get(clazz)) {
                 try {
-                    field.set(null, get(field.getAnnotation(Language.class).value()));
+                    if (isString(field.getAnnotation(Language.class).value())) {
+                        field.set(null, UtilMethods.translateColor((String) get(field.getAnnotation(Language.class).value())));
+                    } else {
+                        field.set(null, get(field.getAnnotation(Language.class).value()));
+                    }
                 } catch (Exception e) {
                     ProBending.plugin.log(Level.WARNING, "Error reloading language annotations in " + field.getName() + ", in class " + clazz.getName());
                     e.printStackTrace();
+                    success = false;
                 }
             }
         }
+        return success;
     }
 }

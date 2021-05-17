@@ -1,30 +1,27 @@
-package com.probending.probending.managers;
+package com.probending.probending.managers.database;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.PBPlayer;
+import com.probending.probending.managers.PBManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
 import static com.probending.probending.ProBending.configM;
-import static com.probending.probending.ProBending.playerM;
 
-public class MySQLManager {
+public class DataBaseManager extends PBManager {
 
     public final ConcurrentLinkedQueue<Runnable> sqlQueue = new ConcurrentLinkedQueue<>();
 
+    public final PlayerDataTable playerTable;
+
 
     public Connection connection;
-    private ProBending plugin;
     private String dbType = "sqlite";
     private String myHost = null;
     private String myPort = null;
@@ -33,22 +30,18 @@ public class MySQLManager {
     private String myPassword = null;
     private String tablePrefix = "pb_";
 
-    // String fields
-    public static final String UUID = "uuid";
-    public static final String NAME = "username";
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
 
-    // Int fields
-    public static final String WINS = "wins";
-    public static final String LOST = "lost";
-    public static final String KILLS = "kills";
-    public static final String TIES = "ties";
+    public DataBaseManager(ProBending plugin) {
 
-
-    public MySQLManager(ProBending plugin) {
-
-        this.plugin = plugin;
+        super(plugin);
 
         OnEnable();
+
+        playerTable = new PlayerDataTable(this);
+
         initDatabase();
 
     }
@@ -214,14 +207,13 @@ public class MySQLManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
 
-            MySQLManager.this.openConnection();
+            DataBaseManager.this.openConnection();
 
             try {
 
-                PreparedStatement sql = MySQLManager.this.connection.prepareStatement("CREATE TABLE IF NOT EXISTS `" + MySQLManager.this.tablePrefix + "PBBenders` (`UUID` varchar(100) NOT NULL UNIQUE, `username` varchar(100), `wins` INT, `lost` INT, `kills` INT, `ties` INT);");
-
-                sql.execute();
-
+                Statement sql = DataBaseManager.this.connection.createStatement();
+                sql.addBatch(playerTable.initTable());
+                sql.executeBatch();
                 sql.close();
 
             } catch (Exception e) {
@@ -232,33 +224,30 @@ public class MySQLManager {
 
             } finally {
 
-                MySQLManager.this.closeConnection();
+                DataBaseManager.this.closeConnection();
 
             }
 
-            MySQLManager.this.closeConnection();
+            DataBaseManager.this.closeConnection();
 
         });
 
     }
 
+    /*
 
     public void createTeamPlayer(Player p) {
-
         createTeamPlayer(p.getUniqueId(), p.getName());
-
     }
 
 
     public void createTeamPlayer(final UUID uuid, final String playerName) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-
-            MySQLManager.this.openConnection();
+        sqlQueue.add(() -> {
 
             try {
 
-                PreparedStatement sql = MySQLManager.this.connection.prepareStatement("SELECT * FROM `" + MySQLManager.this.tablePrefix + "PBBenders` WHERE `UUID`=?;");
+                PreparedStatement sql = DataBaseManager.this.connection.prepareStatement("SELECT * FROM `" + DataBaseManager.this.tablePrefix + "PBBenders` WHERE `UUID`=?;");
 
                 sql.setString(1, uuid.toString());
 
@@ -266,7 +255,7 @@ public class MySQLManager {
 
                 if (rs.next()) {
 
-                    PreparedStatement sql3 = MySQLManager.this.connection.prepareStatement("UPDATE `" + MySQLManager.this.tablePrefix + "PBBenders` SET `username`=? WHERE `UUID`=?;");
+                    PreparedStatement sql3 = DataBaseManager.this.connection.prepareStatement("UPDATE `" + DataBaseManager.this.tablePrefix + "PBBenders` SET `username`=? WHERE `UUID`=?;");
 
                     sql3.setString(1, playerName);
 
@@ -277,28 +266,31 @@ public class MySQLManager {
                     sql3.close();
 
                     playerM.addPBPlayer(new PBPlayer(
-                            rs.getString(UUID),
-                            rs.getString(NAME),
-                            rs.getInt(WINS),
-                            rs.getInt(LOST),
-                            rs.getInt(KILLS),
-                            rs.getInt(TIES)));
+                            rs.getString(UUID.getName()),
+                            rs.getString(NAME.getName()),
+                            rs.getInt(WINS.getName()),
+                            rs.getInt(LOST.getName()),
+                            rs.getInt(KILLS.getName()),
+                            rs.getInt(TIES.getName())));
 
                 } else {
 
-                    PreparedStatement sql2 = MySQLManager.this.connection.prepareStatement("INSERT INTO `" + MySQLManager.this.tablePrefix + "PBBenders` (`UUID`, `username`, `wins`, `lost`, `kills`, `ties`) VALUES(?,?,?,?,?,?);");
+                    StringBuilder path = new StringBuilder("INSERT INTO `" + DataBaseManager.this.tablePrefix + "PBBenders` (`UUID`, `username`");
+                    StringBuilder values = new StringBuilder(") VALUES('" + uuid.toString() + "','" + playerName + "'");
+                    for (StringValues string : StringValues.values()) {
+                        if (string != StringValues.NAME && string != StringValues.UUID) {
+                            path.append(", `").append(string.getName()).append("`");
+                            values.append(", '").append(string.getDefault()).append("'");
+                        }
+                    }
+                    for (NumberValues string : NumberValues.values()) {
+                        path.append(", `").append(string.getName()).append("`");
+                        values.append(", ").append(string.getDefault());
+                    }
 
-                    sql2.setString(1, uuid.toString());
+                    path.append(values).append(");");
 
-                    sql2.setString(2, playerName);
-
-                    sql2.setInt(3, 0);
-
-                    sql2.setInt(4, 0);
-
-                    sql2.setInt(5, 0);
-
-                    sql2.setInt(6, 0);
+                    PreparedStatement sql2 = DataBaseManager.this.connection.prepareStatement(path.toString());
 
                     sql2.execute();
 
@@ -315,27 +307,21 @@ public class MySQLManager {
             } catch (SQLException e) {
                 e.printStackTrace();
 
-                return;
-
-            } finally {
-
-                MySQLManager.this.closeConnection();
-
             }
-
-            MySQLManager.this.closeConnection();
 
         });
 
     }
 
+     */
 
-    public void setStringField(final UUID u, final String field, final String data) {
+    /*
+    public void setStringField(final UUID u, final StringValues field, final String data) {
 
         sqlQueue.add(() -> {
             try {
 
-                PreparedStatement sql1 = MySQLManager.this.connection.prepareStatement("UPDATE `" + MySQLManager.this.tablePrefix + "PBBenders` SET `" + field + "`=? WHERE `UUID`=?;");
+                PreparedStatement sql1 = DataBaseManager.this.connection.prepareStatement("UPDATE `" + DataBaseManager.this.tablePrefix + "PBBenders` SET `" + field.getName() + "`=? WHERE `UUID`=?;");
 
                 sql1.setString(1, data);
 
@@ -353,12 +339,14 @@ public class MySQLManager {
         });
     }
 
+     */
 
-    public void setIntegerField(final UUID u, final String field, final int data) {
+    /*
+    public void setIntegerField(final UUID u, final NumberValues field, final int data) {
         sqlQueue.add(() -> {
             try {
 
-                PreparedStatement sql1 = MySQLManager.this.connection.prepareStatement("UPDATE `" + MySQLManager.this.tablePrefix + "PBBenders` SET `" + field + "`=? WHERE `UUID`=?;");
+                PreparedStatement sql1 = DataBaseManager.this.connection.prepareStatement("UPDATE `" + DataBaseManager.this.tablePrefix + "PBBenders` SET `" + field.getName() + "`=? WHERE `UUID`=?;");
 
                 sql1.setInt(1, data);
 
@@ -376,6 +364,8 @@ public class MySQLManager {
         });
     }
 
+     */
+
     public String listToString(List<String> list) {
         StringBuilder sb = new StringBuilder();
         for (String s : list) {
@@ -390,4 +380,63 @@ public class MySQLManager {
         Collections.addAll(s, string.split(";"));
         return s;
     }
+    /*
+
+    public enum StringValues {
+        UUID("uuid", 100, "NULL"),
+        NAME("username", 100, "NULL");
+
+        private String name;
+
+        private int size;
+
+        private String defaultValue;
+
+        StringValues(String name, int size, String defaultValue) {
+            this.name = name;
+            this.size = size;
+            this.defaultValue = defaultValue;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public String getDefault() {
+            return defaultValue;
+        }
+    }
+
+    public enum NumberValues {
+        WINS("wins"),
+        LOST("lost"),
+        KILLS("kills"),
+        TIES("ties");
+
+        private String name;
+
+        private int defaultValue = 0;
+
+        NumberValues(String name) {
+            this.name = name;
+        }
+
+        NumberValues(String name, int defaultValue) {
+            this.name = name;
+            this.defaultValue = defaultValue;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getDefault() {
+            return defaultValue;
+        }
+    }
+     */
 }

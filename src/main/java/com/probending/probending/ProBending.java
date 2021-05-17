@@ -1,14 +1,18 @@
 package com.probending.probending;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.probending.probending.command.SpectateCommand;
-import com.probending.probending.managers.MySQLManager;
-import com.probending.probending.managers.PlayerManager;
-import com.probending.probending.managers.ConfigManager;
+import com.probending.probending.managers.*;
+import com.probending.probending.managers.HologramManager;
+import com.probending.probending.managers.database.DataBaseManager;
+import com.probending.probending.managers.schematics.EasyRollBackManager;
+import com.probending.probending.managers.schematics.SchematicManager;
 import com.projectkorra.projectkorra.ProjectKorra;
-import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -20,24 +24,35 @@ public final class ProBending extends JavaPlugin {
 
     // Dependencies
     public static ProjectKorra projectKorra = null;
-    public static WorldEdit worldEdit = null;
+    public static WorldEditPlugin worldEdit = null;
     public static MultiverseCore multiverse = null;
+    public static ProtocolManager protocol = null;
 
 
     // Managers
-    public static MySQLManager SQLManager;
+    public static DataBaseManager SqlM;
     public static ConfigManager configM;
     public static PlayerManager playerM;
+    public static TeamManager teamM;
+    public static ArenaManager arenaM;
+    public static SchematicManager schematicM;
+    public static ProjectKorraManager projectKorraM;
+    public static CommandManager commandM;
+    public static PAPIManager placeHolderM;
+    public static NMSManager nmsM;
+    public static HologramManager hologramM;
+    public static SignManager signM;
+    public static RegionManager regionM;
 
     @Override
     public void onEnable() {
         initialize();
 
         loadDependencies();
-
         loadManagers();
 
         registerEvents();
+
         registerCommands();
     }
 
@@ -48,29 +63,86 @@ public final class ProBending extends JavaPlugin {
 
     // onEnable
     public void initialize() {
-        log(Level.INFO, "ProBending " + plugin.getDescription().getVersion() + " has been loaded!");
         plugin = this;
+        log(Level.INFO, "ProBending " + plugin.getDescription().getVersion() + " has been loaded!");
     }
 
 
     // Plugin dependencies, everything external.
     public void loadDependencies() {
+
+        // PK
         projectKorra = ProjectKorra.plugin;
-        worldEdit = WorldEdit.getInstance();
-        if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
-            multiverse = (MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
-            log(Level.INFO, "Hooked into Multiverse!");
+
+        // WorldEdit
+        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+
+        // Protocol
+        protocol = ProtocolLibrary.getProtocolManager();
+
+        // Multiverse
+        multiverse = (MultiverseCore) hookInto("Multiverse-Core");
+
+
+        // Holograms
+
+
+
+    }
+
+    private Plugin hookInto(String pluginName) {
+        Plugin jPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+        if (jPlugin != null) {
+            log(Level.INFO, "Hooked into " + pluginName + "!");
+            return jPlugin;
+        } else {
+            return null;
         }
+    }
+
+    private boolean isHookAble(String pluginName) {
+        return Bukkit.getPluginManager().isPluginEnabled(pluginName);
     }
 
 
     // Managers that ease the use of Core classes and dependencies.
     public void loadManagers() {
 
+        // Config
+        configM = new ConfigManager(plugin);
+
         // SQL
-        SQLManager = new MySQLManager(this);
-        configM = new ConfigManager(this);
-        playerM = new PlayerManager(this);
+        SqlM = new DataBaseManager(plugin);
+
+        // NMS
+        nmsM = new NMSManager(plugin);
+
+        placeHolderM = new PAPIManager(plugin);
+
+        // Player
+        playerM = new PlayerManager(plugin);
+
+        // Team
+        teamM = new TeamManager(plugin);
+
+        signM = new SignManager(plugin);
+
+        hologramM = new HologramManager(plugin);
+
+        regionM = new RegionManager(plugin);
+
+        // Arena
+        arenaM = new ArenaManager(plugin);
+
+        // Schematic
+        schematicM = new EasyRollBackManager(plugin);
+
+        // ProjectKorra
+        projectKorraM = new ProjectKorraManager(plugin);
+
+        // Command
+        commandM = new CommandManager(plugin);
+
     }
 
     // Spigot events
@@ -80,14 +152,13 @@ public final class ProBending extends JavaPlugin {
 
     // Spigot commands
     public void registerCommands() {
-        getCommand("spectator").setExecutor(new SpectateCommand());
-        getCommand("spectator").setTabCompleter(new SpectateCommand());
+        //TODO: Commands
     }
 
     // onDisable
     public void disable() {
         log(Level.INFO, "ProBending " + plugin.getDescription().getVersion() + " has been disabled!");
-        SQLManager.onDisable();
+        SqlM.onDisable();
     }
 
     // Use this for printing out info to the console.
