@@ -47,7 +47,7 @@ public class LeaveCommand extends BaseCommand {
 
     @Override
     protected String usage() {
-        return "/leave";
+        return "/leave ";
     }
 
     @Override

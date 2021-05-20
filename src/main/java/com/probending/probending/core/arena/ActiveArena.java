@@ -117,6 +117,7 @@ public class ActiveArena implements PlaceholderObject {
         ProBending.arenaM.ACTIVE_ARENAS.remove(this);
         getArena().getPreArena().setEnabled(true);
         getArena().getPreArena().setState(PreArena.State.WAITING);
+        getArena().getRollback(null);
         getArena().getJoinSign().update();
     }
 

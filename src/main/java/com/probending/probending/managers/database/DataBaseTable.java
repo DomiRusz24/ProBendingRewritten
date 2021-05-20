@@ -2,6 +2,7 @@ package com.probending.probending.managers.database;
 
 import com.probending.probending.managers.database.values.DataBaseValue;
 import javafx.util.Pair;
+import org.bukkit.Bukkit;
 
 import java.sql.Array;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.util.function.Consumer;
 
 public abstract class DataBaseTable {
 
-    private final DataBaseManager manager;
+    protected final DataBaseManager manager;
 
     protected final String index;
 
@@ -143,6 +144,37 @@ public abstract class DataBaseTable {
                 }
 
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /*DELETE FROM warehouses WHERE id = ?*/
+
+    public void removeIndex(String index) {
+        manager.sqlQueue.add(() -> {
+            try {
+                PreparedStatement sql = manager.connection.prepareStatement("DELETE FROM `" + manager.getTablePrefix() + getName() + "` WHERE `" + this.index + "`=?;");
+
+                sql.setString(1, index);
+
+                sql.executeUpdate();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void exists(String index, Consumer<Boolean> exists) {
+        getIndex(index, (rs) -> {
+            try {
+                if (rs.next()) {
+                    Bukkit.getScheduler().runTask(manager.getPlugin(), () -> exists.accept(true));
+                } else {
+                    Bukkit.getScheduler().runTask(manager.getPlugin(), () -> exists.accept(false));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

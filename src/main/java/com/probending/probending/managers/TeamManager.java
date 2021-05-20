@@ -2,8 +2,10 @@ package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.core.players.ActivePlayer;
+import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.core.team.ArenaTempTeam;
+import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.PreArenaTeam;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -19,6 +21,9 @@ public class TeamManager extends PBManager {
 
     public final HashMap<ActivePlayer, ActiveTeam> TEAM_BY_PLAYER = new HashMap<>();
 
+    public final HashMap<String, PBTeam> PBTEAM_BY_PLAYER = new HashMap<>();
+    public final HashMap<String, PBTeam> PBTEAM_BY_NAME = new HashMap<>();
+
     public final HashMap<Player, ArenaTempTeam> TEMPTEAM_BY_PLAYER = new HashMap<>();
 
     public final HashMap<Player, PreArenaTeam> PREARENATEAM_BY_PLAYER = new HashMap<>();
@@ -33,24 +38,29 @@ public class TeamManager extends PBManager {
         RED_ARMOR = getArmorByColor(Color.RED);
     }
 
-    private ItemStack[] getArmorByColor(Color color) {
+    public ItemStack[] getArmorByColor(Color color, boolean unbreakable) {
         ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
-        setColor(helmet, color);
+        setColor(helmet, color, unbreakable);
         ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-        setColor(chestplate, color);
+        setColor(chestplate, color, unbreakable);
         ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
-        setColor(leggings, color);
+        setColor(leggings, color, unbreakable);
         ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
-        setColor(boots, color);
+        setColor(boots, color, unbreakable);
         return new ItemStack[]{boots, leggings, chestplate, helmet};
     }
 
-    private void setColor(ItemStack armor, Color color) {
+    public ItemStack[] getArmorByColor(Color color) {
+        return getArmorByColor(color, true);
+    }
+
+    private void setColor(ItemStack armor, Color color, boolean unbreakable) {
         LeatherArmorMeta meta = (LeatherArmorMeta) armor.getItemMeta();
         meta.setColor(color);
         meta.addEnchant(Enchantment.BINDING_CURSE, 1, false);
         meta.addEnchant(Enchantment.VANISHING_CURSE, 1, false);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES);
+        meta.setUnbreakable(unbreakable);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
         armor.setItemMeta(meta);
     }
 
@@ -75,6 +85,16 @@ public class TeamManager extends PBManager {
 
     public PreArenaTeam getArenaTeam(Player player) {
         return PREARENATEAM_BY_PLAYER.getOrDefault(player, null);
+    }
+
+    // ------ PB TEAM ------
+
+    public PBTeam getPBTeam(PBPlayer player) {
+        return PBTEAM_BY_PLAYER.getOrDefault(player.getName(), null);
+    }
+
+    public PBTeam getPBTeam(String name) {
+        return PBTEAM_BY_PLAYER.getOrDefault(name, null);
     }
 
 }

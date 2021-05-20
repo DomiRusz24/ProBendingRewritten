@@ -6,6 +6,7 @@ import com.probending.probending.managers.database.values.IntegerValue;
 import com.probending.probending.managers.database.values.StringValue;
 import org.bukkit.entity.Player;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.UUID;
 
 import static com.probending.probending.ProBending.playerM;
@@ -17,6 +18,7 @@ public class PlayerDataTable extends DataBaseTable {
     public final String LOST = "lost";
     public final String KILLS = "kills";
     public final String TIES = "ties";
+    public final String TEAM = "team";
 
 
     public PlayerDataTable(DataBaseManager manager) {
@@ -31,11 +33,12 @@ public class PlayerDataTable extends DataBaseTable {
     @Override
     public DataBaseValue<?>[] getValues() {
         return new DataBaseValue[] {
-                new StringValue("username", 100, "NULL"),
-                new IntegerValue("wins"),
-                new IntegerValue("lost"),
-                new IntegerValue("kills"),
-                new IntegerValue("ties")
+                new StringValue(NAME, 100, "NULL"),
+                new IntegerValue(WINS),
+                new IntegerValue(LOST),
+                new IntegerValue(KILLS),
+                new IntegerValue(TIES),
+                new StringValue(TEAM, 100, "NULL"),
         };
     }
 
@@ -60,14 +63,43 @@ public class PlayerDataTable extends DataBaseTable {
                             rs.getInt(WINS),
                             rs.getInt(LOST),
                             rs.getInt(KILLS),
-                            rs.getInt(TIES)));
+                            rs.getInt(TIES),
+                            rs.getString(TEAM)));
                 } else {
                     putDefault(uuid.toString());
                     setStringField(uuid.toString(), NAME, playerName);
+                    playerM.addPBPlayer(new PBPlayer(
+                            uuid.toString(),
+                            playerName,
+                            0,
+                            0,
+                            0,
+                            0,
+                            "NULL"));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+                });
+    }
+
+    public void createTeamPlayer(final UUID uuid) {
+        getIndex(uuid.toString(),
+                (rs) -> {
+                    try {
+                        if (rs != null) {
+                            playerM.addPBPlayer(new PBPlayer(
+                                    uuid.toString(),
+                                    rs.getString(NAME),
+                                    rs.getInt(WINS),
+                                    rs.getInt(LOST),
+                                    rs.getInt(KILLS),
+                                    rs.getInt(TIES),
+                                    rs.getString(TEAM)));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
     }
 }

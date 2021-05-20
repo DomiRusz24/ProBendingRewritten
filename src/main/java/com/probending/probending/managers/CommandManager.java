@@ -16,6 +16,10 @@ import com.probending.probending.command.base.probending.SetSpawnCommand;
 import com.probending.probending.command.forceskip.ForceStartCommand;
 import com.probending.probending.command.leave.LeaveCommand;
 import com.probending.probending.command.pblevel.PBLevelCommand;
+import com.probending.probending.command.pbteam.PBTeamCommand;
+import com.probending.probending.command.pbteam.pbteam.InviteTeamCommand;
+import com.probending.probending.command.pbteam.pbteam.TeamAcceptCommand;
+import com.probending.probending.command.pbteam.pbteam.TeamLeaveCommand;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -60,6 +64,13 @@ public class CommandManager extends PBManager {
         registerCommand(new PBLevelCommand());
 
         registerCommand(new ForceStartCommand());
+
+        registerCommand(new PBTeamCommand()
+                .addSubCommand(new CreateArenaCommand())
+                .addSubCommand(new InviteTeamCommand())
+                .addSubCommand(new TeamAcceptCommand())
+                .addSubCommand(new TeamLeaveCommand())
+        );
     }
 
     public void registerCommand(AbstractCommand<? extends AbstractSubCommand> command) {

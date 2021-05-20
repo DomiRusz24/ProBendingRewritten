@@ -62,8 +62,9 @@ public abstract class AbstractTeam<T extends PlaceholderObject> implements Place
     }
 
     public boolean addPlayer(T player) {
-        if (onAddPlayer(player)) {
-            if (!players.contains(player) && !isFull()) {
+        if (player == null) return false;
+        if (!players.contains(player) && !isFull()) {
+            if (onAddPlayer(player)) {
                 add(player);
                 return true;
             }
@@ -72,8 +73,9 @@ public abstract class AbstractTeam<T extends PlaceholderObject> implements Place
     }
 
     public boolean removePlayer(T player) {
-        if (onRemovePlayer(player)) {
-            if (players.contains(player)) {
+        if (player == null) return false;
+        if (players.contains(player)) {
+            if (onRemovePlayer(player)) {
                 remove(player);
                 return true;
             }

@@ -19,6 +19,7 @@ public class DataBaseManager extends PBManager {
     public final ConcurrentLinkedQueue<Runnable> sqlQueue = new ConcurrentLinkedQueue<>();
 
     public final PlayerDataTable playerTable;
+    public final TeamDataTable teamTable;
 
 
     public Connection connection;
@@ -41,6 +42,8 @@ public class DataBaseManager extends PBManager {
         OnEnable();
 
         playerTable = new PlayerDataTable(this);
+
+        teamTable = new TeamDataTable(this);
 
         initDatabase();
 
@@ -209,10 +212,12 @@ public class DataBaseManager extends PBManager {
 
             DataBaseManager.this.openConnection();
 
+
             try {
 
                 Statement sql = DataBaseManager.this.connection.createStatement();
                 sql.addBatch(playerTable.initTable());
+                sql.addBatch(teamTable.initTable());
                 sql.executeBatch();
                 sql.close();
 
@@ -234,137 +239,7 @@ public class DataBaseManager extends PBManager {
 
     }
 
-    /*
 
-    public void createTeamPlayer(Player p) {
-        createTeamPlayer(p.getUniqueId(), p.getName());
-    }
-
-
-    public void createTeamPlayer(final UUID uuid, final String playerName) {
-
-        sqlQueue.add(() -> {
-
-            try {
-
-                PreparedStatement sql = DataBaseManager.this.connection.prepareStatement("SELECT * FROM `" + DataBaseManager.this.tablePrefix + "PBBenders` WHERE `UUID`=?;");
-
-                sql.setString(1, uuid.toString());
-
-                ResultSet rs = sql.executeQuery();
-
-                if (rs.next()) {
-
-                    PreparedStatement sql3 = DataBaseManager.this.connection.prepareStatement("UPDATE `" + DataBaseManager.this.tablePrefix + "PBBenders` SET `username`=? WHERE `UUID`=?;");
-
-                    sql3.setString(1, playerName);
-
-                    sql3.setString(2, uuid.toString());
-
-                    sql3.executeUpdate();
-
-                    sql3.close();
-
-                    playerM.addPBPlayer(new PBPlayer(
-                            rs.getString(UUID.getName()),
-                            rs.getString(NAME.getName()),
-                            rs.getInt(WINS.getName()),
-                            rs.getInt(LOST.getName()),
-                            rs.getInt(KILLS.getName()),
-                            rs.getInt(TIES.getName())));
-
-                } else {
-
-                    StringBuilder path = new StringBuilder("INSERT INTO `" + DataBaseManager.this.tablePrefix + "PBBenders` (`UUID`, `username`");
-                    StringBuilder values = new StringBuilder(") VALUES('" + uuid.toString() + "','" + playerName + "'");
-                    for (StringValues string : StringValues.values()) {
-                        if (string != StringValues.NAME && string != StringValues.UUID) {
-                            path.append(", `").append(string.getName()).append("`");
-                            values.append(", '").append(string.getDefault()).append("'");
-                        }
-                    }
-                    for (NumberValues string : NumberValues.values()) {
-                        path.append(", `").append(string.getName()).append("`");
-                        values.append(", ").append(string.getDefault());
-                    }
-
-                    path.append(values).append(");");
-
-                    PreparedStatement sql2 = DataBaseManager.this.connection.prepareStatement(path.toString());
-
-                    sql2.execute();
-
-                    sql2.close();
-
-                    playerM.addPBPlayer(new PBPlayer(uuid.toString(), playerName, 0, 0, 0, 0));
-
-                }
-
-                sql.close();
-
-                rs.close();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-
-            }
-
-        });
-
-    }
-
-     */
-
-    /*
-    public void setStringField(final UUID u, final StringValues field, final String data) {
-
-        sqlQueue.add(() -> {
-            try {
-
-                PreparedStatement sql1 = DataBaseManager.this.connection.prepareStatement("UPDATE `" + DataBaseManager.this.tablePrefix + "PBBenders` SET `" + field.getName() + "`=? WHERE `UUID`=?;");
-
-                sql1.setString(1, data);
-
-                sql1.setString(2, u.toString());
-
-                sql1.executeUpdate();
-
-                sql1.close();
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-            }
-        });
-    }
-
-     */
-
-    /*
-    public void setIntegerField(final UUID u, final NumberValues field, final int data) {
-        sqlQueue.add(() -> {
-            try {
-
-                PreparedStatement sql1 = DataBaseManager.this.connection.prepareStatement("UPDATE `" + DataBaseManager.this.tablePrefix + "PBBenders` SET `" + field.getName() + "`=? WHERE `UUID`=?;");
-
-                sql1.setInt(1, data);
-
-                sql1.setString(2, u.toString());
-
-                sql1.executeUpdate();
-
-                sql1.close();
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-            }
-        });
-    }
-
-     */
 
     public String listToString(List<String> list) {
         StringBuilder sb = new StringBuilder();
@@ -380,63 +255,4 @@ public class DataBaseManager extends PBManager {
         Collections.addAll(s, string.split(";"));
         return s;
     }
-    /*
-
-    public enum StringValues {
-        UUID("uuid", 100, "NULL"),
-        NAME("username", 100, "NULL");
-
-        private String name;
-
-        private int size;
-
-        private String defaultValue;
-
-        StringValues(String name, int size, String defaultValue) {
-            this.name = name;
-            this.size = size;
-            this.defaultValue = defaultValue;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public String getDefault() {
-            return defaultValue;
-        }
-    }
-
-    public enum NumberValues {
-        WINS("wins"),
-        LOST("lost"),
-        KILLS("kills"),
-        TIES("ties");
-
-        private String name;
-
-        private int defaultValue = 0;
-
-        NumberValues(String name) {
-            this.name = name;
-        }
-
-        NumberValues(String name, int defaultValue) {
-            this.name = name;
-            this.defaultValue = defaultValue;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getDefault() {
-            return defaultValue;
-        }
-    }
-     */
 }

@@ -103,6 +103,9 @@ public class PBListener implements Listener {
                         PBPlayerDamagePBPlayerEvent pbPlayerEvent = new PBPlayerDamagePBPlayerEvent(damager.getArena(), damager.getArena().getState(), event);
                         Bukkit.getPluginManager().callEvent(pbPlayerEvent);
                         damager.getArena().callDamageEvent(pbPlayerEvent);
+                        if (ProBending.configM.getConfig().getDamage()) {
+                            pbPlayerEvent.setDamage(0);
+                        }
                     }
                 } else {
                     event.setCancelled(true);

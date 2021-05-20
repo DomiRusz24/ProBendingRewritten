@@ -1,14 +1,17 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.interfaces.PlaceholderObject;
 import com.probending.probending.core.players.ActivePlayer;
 import com.probending.probending.core.players.PBPlayer;
+import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.util.UtilMethods;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityHeadRotation;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Matcher;
@@ -49,10 +52,33 @@ public class PAPIManager extends PlaceholderExpansion {
     }
 
     @Override
+    public String onRequest(OfflinePlayer p, String params) {
+        return p == null ? onPlaceholderRequest((Player) null, params) : p.isOnline() ? onPlaceholderRequest(p.getPlayer(), params) : onPlaceholderRequest(p.getName(), params);
+    }
+
+    public String onPlaceholderRequest(String name, String params) {
+        if (name == null) {
+            return onPlaceholderRequest((Player) null, params);
+        } else {
+            PBPlayer pbPlayer = PBPlayer.of(name);
+            if (pbPlayer != null) {
+                String s = setPBPlayerPlaceHolders(pbPlayer, params);
+                if (s != null) {
+                    return s;
+                } else {
+                    return onPlaceholderRequest((Player) null, params);
+                }
+            } else {
+                return onPlaceholderRequest((Player) null, params);
+            }
+        }
+    }
+
+    @Override
     public String onPlaceholderRequest(Player player, String params){
 
         if(player == null) {
-            return "";
+            return null;
         }
         params = params.toLowerCase();
         ActivePlayer activePlayer = ProBending.playerM.getActivePlayer(player);
@@ -67,19 +93,7 @@ public class PAPIManager extends PlaceholderExpansion {
             }
         }
         PBPlayer pbPlayer = ProBending.playerM.getPlayer(player);
-        switch (params) {
-            case "kills":
-                return String.valueOf(pbPlayer.getKills());
-            case "wins":
-                return String.valueOf(pbPlayer.getWins());
-            case "loses":
-                return String.valueOf(pbPlayer.getLost());
-            case "ties":
-                return String.valueOf(pbPlayer.getTies());
-            case "average":
-                return String.valueOf((float) ((int) (((float) pbPlayer.getWins() / ((float) pbPlayer.getLost() + (float) pbPlayer.getTies())) * 100)) * 0.01);
-        }
-        return null;
+        return setPBPlayerPlaceHolders(pbPlayer, params);
     }
 
     // setting PlaceHolders
@@ -110,5 +124,25 @@ public class PAPIManager extends PlaceholderExpansion {
             }
             return UtilMethods.translateColor(text);
         }
+    }
+
+    private static String setPBPlayerPlaceHolders(PBPlayer pbPlayer, String params) {
+        switch (params) {
+            case "name":
+                return pbPlayer.getName();
+            case "kills":
+                return String.valueOf(pbPlayer.getKills());
+            case "wins":
+                return String.valueOf(pbPlayer.getWins());
+            case "loses":
+                return String.valueOf(pbPlayer.getLost());
+            case "ties":
+                return String.valueOf(pbPlayer.getTies());
+            case "average":
+                return String.valueOf((float) ((int) (((float) pbPlayer.getWins() / ((float) pbPlayer.getLost() + (float) pbPlayer.getTies())) * 100)) * 0.01);
+            case "team":
+                return pbPlayer.getTeamName();
+        }
+        return null;
     }
 }
