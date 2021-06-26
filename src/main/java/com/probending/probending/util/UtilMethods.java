@@ -1,17 +1,26 @@
 package com.probending.probending.util;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.core.players.PBPlayer;
+import com.probending.probending.core.team.PBTeam;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.event.AbilityLoadEvent;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
 import sun.reflect.ReflectionFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -38,12 +47,16 @@ public class UtilMethods {
     public static String secondsToMinutes(int seconds) {
         int minutes = (int) ((double) seconds / 60);
         seconds = seconds - (minutes * 60);
-        return minutes + ":" + seconds;
+        if ((float) seconds / 10f < 1f) {
+            return minutes + ":0" + seconds;
+        } else {
+            return minutes + ":" + seconds;
+        }
     }
 
 
-    public static List<String> getPossibleCompletions(String[] args, List<String> possibilitiesOfCompletion) {
-        String argumentToFindCompletionFor = args[args.length - 1];
+    public static List<String> getPossibleCompletions(List<String> args, List<String> possibilitiesOfCompletion) {
+        String argumentToFindCompletionFor = args.get(args.size() - 1);
         ArrayList<String> listOfPossibleCompletions = new ArrayList<>();
 
         for (String foundString : possibilitiesOfCompletion) {
@@ -139,15 +152,24 @@ public class UtilMethods {
 
     public static void freezePlayer(Player player, boolean freeze) {
         ProBending.playerM.freezePlayer(player, freeze);
+        BendingPlayer bp = BendingPlayer.getBendingPlayer(player);
         if (freeze) {
-            BendingPlayer bp = BendingPlayer.getBendingPlayer(player);
             if (bp != null) bp.blockChi();
-            player.setGravity(false);
         } else {
-            BendingPlayer bp = BendingPlayer.getBendingPlayer(player);
             if (bp != null) bp.unblockChi();
-            player.setGravity(true);
         }
+    }
+
+    public static Player[] toArray(List<Player> list) {
+        Player[] array = new Player[list.size()];
+        array = list.toArray(array);
+        return array;
+    }
+
+    public static<T> T[] toArray(List<T> list, Class<T> clazz) {
+        T[] array = (T[]) Array.newInstance(clazz, list.size());
+        array = list.toArray(array);
+        return array;
     }
 
     private static int getStage(int num, int stage1, int stage2) {
@@ -179,6 +201,41 @@ public class UtilMethods {
             case 2: return BarColor.YELLOW;
             default: return BarColor.RED;
         }
+    }
+
+    public static PBTeam getSamePBTeam(PBPlayer... players) {
+        return getSamePBTeam(Arrays.asList(players));
+    }
+
+    public static PBTeam getSamePBTeam(List<PBPlayer> players) {
+        PBTeam team = null;
+        for (PBPlayer player : players) {
+            if (player == null) {
+                System.out.println("PBPlayer is null somewhere");
+                continue;
+            }
+            if (team == null) {
+                team = player.getTeam();
+            } else if (team != player.getTeam()) {
+                return null;
+            }
+        }
+        return team;
+    }
+
+    public static ItemStack createItem(Material type, byte data, String name, boolean glow, String... desc) {
+        ItemStack is = new ItemStack(type, 1);
+        ProBending.nmsM.setData(is, data);
+        ItemMeta meta = is.getItemMeta();
+        meta.setDisplayName(name);
+        meta.setLore(Arrays.asList(desc));
+        meta.setUnbreakable(true);
+        if (glow) {
+            meta.addEnchant(Enchantment.LUCK, 1, false);
+        }
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+        is.setItemMeta(meta);
+        return is;
     }
 
 

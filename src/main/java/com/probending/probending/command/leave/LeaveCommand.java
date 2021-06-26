@@ -22,7 +22,7 @@ public class LeaveCommand extends BaseCommand {
 
     @Override
     public void selfExecute(CommandSender sender) {
-        if (isPlayer(sender)) {
+        if (isPlayer(sender) && hasPermission(sender)) {
             Player player = (Player) sender;
             ActivePlayer activePlayer = ProBending.playerM.getActivePlayer(player);
             if (activePlayer != null) activePlayer.setState(ActivePlayer.State.LEFT);

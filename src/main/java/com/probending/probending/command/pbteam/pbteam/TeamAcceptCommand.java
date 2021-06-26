@@ -6,6 +6,7 @@ import com.probending.probending.core.players.PBPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeamAcceptCommand extends BaseSubCommand {
@@ -19,6 +20,11 @@ public class TeamAcceptCommand extends BaseSubCommand {
             PBPlayer pbPlayer = PBPlayer.of((Player) sender);
             pbPlayer.acceptInvite();
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
     }
 
     @Override

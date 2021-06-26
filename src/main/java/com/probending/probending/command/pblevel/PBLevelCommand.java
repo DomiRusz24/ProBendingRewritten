@@ -23,7 +23,7 @@ public class PBLevelCommand extends PlayerCommand {
 
     @Override
     public void selfExecute(CommandSender sender) {
-        if (isPlayer(sender)) {
+        if (isPlayer(sender) && hasPermission(sender)) {
             PBPlayer player = ProBending.playerM.getPlayer((Player) sender);
             sender.sendMessage(PAPIManager.setPlaceholders(player, LANG_INFORMATION));
         }

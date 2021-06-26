@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlayerSubCommand extends AbstractSubCommand {
@@ -16,6 +17,8 @@ public abstract class PlayerSubCommand extends AbstractSubCommand {
         }
         return false;
     }
+
+
 
     @Override
     protected void execute(CommandSender sender, List<String> args) {
@@ -31,6 +34,11 @@ public abstract class PlayerSubCommand extends AbstractSubCommand {
     }
 
     @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public void executeCommand(CommandSender sender, List<String> args) {
         execute(sender, args);
     }
@@ -38,4 +46,6 @@ public abstract class PlayerSubCommand extends AbstractSubCommand {
     public abstract void execute(CommandSender sender, Player player, List<String> args);
 
     public abstract void execute(CommandSender sender, String name, List<String> args);
+
+    public abstract List<String> autoComplete(CommandSender sender, Player player, List<String> args);
 }

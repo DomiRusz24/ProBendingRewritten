@@ -20,6 +20,8 @@ public class ArenaGetterRegion extends PBRegion {
 
     private Location center;
 
+    private Location regionCenter;
+
     private final TeamTag tag;
 
     private final PreArena arena;
@@ -45,6 +47,15 @@ public class ArenaGetterRegion extends PBRegion {
         arena.isReady();
     }
 
+    public Location getRegionCenter() {
+        return regionCenter;
+    }
+
+    public void setRegionCenter(Location center) {
+        this.regionCenter = center;
+        arena.isReady();
+    }
+
     @Override
     public void setLocations(Location min, Location max) {
         super.setLocations(min, max);
@@ -52,7 +63,7 @@ public class ArenaGetterRegion extends PBRegion {
     }
 
     @Language("ArenaPreGame.TeamFull")
-    public static String LANG_TEAM_FULL = "This team is already full!";
+    public static String LANG_TEAM_FULL = "This team is already full or the countdown has started!";
 
     @Language("ArenaPreGame.Leave")
     public static String LANG_TEAM_LEAVE = "You left this team!";
@@ -65,10 +76,17 @@ public class ArenaGetterRegion extends PBRegion {
 
     @Override
     public void onPlayerEnter(Player player) {
-        if (arena.getArena().getState() == Arena.State.READY) {
-            if (team.isFull()) {
+        for (MenuPlayer menuPlayer : team.getPlayers()) {
+            if (menuPlayer.getPlayer().equals(player)) return;
+        }
+        if (arena.getArena().getState() == Arena.State.READY && (arena.getState() == PreArena.State.WAITING || arena.getState() == PreArena.State.COUNTDOWN)) {
+            if (team.isFull() || arena.getState() == PreArena.State.COUNTDOWN) {
                 if (getCenter() != null) {
-                    player.setVelocity(getCenter().clone().subtract(player.getLocation()).toVector().normalize());
+                    try {
+                        player.setVelocity(getCenter().clone().subtract(player.getLocation()).toVector().normalize());
+                    } catch (IllegalArgumentException e) {
+                        player.teleport(getCenter());
+                    }
                 }
                 player.sendTitle(LANG_TEAM_FULL, "", 5, 30, 5);
             } else {
@@ -89,10 +107,14 @@ public class ArenaGetterRegion extends PBRegion {
     public void onPlayerLeave(Player player) {
         for (MenuPlayer menuPlayer : team.getPlayers()) {
             if (menuPlayer.getPlayer().equals(player)) {
-                player.sendTitle(LANG_TEAM_LEAVE, "", 5, 30, 5);
-                arena.getArena().getTeam(tag).removePlayer(player);
-                team.removePlayer(menuPlayer);
-                arena.onLeave(menuPlayer);
+                if (arena.getState() == PreArena.State.COUNTDOWN) {
+                    player.setVelocity(getRegionCenter().clone().subtract(player.getLocation()).toVector().normalize());
+                } else {
+                    player.sendTitle(LANG_TEAM_LEAVE, "", 5, 30, 5);
+                    arena.getArena().getTeam(tag).removePlayer(player);
+                    team.removePlayer(menuPlayer);
+                    arena.onLeave(menuPlayer);
+                }
                 break;
             }
         }

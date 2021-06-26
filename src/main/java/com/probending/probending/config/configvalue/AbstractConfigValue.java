@@ -21,7 +21,7 @@ public abstract class AbstractConfigValue<T> {
         this.path = path;
         this.defaultValue = defaultValue;
         if (defaultValue != null) {
-            setDefaultValue(defaultValue);
+            _setDefaultValue(defaultValue);
         }
         value = getConfigValue();
         this.autoReload = true;
@@ -33,7 +33,7 @@ public abstract class AbstractConfigValue<T> {
         this.path = path;
         this.defaultValue = defaultValue;
         if (defaultValue != null) {
-            config.addDefault(getPath(), value);
+            config.addDefault(getPath(), defaultValue);
         }
         value = getConfigValue();
         this.autoReload = autoReload;
@@ -52,9 +52,20 @@ public abstract class AbstractConfigValue<T> {
         return value;
     }
 
-    public abstract void setValue(T value);
+    public void setValue(T value) {
+        this.value = value;
+        _setValue(value);
+    }
 
-    public abstract void setDefaultValue(T value);
+    public void saveDefault() {
+        if (defaultValue != null) {
+            config.addDefault(getPath(), defaultValue);
+        }
+    }
+
+    public abstract void _setValue(T value);
+
+    public abstract void _setDefaultValue(T value);
 
     protected abstract T getConfigValue();
 

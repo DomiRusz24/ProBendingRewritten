@@ -1,7 +1,9 @@
 package com.probending.probending.config;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.interfaces.PlaceholderObject;
+import com.probending.probending.managers.ConfigManager;
 import com.probending.probending.managers.PAPIManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,14 +11,14 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandConfig extends AbstractConfig {
 
-
-    public CommandConfig(String path, ProBending plugin) {
-        super(path, plugin);
+    public CommandConfig(String path, ProBending plugin, ConfigManager manager) {
+        super(path, plugin, manager);
         for (Commands value : Commands.values()) {
             value.reload(this);
         }
@@ -68,8 +70,7 @@ public class CommandConfig extends AbstractConfig {
 
         private final List<String> defaultCommands;
 
-        private List<String> commands;
-
+        private HashMap<YamlConfiguration, List<String>> commands = new HashMap<>();
         Commands(String configPath, List<String> defaultCommands) {
             this.configPath = configPath;
             this.defaultCommands = defaultCommands;
@@ -89,28 +90,44 @@ public class CommandConfig extends AbstractConfig {
             }
         }
 
+        public void saveEmpty(YamlConfiguration config) {
+            if (!config.contains(configPath)) {
+                config.set(configPath, Arrays.asList(""));
+            }
+        }
+
         public void reload(YamlConfiguration config) {
-            commands = config.getStringList(configPath);
-            commands = commands.stream().filter(s -> !s.equals("")).collect(Collectors.toList());
+            commands.put(config, config.getStringList(configPath));
+            commands.put(config, commands.get(config).stream().filter(s -> !s.equals("")).collect(Collectors.toList()));
         }
 
         public void reload() {
             reload(ProBending.configM.getCommandConfig());
         }
 
-        public void run(YamlConfiguration file, Player... players) {
+        public void run(YamlConfiguration file, Arena arena, Player... players) {
+            run(file, players);
+            run(arena.getCommandConfig(), players);
+        }
+
+        private void run(YamlConfiguration file, Player... players) {
             if (file.contains(configPath)) {
                 List<Player> playerList = Arrays.asList(players);
-                commands.forEach(c -> playerList.forEach(p -> ProBending.plugin.getServer().dispatchCommand(ProBending.plugin.getServer().getConsoleSender(), PlaceholderAPI.setPlaceholders(p, c))));
+                commands.get(file).forEach(c -> playerList.forEach(p -> ProBending.plugin.getServer().dispatchCommand(ProBending.plugin.getServer().getConsoleSender(), PlaceholderAPI.setPlaceholders(p, c))));
             }
         }
 
-        public void run(YamlConfiguration file, PlaceholderObject... object) {
+        public void run(YamlConfiguration file, Arena arena, PlaceholderObject... object) {
+            run(file, object);
+            run(arena.getCommandConfig(), object);
+        }
+
+        private void run(YamlConfiguration file, PlaceholderObject... object) {
             if (file.contains(configPath)) {
                 if (object == null) {
-                    commands.forEach(c -> ProBending.plugin.getServer().dispatchCommand(ProBending.plugin.getServer().getConsoleSender(), c));
+                    commands.get(file).forEach(c -> ProBending.plugin.getServer().dispatchCommand(ProBending.plugin.getServer().getConsoleSender(), c));
                 } else {
-                    for (String command : commands) {
+                    for (String command : commands.get(file)) {
                         String com = command;
                         for (PlaceholderObject i : object) {
                             com = PAPIManager.setPlaceholders(i, com);
@@ -121,16 +138,16 @@ public class CommandConfig extends AbstractConfig {
             }
         }
 
-        public void run(Player... players) {
-            run(ProBending.configM.getCommandConfig(), players);
+        public void run(Arena arena, Player... players) {
+            run(ProBending.configM.getCommandConfig(), arena, players);
         }
 
-        public void run(PlaceholderObject... object) {
-            run(ProBending.configM.getCommandConfig(), object);
+        public void run(Arena arena, PlaceholderObject... object) {
+            run(ProBending.configM.getCommandConfig(), arena, object);
         }
 
-        public void run() {
-            run(ProBending.configM.getCommandConfig(), (PlaceholderObject) null);
+        public void run(Arena arena) {
+            run(ProBending.configM.getCommandConfig(), arena, arena);
         }
     }
 

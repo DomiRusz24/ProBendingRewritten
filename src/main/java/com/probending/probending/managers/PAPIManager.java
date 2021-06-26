@@ -10,7 +10,6 @@ import com.probending.probending.util.UtilMethods;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityHeadRotation;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -23,7 +22,6 @@ public class PAPIManager extends PlaceholderExpansion {
 
     public PAPIManager(ProBending plugin) {
         this.plugin = plugin;
-        PlaceholderAPI.registerExpansion(this);
     }
 
     @Override

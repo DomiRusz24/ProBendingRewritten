@@ -2,7 +2,6 @@ package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.core.arena.ActiveArena;
-import com.probending.probending.core.interfaces.PlaceholderPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -32,7 +31,7 @@ public class SpectatorPlayer extends AbstractPlayer {
     @Override
     protected void onUnregister() {
         player.teleport(startingLocation);
-        player.setGameMode(startingGameMode);
+        ProBending.nmsM.setGameMode(player, startingGameMode);
         player.setAllowFlight(isFlying);
         arena.removeSpectator(this);
         ProBending.playerM.removeSpectator(this);

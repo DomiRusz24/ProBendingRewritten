@@ -44,6 +44,11 @@ public class CreateTeamCommand extends BaseSubCommand {
     }
 
     @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return null;
+    }
+
+    @Override
     protected String name() {
         return "create";
     }

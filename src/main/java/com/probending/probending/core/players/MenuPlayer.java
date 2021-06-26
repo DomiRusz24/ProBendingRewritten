@@ -3,12 +3,9 @@ package com.probending.probending.core.players;
 import com.probending.probending.ProBending;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
-import com.probending.probending.core.displayable.CustomScoreboard;
+import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.util.UtilMethods;
-import org.bukkit.Bukkit;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -30,6 +27,7 @@ public class MenuPlayer extends AbstractPlayer {
         } else {
             player.getInventory().setArmorContents(ProBending.teamM.RED_ARMOR);
         }
+        ProBending.itemM.LEAVE_COMMAND().giveToPlayer(player, 1, 8);
         scoreboard.addPlaceholder(region.getArena());
         scoreboard.addPlaceholder(region.getTeam());
         ProBending.playerM.addMenuPlayer(this);
@@ -54,9 +52,9 @@ public class MenuPlayer extends AbstractPlayer {
     public static String LANG_SCOREBOARD = "%team_name%||--------------- ||%player_name%|| ||Use /fs to force the game!||---------------";
 
     @Override
-    protected CustomScoreboard scoreboard() {
+    protected PBScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        CustomScoreboard board = new CustomScoreboard("pA_" + getPlayer().getName(), scoreboard[0], this);
+        PBScoreboard board = new PBScoreboard("pA_" + getPlayer().getName(), scoreboard[0], this);
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

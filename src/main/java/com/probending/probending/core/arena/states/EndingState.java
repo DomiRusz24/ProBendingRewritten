@@ -56,16 +56,9 @@ public class EndingState extends AbstractArenaHandler {
         if (sec > 3) {
             seconds--;
             if (seconds == 0) {
-                //TODO: Rewards
                 if (winningTeam != null) {
-                    getArena().getTeam(winningTeam).getPlayers(true).forEach(p -> {
-                        p.getPlayerData().setWins(p.getPlayerData().getWins() + 1);
-                        CommandConfig.Commands.ArenaWinPlayer.run(p.getPlayer());
-                    });
-                    getArena().getTeam(winningTeam.getOther()).getPlayers(true).forEach(p -> {
-                        p.getPlayerData().setLost(p.getPlayerData().getLost() + 1);
-                        CommandConfig.Commands.ArenaLosePlayer.run(p.getPlayer());
-                    });
+                    getArena().getTeam(winningTeam).onWin();
+                    getArena().getTeam(winningTeam.getOther()).onLose();
                 }
                 getArena().forceUnstableStop(winningTeam);
             } else {

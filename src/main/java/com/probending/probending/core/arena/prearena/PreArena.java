@@ -3,14 +3,12 @@ package com.probending.probending.core.arena.prearena;
 import com.probending.probending.PBListener;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.Arena;
-import com.probending.probending.core.enums.GameType;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.interfaces.PlaceholderObject;
 import com.probending.probending.core.players.MenuPlayer;
 import com.probending.probending.util.PerTick;
 import com.probending.probending.util.UtilMethods;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.entity.Player;
 
 public class PreArena implements PlaceholderObject, PerTick {
 
@@ -26,8 +24,8 @@ public class PreArena implements PlaceholderObject, PerTick {
 
     public PreArena(Arena arena) {
         this.arena = arena;
-        this.blueRegion = arena.getConfig().getRegion("ArenaGetter.Blue", arena.getName() + "_blue", TeamTag.BLUE, this);
-        this.redRegion = arena.getConfig().getRegion("ArenaGetter.Red", arena.getName() + "_red", TeamTag.RED, this);
+        this.blueRegion = arena.getLocationConfig().getRegion("ArenaGetter.Blue", arena.getName() + "_blue", TeamTag.BLUE, this);
+        this.redRegion = arena.getLocationConfig().getRegion("ArenaGetter.Red", arena.getName() + "_red", TeamTag.RED, this);
         PBListener.hookInListener(this);
     }
 
@@ -41,10 +39,10 @@ public class PreArena implements PlaceholderObject, PerTick {
         if (state == State.OFFLINE) {
             if (blueRegion == null) return false;
             if (redRegion == null) return false;
-            if (blueRegion.getCenter() == null) {
+            if (blueRegion.getCenter() == null || blueRegion.getRegionCenter() == null) {
                 return false;
             }
-            if (redRegion.getCenter() == null) {
+            if (redRegion.getCenter() == null || redRegion.getRegionCenter() == null) {
                 return false;
             }
             if (redRegion.getMin() == null) {
@@ -150,7 +148,9 @@ public class PreArena implements PlaceholderObject, PerTick {
         }
 
         if (votes == getCurrentSize() && votes > 1 && blueRegion.getTeam().getCurrentSize() > 0 && redRegion.getTeam().getCurrentSize() > 0) {
-            setForce(true);
+            if (votes >= getArena().getArenaConfig().getMinimalPlayerAmount()) {
+                setForce(true);
+            }
         }
     }
 
@@ -182,7 +182,7 @@ public class PreArena implements PlaceholderObject, PerTick {
                     if (countdown == 0) {
                         force = false;
                         countdown = 10;
-                        getArena().start(GameType.DEFAULT, true);
+                        getArena().start(true);
                         if (!getArena().inGame()) {
                             for (MenuPlayer mPlayer : blueRegion.getTeam().getPlayers()) {
                                 mPlayer.setVoteSkip(false);

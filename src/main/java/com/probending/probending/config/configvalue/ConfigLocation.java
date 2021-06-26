@@ -10,12 +10,12 @@ public class ConfigLocation extends AbstractConfigValue<Location> {
     }
 
     @Override
-    public void setValue(Location value) {
+    public void _setValue(Location value) {
         getConfig().setLocation(getPath(), value);
     }
 
     @Override
-    public void setDefaultValue(Location value) {}
+    public void _setDefaultValue(Location value) {}
 
     @Override
     protected Location getConfigValue() {

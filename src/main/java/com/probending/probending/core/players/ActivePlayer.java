@@ -3,26 +3,20 @@ package com.probending.probending.core.players;
 import com.probending.probending.ProBending;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
-import com.probending.probending.core.arena.Arena;
-import com.probending.probending.core.displayable.CustomScoreboard;
+import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
-import com.probending.probending.core.interfaces.PlaceholderObject;
-import com.probending.probending.core.interfaces.PlaceholderPlayer;
 import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Wool;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -61,7 +55,11 @@ public class ActivePlayer extends AbstractPlayer {
         bPlayer = BendingPlayer.getBendingPlayer(player);
         playerData = ProBending.playerM.getPlayer(player.getUniqueId());
         hasBeenHit = false;
-        prefix = element.getColor() + String.valueOf(element.getName().toUpperCase().charAt(0));
+        if (element == null) {
+            prefix = ChatColor.GRAY + "N";
+        } else {
+            prefix = element.getColor() + String.valueOf(element.getName().toUpperCase().charAt(0));
+        }
         bossBar.setColor(teamTag.getBarColor());
         scoreboard.addPlaceholder(getArena().getArena());
         scoreboard.addPlaceholder(getArena().getTeam(teamTag));
@@ -76,7 +74,7 @@ public class ActivePlayer extends AbstractPlayer {
     @Override
     protected void onUnregister() {
         player.teleport(ProBending.configM.getLocationsConfig().getSpawn());
-        player.setGameMode(startingGameMode);
+        ProBending.nmsM.setGameMode(player, startingGameMode);
         ProBending.playerM.removeActivePlayer(this);
     }
 
@@ -87,7 +85,7 @@ public class ActivePlayer extends AbstractPlayer {
 
     public void update() {
         getBossBar().setTitle(UtilMethods.getPercentPrefix(getTiredness()) + getTiredness() + "%");
-        double percent = (double) getTiredness() / (double) ProBending.configM.getConfig().getTirednessMax();
+        double percent = (double) getTiredness() / (double) getArena().getArena().getArenaConfig().getTirednessMax();
         getBossBar().setProgress(percent);
         getBossBar().setColor(UtilMethods.getBarColorFromPercent((int) ((1 - percent) * 100)));
         getScoreBoard().update();
@@ -138,8 +136,9 @@ public class ActivePlayer extends AbstractPlayer {
 
     public Ring getCurrentRing() {
         Block block = player.getWorld().getBlockAt(player.getLocation().getBlockX(), ProBending.configM.getConfig().getYLevel(), player.getLocation().getBlockZ());
-        if (block.getType().equals(Material.WOOL)) {
-            Ring ring = Ring.fromID(block.getData());
+        if (block.getState().getData() instanceof Wool) {
+            Wool wool = (Wool) block.getState().getData();
+            Ring ring = Ring.fromID(wool.getColor().getWoolData());
             if (ring != null) {
                 return ring;
             } else {
@@ -163,7 +162,7 @@ public class ActivePlayer extends AbstractPlayer {
             double y = vector.getY();
             vector.setY(0);
             vector.normalize();
-            int power = 1;
+            double power = getArena().getArena().getArenaConfig().getDragValue();
             vector.multiply(power);
             vector.setY(y * power);
             try {
@@ -227,7 +226,7 @@ public class ActivePlayer extends AbstractPlayer {
     }
 
     public void raiseTiredness(int raise) {
-        tiredness = Math.min(tiredness + raise, ProBending.configM.getConfig().getTirednessMax());
+        tiredness = Math.min(tiredness + raise, getArena().getArena().getArenaConfig().getTirednessMax());
     }
 
     public void resetTiredness() {
@@ -236,7 +235,6 @@ public class ActivePlayer extends AbstractPlayer {
 
     // ---------- //
 
-    //TODO: Show others tiredness
     @Language("ActivePlayer.Scoreboard")
     public static String LANG_SCOREBOARD = "%arena_name%||--------------- ||%team_color%%player_name%||Round: %arena_round%||Points: %team_color%%team_points%||Tiredness: %probending_tired%||Time left: %arena_r_time% min||---------------";
 
@@ -247,9 +245,9 @@ public class ActivePlayer extends AbstractPlayer {
     }
 
     @Override
-    protected CustomScoreboard scoreboard() {
+    protected PBScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        CustomScoreboard board = new CustomScoreboard("pb_" + getPlayer().getName(), scoreboard[0], this);
+        PBScoreboard board = new PBScoreboard("pb_" + getPlayer().getName(), scoreboard[0], this);
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

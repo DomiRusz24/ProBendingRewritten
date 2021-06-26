@@ -47,12 +47,16 @@ public class TeamDataTable extends DataBaseTable {
         createTeam(player.getUniqueId().toString(), player.getName(), name, team);
     }
 
+    public void createTeam(Player player, String name) {
+        createTeam(player.getUniqueId().toString(), player.getName(), name);
+    }
+
     public void createTeam(String uuid, String playerName, String name, Consumer<PBTeam> teamConsumer) {
         PBPlayer player = ProBending.playerM.getPlayer(UUID.fromString(uuid));
         if (player != null && name.length() <= 20 && !name.equalsIgnoreCase("null")) {
             getIndex(name, (rs) -> {
                 try {
-                    if (rs.next()) {
+                    if (rs != null) {
                         List<PBMember> players = stringToList(rs.getString(PLAYERS)).stream().map(PBMember::getFromString).collect(Collectors.toList());
                         int wins = rs.getInt(WINS);
                         int lost = rs.getInt(LOST);
@@ -66,10 +70,10 @@ public class TeamDataTable extends DataBaseTable {
                             });
                         }
                     } else {
-                        putDefault(index);
+                        putDefault(name);
                         Bukkit.getScheduler().runTask(manager.getPlugin(), () -> {
                             PBTeam team = new PBTeam(name, 0, 0);
-                            team.addPlayer(new PBMember(uuid, playerName, Collections.singletonList(ProBending.playerM.getRole("captain"))));
+                            team.addPlayer(new PBMember(playerName, uuid, Collections.singletonList(ProBending.playerM.getRole("captain"))));
                             teamConsumer.accept(team);
                         });
                     }
@@ -80,9 +84,8 @@ public class TeamDataTable extends DataBaseTable {
         }
     }
 
-    private PBPlayer getPlayer(String uuid) {
-        if (uuid.equals("NULL")) return null;
-        return ProBending.playerM.getPlayer(UUID.fromString(uuid));
+    public void createTeam(String uuid, String playerName, String name) {
+        createTeam(uuid, playerName, name, (t) -> {});
     }
 
     @Override

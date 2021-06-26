@@ -4,6 +4,8 @@ import com.probending.probending.ProBending;
 import com.probending.probending.core.arena.Arena;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class ArenaSubCommand extends AbstractSubCommand {
@@ -27,9 +29,16 @@ public abstract class ArenaSubCommand extends AbstractSubCommand {
     }
 
     @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
+    }
+
+    @Override
     public void executeCommand(CommandSender sender, List<String> args) {
         execute(sender, args);
     }
 
     public abstract void execute(CommandSender sender, Arena arena, List<String> args);
+
+    public abstract List<String> autoComplete(CommandSender sender, Arena arena, List<String> args);
 }

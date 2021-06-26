@@ -37,6 +37,7 @@ public class PBPlayer implements PlaceholderObject {
         this.kills = kills;
         this.ties = ties;
         this.team = team;
+        ProBending.playerM.addPBPlayer(this);
     }
 
     // ----------
@@ -139,7 +140,7 @@ public class PBPlayer implements PlaceholderObject {
     }
 
     public PBTeam getTeam() {
-        return ProBending.teamM.getPBTeam(this);
+        return ProBending.teamM.getPBTeam(name);
     }
 
     // ----------

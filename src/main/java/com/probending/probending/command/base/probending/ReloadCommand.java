@@ -30,6 +30,11 @@ public class ReloadCommand extends BaseSubCommand {
     }
 
     @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
+    }
+
+    @Override
     protected String name() {
         return "reload";
     }

@@ -12,12 +12,12 @@ public class ConfigValue<T> extends AbstractConfigValue<T> {
     }
 
     @Override
-    public void setValue(T value) {
+    public void _setValue(T value) {
         getConfig().set(getPath(), value);
     }
 
     @Override
-    public void setDefaultValue(T value) {
+    public void _setDefaultValue(T value) {
         getConfig().addDefault(getPath(), value);
     }
 

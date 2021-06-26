@@ -27,4 +27,6 @@ public abstract class AbstractSubCommand extends Command {
     public abstract void executeCommand(CommandSender sender, List<String> args);
 
     protected abstract void execute(CommandSender sender, List<String> args);
+
+    public abstract List<String> autoComplete(CommandSender sender, List<String> args);
 }

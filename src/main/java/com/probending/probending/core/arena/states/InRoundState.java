@@ -56,7 +56,7 @@ public class InRoundState extends AbstractArenaHandler {
             UtilMethods.freezePlayer(p.getPlayer(), false);
         }
         getArena().sendTitle((LANG_START), "", 5, 20, 5, true);
-        duration = getArena().getGameType().getRoundTime();
+        duration = getArena().getArena().getArenaConfig().getRoundTime();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class InRoundState extends AbstractArenaHandler {
                 event.getPlayer().setRing(loseEvent.getCurrentStage());
                 event.getPlayer().getPlayer().sendTitle((LANG_WARNING), (LANG_LOSE_STAGE), 5, 20, 5);
                 getArena().setTeamToCheck(event.getPlayer().getTeamTag());
-                CommandConfig.Commands.RoundPlayerLoseStage.run(event.getPlayer().getPlayer());
+                CommandConfig.Commands.RoundPlayerLoseStage.run(getArena().getArena(), event.getPlayer().getPlayer());
             }
             event.getPlayer().dragTo(event.getPlayer().getRing());
         }
@@ -107,10 +107,11 @@ public class InRoundState extends AbstractArenaHandler {
                 getArena().getTeam(winningTeam).raisePoint();
                 int redPoints = getArena().getTeam(TeamTag.RED).getPoints();
                 int bluePoints = getArena().getTeam(TeamTag.BLUE).getPoints();
-                if ((bluePoints >= getArena().getGameType().getRoundWin()) && (redPoints >= getArena().getGameType().getRoundWin())) {
+                int roundWin = getArena().getArena().getArenaConfig().getRoundWin();
+                if ((bluePoints >= roundWin) && (redPoints >= roundWin)) {
                     getArena().setState(ArenaState.MID_ROUND);
                     getArena().setHandler(new MidRoundState(getArena(), new TieBreakerState(getArena()), ArenaState.TIE_BREAKER, null, new TieBreakerStart()));
-                } else if ((bluePoints >= getArena().getGameType().getRoundWin()) || (redPoints >= getArena().getGameType().getRoundWin())) {
+                } else if ((bluePoints >= roundWin) || (redPoints >= roundWin)) {
                     int difference = Math.abs(bluePoints - redPoints);
                     if (difference == 1) {
                         getArena().setState(ArenaState.MID_ROUND);

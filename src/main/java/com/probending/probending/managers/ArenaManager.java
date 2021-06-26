@@ -2,11 +2,16 @@ package com.probending.probending.managers;
 
 import com.probending.probending.PBListener;
 import com.probending.probending.ProBending;
+import com.probending.probending.config.CommandConfig;
+import com.probending.probending.config.arena.ArenaCommandConfig;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.arena.Arena;
+import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.displayable.PBHologram;
+import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.SpectatorPlayer;
 import com.probending.probending.core.team.ActiveTeam;
+import com.probending.probending.core.team.PreArenaTeam;
 import com.probending.probending.util.PerTick;
 import com.probending.probending.util.UtilMethods;
 import org.bukkit.Location;
@@ -37,18 +42,46 @@ public class ArenaManager extends PBManager implements PerTick {
         File dir = new File(plugin.getDataFolder(), "Arenas/");
         dir.mkdirs();
         for (File folder : UtilMethods.getDirectories(dir)) {
+            String name = null;
+            File locationConfig = null;
+            File config = null;
+            File commandConfig = null;
             for (File file : UtilMethods.getFiles(folder)) {
                 if (file.getName().contains(".")) {
                     if (file.getName().substring(file.getName().lastIndexOf('.') + 1).equals("yml")) {
-                        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-                        if (config.isSet("Arena.name")) {
-                            registerArena(new Arena(this, config.getString("Arena.name"), file));
+                        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+                        if (yaml.isSet("Arena.name")) {
+                            name = yaml.getString("Arena.name");
+                            locationConfig = file;
                         }
-                        break;
+                    }
+                }
+            }
+            if (locationConfig != null && name != null) {
+                registerArena(new Arena(this, name));
+            }
+        }
+    }
+
+    public boolean throwIntoGame(Player... playersList) {
+       return throwIntoGame(Arrays.asList(playersList));
+    }
+
+    public boolean throwIntoGame(List<Player> players) {
+        for (Arena arena : ProBending.arenaM.getArenas()) {
+            if (arena.getPreArena().getState() == PreArena.State.WAITING && arena.getState().equals(Arena.State.READY)) {
+                PreArena pArena = arena.getPreArena();
+                for (TeamTag tag : TeamTag.values()) {
+                    PreArenaTeam pTeam = pArena.getRegion(tag).getTeam();
+                    if ((pTeam.getSize() - pTeam.getCurrentSize()) >= players.size()) {
+                        Location c = pArena.getRegion(tag).getRegionCenter();
+                        players.forEach(p -> p.teleport(c));
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     // ------
@@ -98,7 +131,7 @@ public class ArenaManager extends PBManager implements PerTick {
 
     @Override
     public void onTick() {
-        ACTIVE_ARENAS.forEach(ActiveArena::update);
+        getActiveArenas().forEach(ActiveArena::update);
     }
 
     // --------------------------

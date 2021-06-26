@@ -15,7 +15,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class TeamManager extends PBManager {
 
@@ -97,4 +100,11 @@ public class TeamManager extends PBManager {
         return PBTEAM_BY_PLAYER.getOrDefault(name, null);
     }
 
+    public PBTeam getPBTeamByName(String name) {
+        return PBTEAM_BY_NAME.getOrDefault(name, null);
+    }
+
+    public Collection<PBTeam> getPBTeams() {
+        return PBTEAM_BY_NAME.values();
+    }
 }

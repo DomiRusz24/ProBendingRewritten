@@ -24,6 +24,11 @@ public class RulesCommand extends BaseSubCommand {
     }
 
     @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
+    }
+
+    @Override
     protected String name() {
         return "rules";
     }

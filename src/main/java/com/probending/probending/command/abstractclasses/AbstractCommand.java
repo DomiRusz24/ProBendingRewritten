@@ -23,6 +23,8 @@ public abstract class AbstractCommand<T extends AbstractSubCommand> extends Comm
 
     public abstract void selfExecute(CommandSender sender);
 
+    public abstract List<String> autoComplete(CommandSender sender, List<String> args);
+
     public String getAllHelp() {
         StringBuilder help = new StringBuilder();
         for (AbstractSubCommand subCommand : getSubCommands()) {

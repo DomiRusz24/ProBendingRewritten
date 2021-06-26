@@ -65,7 +65,7 @@ public class ArenaControlCommand extends ArenaCommand {
     public static String LANG_ARENA_LIST = "<------->||Arenas:||%arena_list%||<------->";
 
     @Language("Command.ArenaControl.ArenaList.SingleArena")
-    public static String LANG_SINGLE_ARENA = "&4 -%arena_ingame% %arena_name%: %arena_state%||";
+    public static String LANG_SINGLE_ARENA = "&4 -%arena_in_game% %arena_name%: %arena_state%||";
 
     @Override
     public void selfExecute(CommandSender sender) {

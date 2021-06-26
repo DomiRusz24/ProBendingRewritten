@@ -1,5 +1,6 @@
 package com.probending.probending.command.abstractclasses;
 
+import com.probending.probending.ProBending;
 import com.probending.probending.core.annotations.Language;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -99,7 +100,8 @@ public abstract class Command {
     }
 
     protected String getPermission() {
-        return "probending.command." + this.name();
+        String permission = "probending.command." + this.name();
+        return permission;
     }
 
     protected boolean hasPermission(CommandSender sender) {
@@ -112,7 +114,8 @@ public abstract class Command {
     }
 
     protected boolean hasPermission(CommandSender sender, String extra) {
-        if (sender.hasPermission(getPermission() + "." + extra)) {
+        String permission = getPermission() + "." + extra;
+        if (sender.hasPermission(permission)) {
             return true;
         } else {
             sender.sendMessage(LANG_ERROR_PREFIX + "" + LANG_INSUFFICIENT_PERMS);

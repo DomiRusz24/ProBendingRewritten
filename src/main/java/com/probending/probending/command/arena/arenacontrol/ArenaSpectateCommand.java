@@ -17,7 +17,7 @@ public class ArenaSpectateCommand extends ArenaSubCommand {
 
     @Override
     public void execute(CommandSender sender, Arena arena, List<String> args) {
-        if (isPlayer(sender)) {
+        if (isPlayer(sender) && hasPermission(sender)) {
             if (correctLength(sender, args.size(), 0, 0)) {
                 if (!arena.inGame()) {
                     sender.sendMessage(Command.LANG_ARENA_NOT_IN_GAME);
@@ -32,6 +32,11 @@ public class ArenaSpectateCommand extends ArenaSubCommand {
                 }
             }
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, Arena arena, List<String> args) {
+        return null;
     }
 
     @Override

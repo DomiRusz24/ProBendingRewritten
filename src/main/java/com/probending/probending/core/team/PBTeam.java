@@ -2,13 +2,23 @@ package com.probending.probending.core.team;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.core.annotations.Language;
+import com.probending.probending.core.arena.Arena;
+import com.probending.probending.core.arena.prearena.PreArena;
+import com.probending.probending.core.enums.TeamTag;
+import com.probending.probending.core.gui.guis.TeamPlayGUI;
 import com.probending.probending.core.players.PBMember;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.players.PBPlayerWrapper;
 import com.probending.probending.managers.database.TeamDataTable;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.probending.probending.ProBending.SqlM;
 
@@ -16,12 +26,15 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     private int wins;
     private int lost;
+
+    private final TeamPlayGUI playGUI;
     
 
     public PBTeam(String name, int wins, int lost) {
         super(name, 3);
         this.wins = wins;
         this.lost = lost;
+        playGUI = new TeamPlayGUI(this);
         ProBending.teamM.PBTEAM_BY_NAME.put(name, this);
 
     }
@@ -71,6 +84,26 @@ public class PBTeam extends AbstractTeam<PBMember> {
         return builder.toString();
     }
 
+    public List<PBPlayer> getPBPlayers() {
+        return getPlayers().stream().map((t) -> {
+            if (ProBending.playerM.getPlayer(t.getUuid()) != null) {
+                return ProBending.playerM.getPlayer(t.getUuid());
+            } else {
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public List<Player> getBukkitPlayers() {
+        return getPlayers().stream().map((t) -> {
+            if (t.getPlayer() != null) {
+                return t.getPlayer().getPlayer();
+            } else {
+                return null;
+            }
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
     @Override
     public boolean onAddPlayer(PBMember player) {
         ProBending.teamM.PBTEAM_BY_PLAYER.put(player.getName(), this);
@@ -86,7 +119,16 @@ public class PBTeam extends AbstractTeam<PBMember> {
     @Override
     public boolean addPlayer(PBMember player) {
         boolean bool = super.addPlayer(player);
-        SqlM.teamTable.setStringField(getName(), SqlM.teamTable.PLAYERS, getPlayersList());
+        if (bool) {
+            PBPlayer pbPlayer = PBPlayer.of(player.getName());
+            if (pbPlayer != null) {
+                pbPlayer.setTeam(getName());
+            } else {
+                ProBending.SqlM.playerTable.setStringField(player.getUuid().toString(), ProBending.SqlM.playerTable.TEAM, getName());
+            }
+            SqlM.teamTable.setStringField(getName(), SqlM.teamTable.PLAYERS, getPlayersList());
+            ProBending.teamM.PBTEAM_BY_PLAYER.put(player.getName(), this);
+        }
         return bool;
     }
 
@@ -97,16 +139,23 @@ public class PBTeam extends AbstractTeam<PBMember> {
             for (PBMember member : getPlayers()) {
                 if (member.getName().equals(player.getName())) continue;
                 member.addRoles("captain");
-                return false;
+                remove = false;
             }
         } else {
             remove = false;
+        }
+        PBPlayer pbPlayer = PBPlayer.of(player.getName());
+        if (pbPlayer != null) {
+            pbPlayer.setTeam("NULL");
+        } else {
+            ProBending.SqlM.playerTable.setStringField(player.getUuid().toString(), ProBending.SqlM.playerTable.TEAM, "NULL");
         }
         boolean bool = super.removePlayer(player);
         if (remove) {
             Bukkit.getScheduler().runTask(ProBending.plugin, this::removeTeam);
         } else {
             SqlM.teamTable.setStringField(getName(), SqlM.teamTable.PLAYERS, getPlayersList());
+            ProBending.teamM.PBTEAM_BY_PLAYER.remove(player.getName());
         }
         return bool;
     }
@@ -142,6 +191,37 @@ public class PBTeam extends AbstractTeam<PBMember> {
         }
     }
 
+    public boolean throwIntoGame(List<Player> players) {
+        return ProBending.arenaM.throwIntoGame(players);
+    }
+
+    public boolean throwIntoGame(Arena arena, List<Player> players) {
+        return arena.throwIntoGame(players);
+    }
+
+    public boolean throwIntoGame() {
+        return ProBending.arenaM.throwIntoGame((Player[])
+                getBukkitPlayers().stream()
+                        .filter((p) -> ProBending.teamM.getTempTeam(p) == null && ProBending.playerM.getActivePlayer(p) == null)
+                        .toArray());
+    }
+
+    public boolean throwIntoGame(Arena arena) {
+        return arena.throwIntoGame((Player[])
+                getBukkitPlayers().stream()
+                        .filter((p) -> ProBending.teamM.getTempTeam(p) == null && ProBending.playerM.getActivePlayer(p) == null)
+                        .toArray());
+    }
+
+    public boolean allOnline() {
+        for (PBMember player : getPlayers()) {
+            if (player.getPlayer() == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public int getWins() {
         return wins;
     }
@@ -158,6 +238,10 @@ public class PBTeam extends AbstractTeam<PBMember> {
     public void setLost(int lost) {
         this.lost = lost;
         SqlM.teamTable.setIntegerField(getName(), SqlM.teamTable.LOST, lost);
+    }
+
+    public TeamPlayGUI getPlayGUI() {
+        return playGUI;
     }
 
     @Language("Team.PB.TEAM_INFO")

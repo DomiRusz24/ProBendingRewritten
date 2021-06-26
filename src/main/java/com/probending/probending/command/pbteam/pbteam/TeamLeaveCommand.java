@@ -8,6 +8,7 @@ import com.probending.probending.core.team.PBTeam;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeamLeaveCommand extends BaseSubCommand {
@@ -27,6 +28,11 @@ public class TeamLeaveCommand extends BaseSubCommand {
                 sender.sendMessage(InviteTeamCommand.LANG_NOT_IN_TEAM);
             }
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
     }
 
     @Override

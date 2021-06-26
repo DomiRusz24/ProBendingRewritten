@@ -6,11 +6,16 @@ import com.probending.probending.command.abstractclasses.Command;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
+import com.probending.probending.core.team.AbstractTeam;
+import com.probending.probending.util.UtilMethods;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArenaJoinCommand extends ArenaSubCommand {
 
@@ -46,6 +51,16 @@ public class ArenaJoinCommand extends ArenaSubCommand {
                 }
             }
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, Arena arena, List<String> args) {
+        List<String> complete = new ArrayList<>();
+        if (args.size() == 1) {
+            complete.add(Command.LANG_TEAM_BLUE);
+            complete.add(Command.LANG_TEAM_RED);
+        }
+        return UtilMethods.getPossibleCompletions(args, complete);
     }
 
     @Override

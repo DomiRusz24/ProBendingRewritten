@@ -51,7 +51,7 @@ public class GainingStageState extends AbstractArenaHandler {
 
     @Override
     public int getTimeLeft() {
-        return (getArena().getGameType().getRoundTime() * 20) - tickTime;
+        return (getArena().getArena().getArenaConfig().getRoundTime() * 20) - tickTime;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class GainingStageState extends AbstractArenaHandler {
     @Override
     public void onStart() {
         for (ActivePlayer p : getArena().getTeam(team).getPlayers(false)) {
-            CommandConfig.Commands.RoundPlayerGainStage.run(p.getPlayer());
+            CommandConfig.Commands.RoundPlayerGainStage.run(getArena().getArena(), p.getPlayer());
         }
         raiseGap(gap);
         getArena().getTeam(team).sendTitle((LANG_WIN_START), (LANG_WIN_START_DESC), 5, 30, 5, false);

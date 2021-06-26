@@ -28,6 +28,11 @@ public class ArenaStopCommand extends ArenaSubCommand {
     }
 
     @Override
+    public List<String> autoComplete(CommandSender sender, Arena arena, List<String> args) {
+        return null;
+    }
+
+    @Override
     protected String name() {
         return "stop";
     }

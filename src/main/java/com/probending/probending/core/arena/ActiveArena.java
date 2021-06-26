@@ -8,18 +8,19 @@ import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.arena.states.*;
 import com.probending.probending.core.interfaces.PlaceholderObject;
-import com.probending.probending.core.players.AbstractPlayer;
 import com.probending.probending.core.players.ActivePlayer;
 import com.probending.probending.core.enums.ArenaState;
-import com.probending.probending.core.enums.GameType;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.players.SpectatorPlayer;
 import com.probending.probending.core.team.ActiveTeam;
+import com.probending.probending.core.team.PBActiveTeam;
+import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.Team;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
+import com.projectkorra.projectkorra.Element;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -41,12 +42,13 @@ public class ActiveArena implements PlaceholderObject {
     private AbstractArenaHandler cancelHandler;
 
     private ArenaState state;
-    private GameType gameType;
 
-    private final ActiveTeam blueTeam;
-    private final ActiveTeam redTeam;
+    private ActiveTeam blueTeam;
+    private ActiveTeam redTeam;
 
     private final HashSet<SpectatorPlayer> SPECTATORS;
+
+    private TeamTag lastWon = null;
 
     private int arenaTick;
 
@@ -55,37 +57,48 @@ public class ActiveArena implements PlaceholderObject {
         this.state = ArenaState.NONE;
         this.cancelHandler = new ArenaHandler(this);
         handler = new ArenaHandler(this);
-        this.blueTeam = new ActiveTeam(this, TeamTag.BLUE);
-        this.redTeam = new ActiveTeam(this, TeamTag.RED);
         this.SPECTATORS = new HashSet<>();
         arenaTick = 0;
     }
 
     // ----------
 
-    public void start(Team blue, Team red, GameType type) {
+    public void start(Team blue, Team red) {
         arenaTick = 0;
-        this.gameType = type;
-        blueTeam.purgePlayers();
-        redTeam.purgePlayers();
+        for (TeamTag tag : TeamTag.values()) {
+            PBTeam team = UtilMethods.getSamePBTeam(getArena().getTeam(tag).getPlayers().stream().map(p -> PBPlayer.of(p.getPlayer())).collect(Collectors.toList()));
+            if (team == null) {
+                setTeam(tag, new ActiveTeam(this, tag));
+            } else {
+                setTeam(tag, new PBActiveTeam(this, tag, team));
+            }
+        }
         for (Player p : blue.getUnwrappedPlayers()) {
             ActivePlayer ap = new ActivePlayer(p, TeamTag.BLUE, this, ProBending.projectKorraM.getFirstElement(BendingPlayer.getBendingPlayer(p)));
             blueTeam.addPlayer(ap);
-            CommandConfig.Commands.ArenaStartPlayer.run(p);
+            CommandConfig.Commands.ArenaStartPlayer.run(getArena(), p);
         }
         for (Player p : red.getUnwrappedPlayers()) {
             ActivePlayer ap = new ActivePlayer(p, TeamTag.RED, this, ProBending.projectKorraM.getFirstElement(BendingPlayer.getBendingPlayer(p)));
             redTeam.addPlayer(ap);
-            CommandConfig.Commands.ArenaStartPlayer.run(p);
+            CommandConfig.Commands.ArenaStartPlayer.run(getArena(), p);
         }
         round = 1;
         state = ArenaState.MID_ROUND;
         getArena().setState(Arena.State.TAKEN);
         handler = new StartingState(this);
         ProBending.arenaM.ACTIVE_ARENAS.add(this);
-        PBArenaStartEvent event = new PBArenaStartEvent(this.getArena());
+        PBArenaStartEvent event = new PBArenaStartEvent(getArena());
         Bukkit.getPluginManager().callEvent(event);
-        CommandConfig.Commands.ArenaStartSingle.run(this.getArena());
+        CommandConfig.Commands.ArenaStartSingle.run(getArena());
+    }
+
+    private void setTeam(TeamTag tag, ActiveTeam team) {
+        if (tag == TeamTag.BLUE) {
+            blueTeam = team;
+        } else {
+            redTeam = team;
+        }
     }
 
     public void forceStop() {
@@ -99,15 +112,16 @@ public class ActiveArena implements PlaceholderObject {
     public void forceUnstableStop(TeamTag winningTeam) {
         PBArenaStopEvent event = new PBArenaStopEvent(this, state, winningTeam);
         Bukkit.getPluginManager().callEvent(event);
+        setLastWon(winningTeam);
         stop();
     }
 
 
     private void stop() {
         for (ActivePlayer player : getPlayers(true)) {
-            CommandConfig.Commands.ArenaStopPlayer.run(player);
+            CommandConfig.Commands.ArenaStopPlayer.run(getArena(), player);
         }
-        CommandConfig.Commands.ArenaStopSingle.run(this.getArena());
+        CommandConfig.Commands.ArenaStopSingle.run(getArena());
         redTeam.purgePlayers();
         blueTeam.purgePlayers();
         getSpectators().forEach(SpectatorPlayer::unregister);
@@ -117,8 +131,8 @@ public class ActiveArena implements PlaceholderObject {
         ProBending.arenaM.ACTIVE_ARENAS.remove(this);
         getArena().getPreArena().setEnabled(true);
         getArena().getPreArena().setState(PreArena.State.WAITING);
-        getArena().getRollback(null);
         getArena().getJoinSign().update();
+        getArena().getRollback(null);
     }
 
     // ---------- ROUNDS ----------
@@ -182,10 +196,6 @@ public class ActiveArena implements PlaceholderObject {
         return state;
     }
 
-    public GameType getGameType() {
-        return gameType;
-    }
-
     public void setState(ArenaState state) {
         this.state = state;
     }
@@ -201,7 +211,7 @@ public class ActiveArena implements PlaceholderObject {
     public void callDamageEvent(PBPlayerDamagePBPlayerEvent event) {
         handler.onPBPlayerDamagePBPlayer(event);
         if (!event.isCancelled()) {
-            event.getEntity().raiseTiredness((int) event.getDamage() * ProBending.configM.getConfig().getHpToTirednessRatio());
+            event.getEntity().raiseTiredness((int) event.getDamage() * getArena().getArenaConfig().getHpToTirednessRatio());
             event.getEntity().setHasBeenHit(true);
         }
     }
@@ -324,6 +334,12 @@ public class ActiveArena implements PlaceholderObject {
 
                 current = handler.onPlayerPreProcess(player, current);
 
+                if (getGameTime() % 100 == 0) {
+                    if (player.getElement().equals(Element.WATER)) {
+                        ProBending.itemM.WATER_BOTTLE().giveToPlayer(player.getPlayer(), 64, 1);
+                    }
+                }
+
                 int offset = player.getRing().offset(player.getTeamTag(), current);
                 if (offset != 0) {
                     playerUpdateStage(player, current, offset);
@@ -342,7 +358,9 @@ public class ActiveArena implements PlaceholderObject {
                     onGap(teamToCheck, gap, getTeam(teamToCheck).getFurthestRing());
                 }
             }
-        } else if (getGameTime() % 20 == 0) onSecond();
+        } else if (getGameTime() % 20 == 0) {
+            onSecond();
+        }
     }
 
     public int getGameTime() {
@@ -422,7 +440,7 @@ public class ActiveArena implements PlaceholderObject {
                 if (killer != null) {
                     message = LANG_KNOCK_OUT.replaceAll("%player%", player.getPlayer().getName()).replaceAll("%killer%", killer.getName());
                     PBPlayer e = ProBending.playerM.getPlayer(killer);
-                    CommandConfig.Commands.ArenaPlayerKillPlayer.run(killer);
+                    CommandConfig.Commands.ArenaPlayerKillPlayer.run(getArena(), killer);
                     e.setKills(e.getKills() + 1);
                 } else {
                     message = LANG_KNOCK_OUT_NO_KILLER.replaceAll("%player%", player.getPlayer().getName());
@@ -434,7 +452,7 @@ public class ActiveArena implements PlaceholderObject {
                 player.getTeam().removePlayer(player);
                 sendMessage(LANG_LEAVE_GAME.replaceAll("%player%", player.getPlayer().getName()), true);
             }
-            CommandConfig.Commands.ArenaPlayerDiePlayer.run(player.getPlayer());
+            CommandConfig.Commands.ArenaPlayerDiePlayer.run(getArena(), player.getPlayer());
             player.getPlayer().getWorld().strikeLightningEffect(player.getPlayer().getLocation());
             setTeamToCheck(player.getTeamTag());
         }
@@ -444,12 +462,12 @@ public class ActiveArena implements PlaceholderObject {
     public void addSpectator(SpectatorPlayer player) {
         SPECTATORS.add(player);
         player.getPlayer().teleport(getArena().getCenter());
-        CommandConfig.Commands.ArenaSpectatorJoinPlayer.run(player.getPlayer());
+        CommandConfig.Commands.ArenaSpectatorJoinPlayer.run(getArena(), player.getPlayer());
     }
 
     public void removeSpectator(SpectatorPlayer player) {
         SPECTATORS.remove(player);
-        CommandConfig.Commands.ArenaSpectatorQuitPlayer.run(player.getPlayer());
+        CommandConfig.Commands.ArenaSpectatorQuitPlayer.run(getArena(), player.getPlayer());
     }
 
     // -----------
@@ -464,6 +482,10 @@ public class ActiveArena implements PlaceholderObject {
         blueTeam.sendMessage(message, spectators);
         redTeam.sendMessage(message, spectators);
         if (spectators) SPECTATORS.forEach(p -> p.getPlayer().sendMessage(message));
+    }
+
+    public void setLastWon(TeamTag lastWon) {
+        this.lastWon = lastWon;
     }
 
     // -----------
@@ -493,15 +515,13 @@ public class ActiveArena implements PlaceholderObject {
             case "state":
                 return getState().toString();
             case "winningteam":
-                return getWinningTeamByRound() == null ? LANG_TIE : getWinningTeamByRound() == TeamTag.BLUE ? TeamTag.BLUE.toString() : TeamTag.RED.toString();
+                return lastWon == null ? LANG_TIE : lastWon == TeamTag.BLUE ? TeamTag.BLUE.toString() : TeamTag.RED.toString();
             case "round":
                 return String.valueOf(getRound());
             case "r_time":
                 return handler.getTimeLeft() == -1 ? "0" : UtilMethods.secondsToMinutes((int) ((float) handler.getTimeLeft() / 20f));
             case "game_time":
                 return UtilMethods.secondsToMinutes((int) ((float) arenaTick / 20f));
-            case "game_type":
-                return gameType.toString();
             case "spectators":
                 return String.valueOf(SPECTATORS.size());
         }

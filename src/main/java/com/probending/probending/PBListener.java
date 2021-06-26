@@ -4,7 +4,9 @@ import com.comphenix.protocol.PacketType;
 import com.probending.probending.api.events.PBPlayerDamagePBPlayerEvent;
 import com.probending.probending.core.displayable.interfaces.LeftClickable;
 import com.probending.probending.core.displayable.interfaces.RightClickable;
+import com.probending.probending.core.gui.PBGUI;
 import com.probending.probending.core.players.ActivePlayer;
+import com.probending.probending.core.players.PBPlayerWrapper;
 import com.probending.probending.util.PerTick;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.Hash;
@@ -16,6 +18,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,12 +70,38 @@ public class PBListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        ProBending.SqlM.playerTable.createTeamPlayer(event.getPlayer());
+        ProBending.playerM.registerPlayer(event.getPlayer());
     }
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         ProBending.playerM.unregisterPlayer(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onItemMove(InventoryDragEvent event) {
+        PBGUI latest = ProBending.playerM.getLatestGUI((Player) event.getWhoClicked());
+        if (latest != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onItemClick(InventoryClickEvent event) {
+        PBGUI latest = ProBending.playerM.getLatestGUI((Player) event.getWhoClicked());
+        if (latest != null) {
+            event.setCancelled(true);
+            if (event.isLeftClick()) latest.onLeftClick((Player) event.getWhoClicked(), event.getCursor());
+            if (event.isRightClick()) latest.onRightClick((Player) event.getWhoClicked(), event.getCursor());
+        }
+    }
+
+    @EventHandler
+    public void onInventoryLeave(InventoryCloseEvent event) {
+        PBGUI latest = ProBending.playerM.getLatestGUI((Player) event.getPlayer());
+        if (latest != null) {
+            latest.onPlayerClose((Player) event.getPlayer());
+        }
     }
 
     @EventHandler
@@ -84,7 +116,8 @@ public class PBListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         if (ProBending.playerM.getFrozenPlayers().contains(event.getPlayer())) {
-            if (!event.getFrom().toVector().toBlockVector().equals(event.getTo().toVector().toBlockVector())) {
+            if (event.getTo() == null) return;
+            if (event.getFrom().toVector().getBlockX() != event.getTo().toVector().getBlockX() || event.getFrom().toVector().getBlockZ() != event.getTo().toVector().getBlockZ()) {
                 event.setCancelled(true);
             }
         }
@@ -103,7 +136,7 @@ public class PBListener implements Listener {
                         PBPlayerDamagePBPlayerEvent pbPlayerEvent = new PBPlayerDamagePBPlayerEvent(damager.getArena(), damager.getArena().getState(), event);
                         Bukkit.getPluginManager().callEvent(pbPlayerEvent);
                         damager.getArena().callDamageEvent(pbPlayerEvent);
-                        if (ProBending.configM.getConfig().getDamage()) {
+                        if (damager.getArena().getArena().getArenaConfig().getDamage()) {
                             pbPlayerEvent.setDamage(0);
                         }
                     }
@@ -128,13 +161,13 @@ public class PBListener implements Listener {
 
     @EventHandler()
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             RIGHT_CLICKABLES.forEach(p -> {
                 if (p.isRightClickedOn(event)) {
                     p.onRightClick(event.getPlayer());
                 }
             });
-        } else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+        } else if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
             LEFT_CLICKABLES.forEach(p -> {
                 if (p.isLeftClickedOn(event)) {
                     p.onLeftClick(event.getPlayer());
@@ -157,13 +190,15 @@ public class PBListener implements Listener {
 
     }
 
+
+
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        event.setCancelled(ProBending.commandM.preformCommand(event.getPlayer(), event.getMessage()));
+        //event.setCancelled(ProBending.commandM.preformCommand(event.getPlayer(), event.getMessage()));
     }
 
     @EventHandler
     public void onSeverCommand(ServerCommandEvent event) {
-        event.setCancelled(ProBending.commandM.preformCommand(event.getSender(), event.getCommand()));
+        //event.setCancelled(ProBending.commandM.preformCommand(event.getSender(), event.getCommand()));
     }
 }

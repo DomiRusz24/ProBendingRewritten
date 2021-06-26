@@ -8,15 +8,17 @@ import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
+import com.probending.probending.util.UtilMethods;
 import com.sk89q.worldedit.WorldEditException;
-import javafx.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArenaGetCommand extends ArenaSubCommand {
 
@@ -33,23 +35,50 @@ public class ArenaGetCommand extends ArenaSubCommand {
                 } else if (setType.equals("center")) {
                     if (isPlayer(sender)) {
                         Player player = (Player) sender;
-                        player.getLocation(arena.getCenter());
+                        player.teleport(arena.getCenter());
+                        sender.sendMessage(Command.LANG_SUCCESS);
                     }
                 } else if (args.size() == 2) {
                     if (setType.equals("ring")) {
                         if (isPlayer(sender)) {
                             Player player = (Player) sender;
                             Ring ringType = Ring.fromName(args.get(1));
-                            if (ringType != null && ringType.isTeleportRing()) {
-                                Location location = arena.getRingLocation(ringType);
-                                if (location != null) {
-                                    player.teleport(location);
-                                    sender.sendMessage(Command.LANG_SUCCESS);
+                            if (ringType != null) {
+                                if (ringType.isTeleportRing()) {
+                                    Location location = arena.getRingLocation(ringType);
+                                    if (location != null) {
+                                        player.teleport(location);
+                                        sender.sendMessage(Command.LANG_SUCCESS);
+                                    } else {
+                                        sender.sendMessage(Command.LANG_LOCATION_NOT_SET);
+                                    }
                                 } else {
-                                    sender.sendMessage(Command.LANG_LOCATION_NOT_SET);
+                                    sender.sendMessage(Command.LANG_FAIL);
                                 }
                             } else {
                                 help(sender, false);
+                            }
+                        }
+                    } else if (setType.equals("gettercenter")) {
+                        if (isPlayer(sender)) {
+                            TeamTag tag = TeamTag.getFromName(args.get(1));
+                            if (tag != null) {
+                                Player player = (Player) sender;
+                                player.teleport(arena.getPreArena().getRegion(tag).getCenter());
+                                sender.sendMessage(Command.LANG_SUCCESS);
+                            } else {
+                                sender.sendMessage(Command.LANG_INVALID_TEAM);
+                            }
+                        }
+                    } else if (setType.equals("getterregioncenter")) {
+                        if (isPlayer(sender)) {
+                            TeamTag tag = TeamTag.getFromName(args.get(1));
+                            if (tag != null) {
+                                Player player = (Player) sender;
+                                player.teleport(arena.getPreArena().getRegion(tag).getRegionCenter());
+                                sender.sendMessage(Command.LANG_SUCCESS);
+                            } else {
+                                sender.sendMessage(Command.LANG_INVALID_TEAM);
                             }
                         }
                     }
@@ -72,10 +101,32 @@ public class ArenaGetCommand extends ArenaSubCommand {
                             }
                         }
                     }
+                } else {
+                    help(sender, false);
                 }
-                help(sender, false);
             }
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, Arena arena, List<String> args) {
+        List<String> complete = new ArrayList<>();
+        if (args.size() == 1) {
+            complete.addAll(Arrays.asList("rollback", "startlocation", "ring", "center", "gettercenter", "getterregioncenter"));
+        } else if (args.size() == 2) {
+            String s = args.get(0);
+            if (s.equalsIgnoreCase("ring")) {
+                complete.addAll(Arrays.stream(Ring.values()).map(Enum::name).collect(Collectors.toList()));
+            } else if (s.equalsIgnoreCase("startlocation")) {
+                for (int i = 1; i <= 3; i++) {
+                    complete.add(String.valueOf(i));
+                }
+            }
+        } else if (args.size() == 3) {
+            complete.add(Command.LANG_TEAM_BLUE);
+            complete.add(Command.LANG_TEAM_RED);
+        }
+        return UtilMethods.getPossibleCompletions(args, complete);
     }
 
     @Override

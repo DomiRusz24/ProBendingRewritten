@@ -2,17 +2,20 @@ package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.core.annotations.Language;
+import com.probending.probending.core.gui.GUIItem;
+import com.probending.probending.core.gui.PBGUI;
 import com.probending.probending.core.players.*;
 import com.probending.probending.core.team.ArenaTempTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
 
 public class PlayerManager extends PBManager {
+
+    public final HashMap<Player, ConcurrentLinkedQueue<PBGUI>> GUIS_BY_PLAYER = new HashMap<>();
 
     private final HashSet<PBPlayer> PB_PLAYERS = new HashSet<>();
 
@@ -40,7 +43,7 @@ public class PlayerManager extends PBManager {
     public static String LANG_CAPTAIN_FULL = "Captain";
 
     private void loadRoles() {
-        new Role("captain", () -> LANG_CAPTAIN_FULL, () -> LANG_CAPTAIN_PREFIX);
+        new Role("captain", () -> LANG_CAPTAIN_FULL, () -> LANG_CAPTAIN_PREFIX, this);
     }
 
     // --- PBPlayer ---
@@ -158,6 +161,17 @@ public class PlayerManager extends PBManager {
         LAST_HIT.put(entity, damager);
     }
 
+    public void registerPlayer(Player player) {
+        ProBending.SqlM.playerTable.createTeamPlayer(player, (pbPlayer) -> {
+            if (!pbPlayer.getTeamName().equals(PBPlayer.LANG_NO_TEAM) && pbPlayer.getTeam() == null) {
+                ProBending.SqlM.teamTable.createTeam(player, pbPlayer.getTeamName());
+            }
+        });
+        PBPlayerWrapper.of(player);
+
+        ProBending.nmsM.onPlayerEnter(player);
+    }
+
     public void unregisterPlayer(Player player) {
 
         // Active player
@@ -186,6 +200,8 @@ public class PlayerManager extends PBManager {
         LAST_HIT.remove(player);
 
         ProBending.regionM.getRegions().forEach(r -> r.onLeave(player));
+
+        ProBending.nmsM.onPlayerLeave(player);
     }
 
     public Role getRole(String id) {
@@ -198,5 +214,14 @@ public class PlayerManager extends PBManager {
 
     public Collection<Role> getAllRoles() {
         return ROLE_BY_ID.values();
+    }
+
+    public PBGUI getLatestGUI(Player player) {
+        ConcurrentLinkedQueue<PBGUI> gui = GUIS_BY_PLAYER.get(player);
+        if (gui != null && !gui.isEmpty()) {
+            return gui.peek();
+        } else {
+            return null;
+        }
     }
 }

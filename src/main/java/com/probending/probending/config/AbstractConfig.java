@@ -5,6 +5,8 @@ import com.probending.probending.config.configvalue.AbstractConfigValue;
 import com.probending.probending.core.PBRegion;
 import com.probending.probending.core.displayable.PBSign;
 import com.probending.probending.core.displayable.PBHologram;
+import com.probending.probending.managers.ConfigManager;
+import com.sun.prism.shader.DrawEllipse_LinearGradient_REFLECT_AlphaTest_Loader;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,10 +31,22 @@ public abstract class AbstractConfig extends YamlConfiguration {
 
     private final ArrayList<AbstractConfigValue<?>> values = new ArrayList<>();
 
+    protected final ConfigManager manager;
+
     public AbstractConfig(String path, ProBending plugin) {
         this.plugin = plugin;
         this.file = new File(ProBending.plugin.getDataFolder(), path);
         this.name = file.getName();
+        this.manager = ProBending.configM;
+        setUp();
+
+    }
+
+    public AbstractConfig(String path, ProBending plugin, ConfigManager manager) {
+        this.plugin = plugin;
+        this.file = new File(ProBending.plugin.getDataFolder(), path);
+        this.name = file.getName();
+        this.manager = manager;
         setUp();
 
     }
@@ -41,6 +55,7 @@ public abstract class AbstractConfig extends YamlConfiguration {
         this.plugin = plugin;
         this.file = file;
         this.name = file.getName();
+        this.manager = ProBending.configM;
         setUp();
     }
 
@@ -49,27 +64,36 @@ public abstract class AbstractConfig extends YamlConfiguration {
     }
 
     private void setUp() {
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-            plugin.log(Level.INFO, "Created file directory for " + file.getPath() + ".");
+        if (createFile()) {
+            reload();
+            options().copyDefaults(true);
+            manager.registerConfig(this);
         }
+    }
+
+    private boolean createFile() {
         if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+                plugin.log(Level.INFO, "Created file directory for " + file.getPath() + ".");
+            }
             try {
                 file.createNewFile();
+                plugin.log(Level.INFO, "Created file " + file.getPath() + ".");
             } catch (IOException error) {
                 error.printStackTrace();
                 plugin.log(Level.SEVERE, "Couldn't create file " + file.getPath() + "! Shutting off plugin...");
                 plugin.shutOffPlugin();
-                return;
-            } finally {
-                plugin.log(Level.INFO, "Created file " + file.getPath() + ".");
+                return false;
             }
         }
-        reload();
-        options().copyDefaults(true);
+        return true;
     }
 
     public boolean reload() {
+        if (!file.exists()) {
+            if (!createFile()) return false;
+        }
         try {
             load(file);
         } catch (IOException | InvalidConfigurationException e) {
@@ -82,6 +106,10 @@ public abstract class AbstractConfig extends YamlConfiguration {
     }
 
     public boolean save() {
+        if (!file.exists()) {
+            if (!createFile()) return false;
+        }
+        values.forEach(AbstractConfigValue::saveDefault);
         try {
             save(file);
         } catch (IOException e) {
@@ -146,7 +174,7 @@ public abstract class AbstractConfig extends YamlConfiguration {
             Location location = getLocation(path);
             if (location != null) {
                 Block block = location.getBlock();
-                if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN_POST)) {
+                if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN)) {
                     sign.setSign((Sign) block.getState());
                 }
             }
@@ -162,7 +190,6 @@ public abstract class AbstractConfig extends YamlConfiguration {
 
     public Location getLocation(String path) {
         if (!contains(path + ".world")) {
-            plugin.log(Level.WARNING, path + ".world does not exist!");
             return null;
         }
         double x = getInt(path + ".x");
@@ -215,7 +242,7 @@ public abstract class AbstractConfig extends YamlConfiguration {
         return new Location[]{min, max};
     }
 
-    private World getWorld(String name) {
+    public static World getWorld(String name) {
         World world = Bukkit.getWorld(name);
         if (world == null && ProBending.multiverse != null) {
             world = ProBending.multiverse.getMVWorldManager().getMVWorld(name).getCBWorld();

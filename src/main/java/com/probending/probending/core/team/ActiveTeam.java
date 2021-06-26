@@ -1,6 +1,7 @@
 package com.probending.probending.core.team;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.config.CommandConfig;
 import com.probending.probending.core.players.ActivePlayer;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
@@ -30,6 +31,20 @@ public class ActiveTeam extends AbstractTeam<ActivePlayer> {
     }
 
     // ----
+
+    public void onWin() {
+        getPlayers(true).forEach(p -> {
+            p.getPlayerData().setWins(p.getPlayerData().getWins() + 1);
+            CommandConfig.Commands.ArenaWinPlayer.run(arena.getArena(), p.getPlayer());
+        });
+    }
+
+    public void onLose() {
+        getPlayers(true).forEach(p -> {
+            p.getPlayerData().setLost(p.getPlayerData().getLost() + 1);
+            CommandConfig.Commands.ArenaLosePlayer.run(arena.getArena(), p.getPlayer());
+        });
+    }
 
 
     @Override
@@ -162,8 +177,7 @@ public class ActiveTeam extends AbstractTeam<ActivePlayer> {
     public int getGap() {
         Ring enemyTeamMaxRing = getArena().getTeam(getTag().getOther()).getFurthestRing();
         Ring teamMaxRing = getFurthestRing();
-        assert teamMaxRing != null;
-        assert enemyTeamMaxRing != null;
+        if (enemyTeamMaxRing == null || teamMaxRing == null) return 0;
         return Math.abs(teamMaxRing.getIndex() - enemyTeamMaxRing.getIndex()) - 1;
     }
 }

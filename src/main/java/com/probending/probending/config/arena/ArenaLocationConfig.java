@@ -1,6 +1,7 @@
-package com.probending.probending.config;
+package com.probending.probending.config.arena;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.config.AbstractConfig;
 import com.probending.probending.core.PBRegion;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
@@ -8,28 +9,23 @@ import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
 import com.sk89q.worldedit.*;
-import javafx.util.Pair;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
 import java.io.*;
 
-public class ArenaConfig extends AbstractConfig {
-
-    private Arena arena;
+public class ArenaLocationConfig extends AbstractArenaConfig {
 
     private String path;
 
-    public ArenaConfig(Arena arena, String path, ProBending plugin) {
-        super(path, plugin);
-        this.arena = arena;
+    public ArenaLocationConfig(Arena arena, String path, ProBending plugin) {
+        super(arena, path, plugin);
         this.path = "Arena.";
         set(this.path + "name", arena.getName());
     }
 
-    public ArenaConfig(Arena arena, File config, ProBending plugin) {
-        super(config, plugin);
-        this.arena = arena;
+    public ArenaLocationConfig(Arena arena, File config, ProBending plugin) {
+        super(arena, config, plugin);
         this.path = "Arena.";
         set(this.path + "name", arena.getName());
     }
@@ -81,6 +77,9 @@ public class ArenaConfig extends AbstractConfig {
     }
 
     public boolean getRollback(CommandSender sender, Location location) {
+        if (location == null) {
+            return false;
+        }
         return ProBending.schematicM.getSchematic(sender, location, getFile().getParentFile(), "rollback");
     }
 
@@ -101,6 +100,9 @@ public class ArenaConfig extends AbstractConfig {
         if (region.getCenter() != null) {
             setLocation(path + ".center", region.getCenter());
         }
+        if (region.getRegionCenter() != null) {
+            setLocation(path + ".regionCenter", region.getRegionCenter());
+        }
     }
 
     public ArenaGetterRegion getRegion(String path, String ID, TeamTag tag, PreArena preArena) {
@@ -109,11 +111,15 @@ public class ArenaConfig extends AbstractConfig {
             region = new ArenaGetterRegion(ID, preArena, tag);
             Location[] sel = getWESelection(path);
             Location center = getLocation(path + ".center");
+            Location regionCenter = getLocation(path + ".regionCenter");
             if (sel != null) {
                 region.setLocations(sel[0], sel[1]);
             }
             if (center != null) {
                 region.setCenter(center);
+            }
+            if (regionCenter != null) {
+                region.setRegionCenter(regionCenter);
             }
         }
         return region;

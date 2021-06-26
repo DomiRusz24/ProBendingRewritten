@@ -9,6 +9,7 @@ import com.probending.probending.core.arena.Arena;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SetSpawnCommand extends BaseSubCommand {
@@ -39,5 +40,10 @@ public class SetSpawnCommand extends BaseSubCommand {
                 sender.sendMessage(Command.LANG_SUCCESS);
             }
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        return new ArrayList<>();
     }
 }

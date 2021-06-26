@@ -1,45 +1,50 @@
 name: ProBending
 version: ${project.version}
 main: com.probending.probending.ProBending
-depend: [ProjectKorra, RollbackCore, ProtocolLib, WorldEdit, PlaceholderAPI]
+api-version: 1.13
+depend: [ProjectKorra, ProtocolLib, PlaceholderAPI, WorldEdit]
 softdepend: [Multiverse-Core]
 authors: [DomiRusz24]
 
+commands:
+  arena:
+    usage: /arena <arena>
+  arenaconfig:
+    usage: /arenaconfig <arena>
+    aliases: [arenac]
+  probending:
+    usage: /pb
+    aliases: [pb,probend]
+  leave:
+    usage: /leave
+    aliases: [quit]
+  pblevel:
+    usage: /pblevel
+    aliases: [pblvl,pbl,level]
+  forcestart:
+    usage: /fs
+    aliases: [fs]
+  team:
+    usage: /team
 
 permissions:
-  probending.command.pbc:
-    default: op
-    description: "Allows you to use the PBC command."
-    children:
-      probending.command.pbc.rules:
+  probending:
+    command:
+      arena:
+        default: op
+      arenaconfig:
+        default: op
+      probending:
+        default: op
+      leave:
+        default: op
+      pblevel:
+        default: op
+      forcestart:
+        default: op
+      team:
         default: op
 
-      probending.command.pbc.start:
-        default: op
-
-      probending.command.pbc.spectate:
-        default: op
-
-      probending.command.pbc.teleport:
-        default: op
-
-      probending.command.pbc.forcestart:
-        default: op
-
-      probending.command.pbc.autostart:
-        default: op
-
-      probending.command.pbc.stop:
-        default: op
-
-      probending.command.pbc.resetteams:
-        default: op
-
-      probending.command.pbc.forcenextround:
-        default: op
-
-      probending.command.pbc.modifyplayers:
-        default: op
 
 
 

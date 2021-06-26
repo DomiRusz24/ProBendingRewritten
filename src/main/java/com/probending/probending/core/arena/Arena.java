@@ -3,36 +3,34 @@ package com.probending.probending.core.arena;
 import com.probending.probending.ProBending;
 import com.probending.probending.api.events.PBArenaStartEvent;
 import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.config.ArenaConfig;
+import com.probending.probending.config.arena.ArenaCommandConfig;
+import com.probending.probending.config.arena.ArenaConfig;
+import com.probending.probending.config.arena.ArenaLocationConfig;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.displayable.PBSign;
-import com.probending.probending.core.enums.GameType;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.interfaces.PlaceholderObject;
-import com.probending.probending.core.players.PBPlayerWrapper;
 import com.probending.probending.core.team.ArenaTempTeam;
+import com.probending.probending.core.team.PreArenaTeam;
 import com.probending.probending.core.team.Team;
 import com.probending.probending.managers.ArenaManager;
 import com.probending.probending.managers.ConfigManager;
 import com.probending.probending.managers.ProjectKorraManager;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
-import com.sk89q.worldedit.WorldEditException;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import static com.probending.probending.core.enums.TeamTag.BLUE;
@@ -97,7 +95,11 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     private final String name;
 
-    private final ArenaConfig config;
+    private final ArenaLocationConfig locationConfig;
+
+    private final ArenaCommandConfig commandConfig;
+
+    private final ArenaConfig arenaConfig;
 
     private final ArenaTempTeam blueTeam;
 
@@ -109,43 +111,32 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
             throw new IllegalArgumentException();
         }
         this.name = name;
-        this.config = new ArenaConfig(this, "Arenas/" + name + "/" + name + ".yml", ProBending.plugin);
-        this.blueTeam = new ArenaTempTeam(this, BLUE);
+        this.locationConfig = new ArenaLocationConfig(this, name + ".yml", ProBending.plugin);
+        this.commandConfig = new ArenaCommandConfig(this, "commands.yml", ProBending.plugin);
+        this.arenaConfig = new ArenaConfig(this, "config.yml", ProBending.plugin);
+        this.blueTeam = new ArenaTempTeam(this, TeamTag.BLUE);
         this.redTeam = new ArenaTempTeam(this, TeamTag.RED);
         loadFromConfig();
         activeArena = new ActiveArena(this);
         manager.registerArena(this);
         this.preArena = new PreArena(this);
         state = State.NOT_COMPLETE;
-        this.joinSign = config.getSign("JoinSign", name + "_sign");
+        this.joinSign = locationConfig.getSign("JoinSign", name + "_sign");
         setUpSign();
         isReadyToPlay();
         registerReloadable();
     }
 
-    public Arena(ArenaManager manager, String name, File config) {
-        if (name.length() >= 12 && name.contains(" ") && name.contains(".")) {
-            state = State.ERROR;
-            throw new IllegalArgumentException();
-        }
-        this.name = name;
-        this.config = new ArenaConfig(this, config, ProBending.plugin);
-        this.blueTeam = new ArenaTempTeam(this, BLUE);
-        this.redTeam = new ArenaTempTeam(this, TeamTag.RED);
-        loadFromConfig();
-        activeArena = new ActiveArena(this);
-        manager.registerArena(this);
-        state = State.NOT_COMPLETE;
-        this.joinSign = this.config.getSign("JoinSign", name + "_sign");
-        this.preArena = new PreArena(this);
-        preArena.setEnabled(true);
-        setUpSign();
-        isReadyToPlay();
-        registerReloadable();
+    public ArenaLocationConfig getLocationConfig() {
+        return locationConfig;
     }
 
-    public ArenaConfig getConfig() {
-        return config;
+    public ArenaConfig getArenaConfig() {
+        return arenaConfig;
+    }
+
+    public ArenaCommandConfig getCommandConfig() {
+        return commandConfig;
     }
 
     @Language("Arena.ArenaJoinSign")
@@ -168,15 +159,15 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     private void loadFromConfig() {
         // Center
-        center = config.getCenter();
+        center = locationConfig.getCenter();
 
         // Rollback location
-        rollbackLocation = config.getRollbackLocation();
+        rollbackLocation = locationConfig.getRollbackLocation();
 
         // Ring locations
         for (Ring ring : Ring.values()) {
             if (ring.isTeleportRing()) {
-                ringLocations.put(ring, config.getRingLocation(ring));
+                ringLocations.put(ring, locationConfig.getRingLocation(ring));
             }
         }
 
@@ -184,7 +175,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
         for (TeamTag tag : TeamTag.values()) {
             for (int i = 0; i < 3; i++) {
                 startingLocations.putIfAbsent(tag, new Location[3]);
-                startingLocations.get(tag)[i] = config.getStartingLocations(tag, i + 1);
+                startingLocations.get(tag)[i] = locationConfig.getStartingLocations(tag, i + 1);
             }
         }
     }
@@ -196,7 +187,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
         joinSign.update();
     }
 
-    private boolean isReadyToPlay() {
+    public boolean isReadyToPlay() {
         if (ProBending.configM.getLocationsConfig().getSpawn() == null) {
             ProBending.plugin.log(Level.WARNING, "ProBending spawn is not set!");
             return false;
@@ -206,10 +197,12 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                 ProBending.plugin.log(Level.WARNING, "Arena " + getName() + " center is not set!");
                 return false;
             }
+            /*
             if (rollbackLocation == null) {
                 ProBending.plugin.log(Level.WARNING, "Arena " + getName() + " rollback is not set!");
                 return false;
             }
+             */
             for (Ring ring : Ring.values()) {
                 if (ring.isTeleportRing()) {
                     if (getRingLocation(ring) == null) {
@@ -227,6 +220,9 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                     }
                 }
             }
+            if (!getPreArena().isReady()) {
+                return false;
+            }
             state = State.READY;
             return true;
         } else return state == State.READY;
@@ -234,11 +230,11 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     // ----- START -----
 
-    public void start(GameType type, boolean force) {
-        start(blueTeam, redTeam, type, force);
+    public void start(boolean force) {
+        start(blueTeam, redTeam, force);
     }
 
-    public void start(Team blue, Team red, GameType type, boolean force) {
+    public void start(Team blue, Team red, boolean force) {
         if (state == State.READY) {
             if (isReadyToPlay()) {
                 if (canStart(blue, red, force)) {
@@ -281,7 +277,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
                     preArena.setEnabled(false);
                     preArena.setState(PreArena.State.TAKEN);
-                    activeArena.start(blue, red, type);
+                    activeArena.start(blue, red);
                     red.purgePlayers();
                     blue.purgePlayers();
                     joinSign.update();
@@ -353,8 +349,8 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     public void setCenter(Location location) {
         center = location;
-        config.setCenter(location);
-        config.save();
+        locationConfig.setCenter(location);
+        locationConfig.save();
         isReadyToPlay();
     }
 
@@ -372,8 +368,8 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     public void setRingLocation(Ring ring, Location location) {
         ringLocations.put(ring, location);
-        config.setRingLocation(ring, location);
-        config.save();
+        locationConfig.setRingLocation(ring, location);
+        locationConfig.save();
         isReadyToPlay();
     }
 
@@ -393,8 +389,8 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
     public void setStartingLocations(TeamTag tag, int player, Location location) {
         startingLocations.putIfAbsent(tag, new Location[3]);
         startingLocations.get(tag)[player] = location;
-        config.setStartingLocations(tag, player + 1, location);
-        config.save();
+        locationConfig.setStartingLocations(tag, player + 1, location);
+        locationConfig.save();
         isReadyToPlay();
     }
 
@@ -408,8 +404,8 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     public void setRollbackLocation(Location location) {
         rollbackLocation = location;
-        config.setRollbackLocation(location);
-        config.save();
+        locationConfig.setRollbackLocation(location);
+        locationConfig.save();
         isReadyToPlay();
     }
 
@@ -417,12 +413,20 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     public void setRollback(CommandSender sender, Location min, Location max) {
         setRollbackLocation(min);
-        config.setRollback(sender, min, max);
+        locationConfig.setRollback(sender, min, max);
         isReadyToPlay();
     }
 
     public boolean getRollback(CommandSender sender) {
-        return config.getRollback(sender, rollbackLocation);
+        if (rollbackLocation == null) {
+            return false;
+        }
+        // TODO: MAKE THIS WORK!!!!!!!!!!!!!!!!!!!!
+        if (true) {
+            return false;
+        } else {
+            return locationConfig.getRollback(sender, rollbackLocation);
+        }
     }
 
     // --- Sign ---
@@ -431,25 +435,50 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     public void setSignLocation(Sign sign) {
         joinSign.setSign(sign);
-        config.setSign("JoinSign", joinSign);
-        config.save();
+        locationConfig.setSign("JoinSign", joinSign);
+        locationConfig.save();
     }
 
     // --- Region ---
 
     public void setRegionSelection(Location min, Location max, TeamTag tag) {
         preArena.getRegion(tag).setLocations(min, max);
-        config.setRegion(preArena.getRegion(tag).getPath(), preArena.getRegion(tag));
-        config.save();
+        locationConfig.setRegion(preArena.getRegion(tag).getPath(), preArena.getRegion(tag));
+        locationConfig.save();
     }
 
     public void setRegionCenter(Location center, TeamTag tag) {
         preArena.getRegion(tag).setCenter(center);
-        config.setRegion(preArena.getRegion(tag).getPath(), preArena.getRegion(tag));
-        config.save();
+        locationConfig.setRegion(preArena.getRegion(tag).getPath(), preArena.getRegion(tag));
+        locationConfig.save();
+    }
+
+    public void setRegionRegionCenter(Location center, TeamTag tag) {
+        preArena.getRegion(tag).setRegionCenter(center);
+        locationConfig.setRegion(preArena.getRegion(tag).getPath(), preArena.getRegion(tag));
+        locationConfig.save();
     }
 
     // -------------------------
+
+    public boolean throwIntoGame(Player... playersList) {
+        return throwIntoGame(Arrays.asList(playersList));
+    }
+
+    public boolean throwIntoGame(List<Player> players) {
+        if (getPreArena().getState() == PreArena.State.WAITING && getState().equals(Arena.State.READY)) {
+            PreArena pArena = getPreArena();
+            for (TeamTag tag : TeamTag.values()) {
+                PreArenaTeam pTeam = pArena.getRegion(tag).getTeam();
+                if ((pTeam.getSize() - pTeam.getCurrentSize()) >= players.size()) {
+                    Location c = pArena.getRegion(tag).getRegionCenter();
+                    players.forEach(p -> p.teleport(c));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 
     @Override

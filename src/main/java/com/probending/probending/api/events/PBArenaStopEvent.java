@@ -7,8 +7,6 @@ import org.bukkit.event.HandlerList;
 
 public class PBArenaStopEvent extends PBArenaEvent {
 
-    //TODO: PBArenaStopEvent
-
     private final TeamTag winningTeam;
 
     public PBArenaStopEvent(ActiveArena arena, ArenaState state, TeamTag winningTeam) {

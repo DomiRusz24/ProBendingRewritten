@@ -7,11 +7,15 @@ import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.TeamInvite;
+import com.probending.probending.util.UtilMethods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InviteTeamCommand extends BaseSubCommand {
 
@@ -51,6 +55,14 @@ public class InviteTeamCommand extends BaseSubCommand {
             }
 
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, List<String> args) {
+        if (args.size() == 1) {
+            return UtilMethods.getPossibleCompletions(args, Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList()));
+        }
+        return new ArrayList<>();
     }
 
     @Override

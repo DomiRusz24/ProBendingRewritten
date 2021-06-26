@@ -37,7 +37,7 @@ public class TeamInvite {
     public static String LANG_EXPIRED = "This invite has expired!";
 
     public void accept() {
-        if (time <= System.currentTimeMillis()) {
+        if (time >= System.currentTimeMillis()) {
             team.addPlayer(new PBMember(reciever.getName(), reciever.getUuid()));
             if (sender.isOnline()) {
                 sender.sendMessage(PlaceholderAPI.setPlaceholders(reciever.getOnlinePlayer().getPlayer(), LANG_INVITE_ACCEPT));

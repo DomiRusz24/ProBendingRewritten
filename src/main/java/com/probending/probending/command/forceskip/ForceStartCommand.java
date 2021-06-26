@@ -22,7 +22,9 @@ public class ForceStartCommand extends BaseCommand {
             Player player = (Player) sender;
             MenuPlayer mPlayer = ProBending.playerM.getMenuPlayer(player);
             if (mPlayer != null) {
-                mPlayer.setVoteSkip(true);
+                if (!mPlayer.getVoteSkip()) {
+                    mPlayer.setVoteSkip(true);
+                }
             } else {
                 sender.sendMessage(Command.LANG_FAIL);
             }

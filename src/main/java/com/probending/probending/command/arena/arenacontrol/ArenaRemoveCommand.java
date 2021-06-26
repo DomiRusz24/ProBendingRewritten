@@ -5,13 +5,16 @@ import com.probending.probending.command.abstractclasses.ArenaSubCommand;
 import com.probending.probending.command.abstractclasses.Command;
 import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.Arena;
+import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.team.ArenaTempTeam;
+import com.probending.probending.util.UtilMethods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArenaRemoveCommand extends ArenaSubCommand {
 
@@ -43,6 +46,17 @@ public class ArenaRemoveCommand extends ArenaSubCommand {
                 }
             }
         }
+    }
+
+    @Override
+    public List<String> autoComplete(CommandSender sender, Arena arena, List<String> args) {
+        List<String> complete = new ArrayList<>();
+        if (args.size() == 1) {
+            for (TeamTag tag : TeamTag.values()) {
+                complete.addAll(arena.getTeam(tag).getPlayers().stream().map((p) -> p.getPlayer().getName()).collect(Collectors.toList()));
+;            }
+        }
+        return UtilMethods.getPossibleCompletions(args, complete);
     }
 
     @Override

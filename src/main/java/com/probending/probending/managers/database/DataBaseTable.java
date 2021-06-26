@@ -1,7 +1,6 @@
 package com.probending.probending.managers.database;
 
 import com.probending.probending.managers.database.values.DataBaseValue;
-import javafx.util.Pair;
 import org.bukkit.Bukkit;
 
 import java.sql.Array;
@@ -150,8 +149,6 @@ public abstract class DataBaseTable {
         });
     }
 
-    /*DELETE FROM warehouses WHERE id = ?*/
-
     public void removeIndex(String index) {
         manager.sqlQueue.add(() -> {
             try {
@@ -170,7 +167,7 @@ public abstract class DataBaseTable {
     public void exists(String index, Consumer<Boolean> exists) {
         getIndex(index, (rs) -> {
             try {
-                if (rs.next()) {
+                if (rs != null) {
                     Bukkit.getScheduler().runTask(manager.getPlugin(), () -> exists.accept(true));
                 } else {
                     Bukkit.getScheduler().runTask(manager.getPlugin(), () -> exists.accept(false));

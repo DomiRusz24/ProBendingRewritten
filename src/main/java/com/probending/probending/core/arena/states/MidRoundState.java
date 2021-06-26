@@ -68,10 +68,10 @@ public class MidRoundState extends AbstractArenaHandler {
         }
         if (winningRound != null) {
             for (ActivePlayer player : getArena().getTeam(winningRound).getPlayers(true)) {
-                CommandConfig.Commands.ArenaRoundWinPlayer.run(player.getPlayer());
+                CommandConfig.Commands.ArenaRoundWinPlayer.run(getArena().getArena(), player.getPlayer());
             }
             for (ActivePlayer player : getArena().getTeam(winningRound.getOther()).getPlayers(true)) {
-                CommandConfig.Commands.ArenaRoundLosePlayer.run(player.getPlayer());
+                CommandConfig.Commands.ArenaRoundLosePlayer.run(getArena().getArena(), player.getPlayer());
             }
         }
         type.runFirstStage(this);

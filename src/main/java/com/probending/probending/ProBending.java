@@ -6,12 +6,16 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.probending.probending.managers.*;
 import com.probending.probending.managers.HologramManager;
 import com.probending.probending.managers.database.DataBaseManager;
+import com.probending.probending.managers.nms.NMSManager;
+import com.probending.probending.managers.nms.methods.ChangeItemStackData;
 import com.probending.probending.managers.schematics.EasyRollBackManager;
 import com.probending.probending.managers.schematics.SchematicManager;
+import com.probending.probending.managers.schematics.WorldEditManager;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,7 +28,6 @@ public final class ProBending extends JavaPlugin {
 
     // Dependencies
     public static ProjectKorra projectKorra = null;
-    public static WorldEditPlugin worldEdit = null;
     public static MultiverseCore multiverse = null;
     public static ProtocolManager protocol = null;
 
@@ -43,6 +46,7 @@ public final class ProBending extends JavaPlugin {
     public static HologramManager hologramM;
     public static SignManager signM;
     public static RegionManager regionM;
+    public static CustomItemManager itemM;
 
     @Override
     public void onEnable() {
@@ -73,9 +77,6 @@ public final class ProBending extends JavaPlugin {
 
         // PK
         projectKorra = ProjectKorra.plugin;
-
-        // WorldEdit
-        worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 
         // Protocol
         protocol = ProtocolLibrary.getProtocolManager();
@@ -115,9 +116,19 @@ public final class ProBending extends JavaPlugin {
         SqlM = new DataBaseManager(plugin);
 
         // NMS
-        nmsM = new NMSManager(plugin);
+        nmsM = new NMSManager(plugin, protocol, new ChangeItemStackData() {
+            @Override
+            public ItemStack setData(ItemStack item, byte data) {
+                item.getData().setData(data);
+                return item;
+            }
+        });
+
+        // Items
+        itemM = new CustomItemManager(plugin);
 
         placeHolderM = new PAPIManager(plugin);
+        placeHolderM.register();
 
         // Player
         playerM = new PlayerManager(plugin);
@@ -134,9 +145,14 @@ public final class ProBending extends JavaPlugin {
         // Arena
         arenaM = new ArenaManager(plugin);
 
-        // Schematic
-        schematicM = new EasyRollBackManager(plugin);
-
+        // WorldEdit, FastAsyncWorldEdit
+        if (isHookAble("WorldEdit")) {
+            schematicM = new EasyRollBackManager(this, (WorldEditPlugin) hookInto("WorldEdit"));
+        } else {
+            log(Level.SEVERE, "Your server does not have WorldEdit! Stopping plugin...");
+            shutOffPlugin();
+            return;
+        }
         // ProjectKorra
         projectKorraM = new ProjectKorraManager(plugin);
 
@@ -152,12 +168,16 @@ public final class ProBending extends JavaPlugin {
 
     // Spigot commands
     public void registerCommands() {
-        //TODO: Commands
     }
 
     // onDisable
     public void disable() {
         log(Level.INFO, "ProBending " + plugin.getDescription().getVersion() + " has been disabled!");
+        arenaM.ARENA_BY_NAME.values().forEach((a) -> {
+            if (a.inGame()) {
+                a.getActiveArena().forceUnstableStop();
+            }
+        });
         SqlM.onDisable();
     }
 

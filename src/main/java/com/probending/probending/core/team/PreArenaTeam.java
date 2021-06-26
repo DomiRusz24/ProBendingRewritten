@@ -5,8 +5,6 @@ import com.probending.probending.core.annotations.Language;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.MenuPlayer;
-import com.probending.probending.core.team.AbstractTeam;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityHeadRotation;
 
 public class PreArenaTeam extends AbstractTeam<MenuPlayer> {
 

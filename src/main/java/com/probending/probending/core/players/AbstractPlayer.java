@@ -1,11 +1,10 @@
 package com.probending.probending.core.players;
 
-import com.probending.probending.core.displayable.CustomScoreboard;
+import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.core.interfaces.PlaceholderPlayer;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Scoreboard;
 
 public abstract class AbstractPlayer implements PlaceholderPlayer {
 
@@ -13,7 +12,7 @@ public abstract class AbstractPlayer implements PlaceholderPlayer {
 
     protected final BossBar bossBar;
 
-    protected final CustomScoreboard scoreboard;
+    protected final PBScoreboard scoreboard;
 
     private final ItemStack[] inventory;
 
@@ -65,7 +64,7 @@ public abstract class AbstractPlayer implements PlaceholderPlayer {
         return null;
     }
 
-    protected CustomScoreboard scoreboard() {
+    protected PBScoreboard scoreboard() {
         return null;
     }
 
@@ -73,7 +72,7 @@ public abstract class AbstractPlayer implements PlaceholderPlayer {
         return bossBar;
     }
 
-    public CustomScoreboard getScoreBoard() {
+    public PBScoreboard getScoreBoard() {
         return scoreboard;
     }
 }

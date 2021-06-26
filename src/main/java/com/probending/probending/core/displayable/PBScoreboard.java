@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class CustomScoreboard extends PlayerDisplayable {
+public class PBScoreboard extends PlayerDisplayable {
 
     private String title;
 
@@ -23,7 +23,7 @@ public class CustomScoreboard extends PlayerDisplayable {
 
     private final Scoreboard scoreboard;
 
-    public CustomScoreboard(String name, String title) {
+    public PBScoreboard(String name, String title) {
         this.scoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
         this.name = name;
         this.title = title;
@@ -32,11 +32,11 @@ public class CustomScoreboard extends PlayerDisplayable {
         obj.setDisplayName(this.title);
     }
 
-    public CustomScoreboard(String name, String title, PlaceholderObject... objects) {
+    public PBScoreboard(String name, String title, PlaceholderObject... objects) {
         super(objects);
         this.scoreboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
-        this.name = name;
-        this.title = title;;
+        this.name = name.substring(0, Math.min(name.length(), 16));
+        this.title = title;
         obj = scoreboard.registerNewObjective(this.name, "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName(this.title);
@@ -56,7 +56,7 @@ public class CustomScoreboard extends PlayerDisplayable {
         obj.setDisplayName(title);
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         for (int i = 0; i < values.size(); i++) {
-            obj.getScore(values.get(i)).setScore(i * -1);
+            obj.getScore(values.get(i).substring(0, Math.min(32, values.get(i).length()))).setScore(i * -1);
         }
         for (Player player : getPlayers()) {
             player.setScoreboard(scoreboard);
