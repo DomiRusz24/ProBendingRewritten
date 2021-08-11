@@ -3,8 +3,6 @@ package com.probending.probending.core.arena.states;
 import com.probending.probending.api.events.PBPlayerDamagePBPlayerEvent;
 import com.probending.probending.api.events.PBPlayerKnockOutEvent;
 import com.probending.probending.api.events.PBPlayerUpdateStageEvent;
-import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.config.CommandConfig;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.enums.TeamTag;

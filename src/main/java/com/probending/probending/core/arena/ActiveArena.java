@@ -433,14 +433,14 @@ public class ActiveArena implements PlaceholderObject {
         if (getPlayers(true).contains(player)) {
             UtilMethods.freezePlayer(player.getPlayer(), false);
             if (player.isSpectating()) {
-                player.getPlayer().teleport(ProBending.configM.getLocationsConfig().getSpawn());
+                player.getPlayer().teleport(ProBending.locationConfig.getSpawn());
                 player.getTeam().removePlayer(player);
             } else if (kill) {
                 Player killer = ProBending.playerM.getLastDamager(player.getPlayer());
                 String message;
                 if (killer != null) {
                     message = LANG_KNOCK_OUT.replaceAll("%player%", player.getPlayer().getName()).replaceAll("%killer%", killer.getName());
-                    PBPlayer e = ProBending.playerM.getPlayer(killer);
+                    PBPlayer e = (PBPlayer) ProBending.playerDataM.getPlayer(killer);
                     CommandConfig.Commands.ArenaPlayerKillPlayer.run(getArena(), killer);
                     e.setKills(e.getKills() + 1);
                 } else {
@@ -449,7 +449,7 @@ public class ActiveArena implements PlaceholderObject {
                 sendMessage(message, true);
                 player.setState(ActivePlayer.State.SPECTATING);
             } else {
-                player.getPlayer().teleport(ProBending.configM.getLocationsConfig().getSpawn());
+                player.getPlayer().teleport(ProBending.locationConfig.getSpawn());
                 player.getTeam().removePlayer(player);
                 sendMessage(LANG_LEAVE_GAME.replaceAll("%player%", player.getPlayer().getName()), true);
             }

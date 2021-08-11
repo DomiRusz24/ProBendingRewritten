@@ -8,6 +8,7 @@ import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.MenuPlayer;
 import com.probending.probending.util.UtilMethods;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.domirusz24.plugincore.util.PerTick;
 
 public class PreArena implements PlaceholderObject, PerTick {
 
@@ -25,7 +26,7 @@ public class PreArena implements PlaceholderObject, PerTick {
         this.arena = arena;
         this.blueRegion = arena.getLocationConfig().getRegion("ArenaGetter.Blue", arena.getName() + "_blue", TeamTag.BLUE, this);
         this.redRegion = arena.getLocationConfig().getRegion("ArenaGetter.Red", arena.getName() + "_red", TeamTag.RED, this);
-        PBListener.hookInListener(this);
+        registerPerTick();
     }
 
     public void setEnabled(boolean enabled) {
