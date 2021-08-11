@@ -1,7 +1,8 @@
 package com.probending.probending.command.leave;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.BaseCommand;
+
+import me.domirusz24.plugincore.command.abstractclasses.BaseCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.ActivePlayer;
@@ -10,6 +11,7 @@ import com.probending.probending.core.players.SpectatorPlayer;
 import com.probending.probending.core.team.ArenaTempTeam;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,5 +60,10 @@ public class LeaveCommand extends BaseCommand {
     @Override
     protected List<String> aliases() {
         return Arrays.asList("quit");
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.TRUE;
     }
 }

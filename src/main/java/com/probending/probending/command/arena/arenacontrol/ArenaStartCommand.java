@@ -2,7 +2,7 @@ package com.probending.probending.command.arena.arenacontrol;
 
 
 import com.probending.probending.command.ArenaSubCommand;
-import me.domirusz24.plugincore.command.Languages;
+import com.probending.probending.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.util.UtilMethods;

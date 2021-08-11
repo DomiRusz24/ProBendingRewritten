@@ -1,13 +1,13 @@
 package com.probending.probending.config.arena;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.config.configvalue.ConfigLocation;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.arena.SpectateGetterRegion;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
+import me.domirusz24.plugincore.config.configvalue.ConfigLocation;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
@@ -84,14 +84,14 @@ public class ArenaLocationConfig extends AbstractArenaConfig {
     // --- Rollback ---
 
     public void setRollback(CommandSender sender, Location min, Location max) {
-        ProBending.schematicM.saveSchematic(sender, min, max, getFile().getParentFile(), "rollback");
+        ProBending.worldEditM.saveSchematic(sender, min, max, getFile().getParentFile(), "rollback");
     }
 
     public boolean getRollback(CommandSender sender, Location location) {
         if (location == null) {
             return false;
         }
-        return ProBending.schematicM.getSchematic(sender, location, getFile().getParentFile(), "rollback");
+        return ProBending.worldEditM.getSchematic(sender, location, getFile().getParentFile(), "rollback");
     }
 
     // --- Name ---

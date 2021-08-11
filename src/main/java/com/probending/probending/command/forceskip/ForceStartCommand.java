@@ -1,12 +1,14 @@
 package com.probending.probending.command.forceskip;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.BaseCommand;
-import com.probending.probending.command.abstractclasses.Command;
+
+import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.command.abstractclasses.BaseCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.MenuPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,5 +51,10 @@ public class ForceStartCommand extends BaseCommand {
     @Override
     protected String description() {
         return LANG_DESCRIPTION;
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.TRUE;
     }
 }

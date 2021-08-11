@@ -1,13 +1,13 @@
 package com.probending.probending.command.base.probending;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.ArenaSubCommand;
-import com.probending.probending.command.abstractclasses.BaseSubCommand;
-import com.probending.probending.command.abstractclasses.Command;
+import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.command.abstractclasses.BaseSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class SetSpawnCommand extends BaseSubCommand {
     protected void execute(CommandSender sender, List<String> args) {
         if (isPlayer(sender)) {
             if (correctLength(sender, args.size(), 0, 0)) {
-                ProBending.configM.getLocationsConfig().setSpawn(((Player) sender).getLocation());
+                ProBending.locationConfig.setSpawn(((Player) sender).getLocation());
                 sender.sendMessage(Languages.SUCCESS);
             }
         }
@@ -45,5 +45,10 @@ public class SetSpawnCommand extends BaseSubCommand {
     @Override
     public List<String> autoComplete(CommandSender sender, List<String> args) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 }

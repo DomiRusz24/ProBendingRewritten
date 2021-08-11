@@ -5,7 +5,7 @@ import com.probending.probending.ProBending;
 import com.probending.probending.command.ArenaSubCommand;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.players.SpectatorPlayer;
-import me.domirusz24.plugincore.command.Languages;
+import com.probending.probending.command.Languages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;

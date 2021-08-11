@@ -2,6 +2,7 @@ package com.probending.probending;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.probending.probending.config.CommandConfig;
 import com.probending.probending.config.PluginConfig;
 import com.probending.probending.config.PluginLocationsConfig;
 import com.probending.probending.core.players.PBPlayer;
@@ -41,6 +42,7 @@ public final class ProBending extends PluginCore {
 
     public static PluginLocationsConfig locationConfig;
     public static PluginConfig pluginConfig;
+    public static CommandConfig commandConfig;
 
     // onEnable
     @Override
@@ -93,6 +95,7 @@ public final class ProBending extends PluginCore {
     protected void loadConfigs() {
         locationConfig = new PluginLocationsConfig("locations.yml", plugin, configM);
         pluginConfig = new PluginConfig();
+        commandConfig = new CommandConfig("commands.yml", plugin, configM);
     }
 
     @Override

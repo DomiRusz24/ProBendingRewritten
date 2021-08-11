@@ -48,7 +48,7 @@ public class TeamPlayGUI extends CustomGUI {
             }
             update = true;
             if (!team.throwIntoGame(players)) {
-                players.forEach((p) -> p.sendMessage(TeamPlayLanguages.NO_ARENAS));
+                players.forEach((p) -> p.sendMessage(TeamPlayCommand.LANG_NO_ARENAS));
             }
         }
     }

@@ -3,6 +3,7 @@ package com.probending.probending.config.arena;
 import com.probending.probending.ProBending;
 import com.probending.probending.core.arena.Arena;
 import me.domirusz24.plugincore.config.AbstractConfig;
+import me.domirusz24.plugincore.managers.ConfigManager;
 
 import java.io.File;
 

@@ -1,11 +1,12 @@
 package com.probending.probending.command.pbteam.pbteam;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.BaseSubCommand;
+import me.domirusz24.plugincore.command.abstractclasses.BaseSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
@@ -27,11 +28,11 @@ public class CreateTeamCommand extends BaseSubCommand {
             String name = args.get(0);
             PBPlayer player = PBPlayer.of((Player) sender);
             if (player.getTeam() == null) {
-                ProBending.SqlM.teamTable.exists(name, (bool) -> {
+                ProBending.teamTable.exists(name, (bool) -> {
                     if (bool) {
                         sender.sendMessage(LANG_ALREADY_EXIST.replaceAll("%team%", name));
                     } else {
-                        ProBending.SqlM.teamTable.createTeam((Player) sender, name, (team) -> {
+                        ProBending.teamTable.createTeam((Player) sender, name, (team) -> {
                             sender.sendMessage(LANG_CREATED.replaceAll("%team%", team.getName()));
                         });
 
@@ -61,5 +62,10 @@ public class CreateTeamCommand extends BaseSubCommand {
     @Override
     protected String description() {
         return LANG_DESCRIPTION;
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.TRUE;
     }
 }

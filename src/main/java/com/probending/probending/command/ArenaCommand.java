@@ -3,9 +3,13 @@ package com.probending.probending.command;
 import com.probending.probending.ProBending;
 import com.probending.probending.core.arena.Arena;
 import me.domirusz24.plugincore.command.abstractclasses.AbstractCommand;
+import me.domirusz24.plugincore.command.abstractclasses.Command;
+import me.domirusz24.plugincore.util.UtilMethods;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class ArenaCommand extends AbstractCommand<ArenaSubCommand> {
 

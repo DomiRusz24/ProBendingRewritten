@@ -1,14 +1,14 @@
 package com.probending.probending.command.pblevel;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.BaseCommand;
-import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.command.abstractclasses.PlayerCommand;
+import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.command.abstractclasses.PlayerCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.managers.PAPIManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +24,7 @@ public class PBLevelCommand extends PlayerCommand {
     @Override
     public void selfExecute(CommandSender sender) {
         if (isPlayer(sender) && hasPermission(sender)) {
-            PBPlayer player = ProBending.playerM.getPlayer((Player) sender);
+            PBPlayer player = (PBPlayer) ProBending.playerDataM.getPlayer((Player) sender);
             sender.sendMessage(PAPIManager.setPlaceholders(player, LANG_INFORMATION));
         }
     }
@@ -40,6 +40,11 @@ public class PBLevelCommand extends PlayerCommand {
     }
 
     @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.TRUE;
+    }
+
+    @Override
     protected String usage() {
         return "/pblevel ";
     }
@@ -51,7 +56,7 @@ public class PBLevelCommand extends PlayerCommand {
 
     @Override
     public void selfExecute(CommandSender sender, Player player) {
-        PBPlayer p = ProBending.playerM.getPlayer(player);
+        PBPlayer p = (PBPlayer) ProBending.playerDataM.getPlayer(player);
         sender.sendMessage(PAPIManager.setPlaceholders(p, LANG_INFORMATION));
     }
 

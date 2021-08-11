@@ -1,6 +1,6 @@
 package com.probending.probending.core.team;
 
-import me.domirusz24.plugincore.command.Languages;
+import com.probending.probending.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.PBMember;

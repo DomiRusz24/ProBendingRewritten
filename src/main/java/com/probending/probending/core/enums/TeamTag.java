@@ -1,6 +1,6 @@
 package com.probending.probending.core.enums;
 
-import com.probending.probending.command.abstractclasses.Command;
+import com.probending.probending.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import org.bukkit.boss.BarColor;
 

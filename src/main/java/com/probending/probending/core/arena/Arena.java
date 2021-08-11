@@ -5,7 +5,7 @@ import com.probending.probending.api.events.PBArenaStartEvent;
 import com.probending.probending.config.arena.ArenaCommandConfig;
 import com.probending.probending.config.arena.ArenaConfig;
 import com.probending.probending.config.arena.ArenaLocationConfig;
-import me.domirusz24.plugincore.command.Languages;
+import com.probending.probending.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.enums.Ring;

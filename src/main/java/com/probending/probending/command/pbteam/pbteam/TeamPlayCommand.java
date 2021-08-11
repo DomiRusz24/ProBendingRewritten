@@ -1,14 +1,14 @@
 package com.probending.probending.command.pbteam.pbteam;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.BaseSubCommand;
-import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.command.arena.arenacontrol.ArenaAddCommand;
+import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.command.abstractclasses.BaseSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.PBTeam;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class TeamPlayCommand extends BaseSubCommand {
                     sender.sendMessage(Languages.PLAYER_IN_GAME);
                 }
             } else {
-                sender.sendMessage(InviteTeamLanguages.NOT_IN_TEAM);
+                sender.sendMessage(InviteTeamCommand.LANG_NOT_IN_TEAM);
             }
         }
     }
@@ -57,5 +57,10 @@ public class TeamPlayCommand extends BaseSubCommand {
     @Override
     protected String description() {
         return LANG_DESCRIPTION;
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.TRUE;
     }
 }

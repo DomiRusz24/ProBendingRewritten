@@ -1,9 +1,10 @@
 package com.probending.probending.command.base;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.BaseCommand;
+import me.domirusz24.plugincore.command.abstractclasses.BaseCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,5 +40,10 @@ public class ProBendingCommand extends BaseCommand {
     @Override
     protected List<String> aliases() {
         return Arrays.asList("pb", "probend");
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return PermissionDefault.TRUE;
     }
 }

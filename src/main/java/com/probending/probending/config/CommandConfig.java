@@ -2,9 +2,11 @@ package com.probending.probending.config;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.core.arena.Arena;
+import me.domirusz24.plugincore.config.AbstractConfig;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.managers.PAPIManager;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.domirusz24.plugincore.managers.ConfigManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -100,7 +102,7 @@ public class CommandConfig extends AbstractConfig {
         }
 
         public void reload() {
-            reload(ProBending.configM.getCommandConfig());
+            reload(ProBending.commandConfig);
         }
 
         public void run(YamlConfiguration file, Arena arena, Player... players) {
@@ -137,15 +139,15 @@ public class CommandConfig extends AbstractConfig {
         }
 
         public void run(Arena arena, Player... players) {
-            run(ProBending.configM.getCommandConfig(), arena, players);
+            run(ProBending.commandConfig, arena, players);
         }
 
         public void run(Arena arena, PlaceholderObject... object) {
-            run(ProBending.configM.getCommandConfig(), arena, object);
+            run(ProBending.commandConfig, arena, object);
         }
 
         public void run(Arena arena) {
-            run(ProBending.configM.getCommandConfig(), arena, arena);
+            run(ProBending.commandConfig, arena, arena);
         }
     }
 
