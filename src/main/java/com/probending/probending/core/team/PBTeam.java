@@ -81,8 +81,8 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     public List<PBPlayer> getPBPlayers() {
         return getPlayers().stream().map((t) -> {
-            if (ProBending.playerM.getPlayer(t.getUuid()) != null) {
-                return ProBending.playerM.getPlayer(t.getUuid());
+            if (ProBending.playerDataM.getPlayer(t.getPlayer().getPlayer()) != null) {
+                return (PBPlayer) ProBending.playerDataM.getPlayer(t.getPlayer().getPlayer());
             } else {
                 return null;
             }

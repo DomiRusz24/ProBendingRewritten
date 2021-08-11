@@ -2,6 +2,7 @@ package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
 import me.domirusz24.plugincore.attributes.AttributeAble;
+import me.domirusz24.plugincore.attributes.PlayerAttribute;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.TeamInvite;
@@ -51,20 +52,13 @@ public class PBPlayer extends PlayerData implements PlaceholderObject {
     // ----------
 
     public static PBPlayer of(Player player) {
-        return ProBending.playerM.getPlayer(player);
-    }
-
-    public static PBPlayer of(UUID uuid) {
-        return ProBending.playerM.getPlayer(uuid);
-    }
-
-    public static PBPlayer of(String name) {
-        return ProBending.playerM.getPlayer(name);
+        return (PBPlayer) ProBending.playerDataM.getPlayer(player);
     }
 
     // ----------
 
     public void setLost(int lost) {
+        getAttribute(PlayerAttribute.SQL).setIntegerValue();
         this.lost = lost;
         ProBending.SqlM.playerTable.setIntegerField(uuid, ProBending.SqlM.playerTable.LOST, lost);
     }
