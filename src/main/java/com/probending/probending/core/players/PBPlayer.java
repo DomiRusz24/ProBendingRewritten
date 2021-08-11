@@ -1,25 +1,25 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.annotations.Language;
-import com.probending.probending.core.interfaces.PlaceholderObject;
+import me.domirusz24.plugincore.attributes.AttributeAble;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.TeamInvite;
 import com.probending.probending.managers.PAPIManager;
 import com.probending.probending.managers.database.DataBaseManager;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
+import me.domirusz24.plugincore.core.players.PlayerData;
+import me.domirusz24.plugincore.managers.database.DataBaseTable;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PBPlayer implements PlaceholderObject {
+public class PBPlayer extends PlayerData implements PlaceholderObject {
 
     // Player used for outside of game, just data.
-
-    private final String uuid;
-    private final String name;
 
     private int wins;
     private int lost;
@@ -29,15 +29,23 @@ public class PBPlayer implements PlaceholderObject {
 
     private TeamInvite invite;
 
-    public PBPlayer(String uuid, String name, int wins, int lost, int kills, int ties, String team) {
-        this.uuid = uuid;
-        this.name = name;
-        this.wins = wins;
-        this.lost = lost;
-        this.kills = kills;
-        this.ties = ties;
-        this.team = team;
-        ProBending.playerM.addPBPlayer(this);
+    public PBPlayer(String name, UUID uuid) {
+        super(name, uuid);
+    }
+
+    @Override
+    protected void onSqlLoad() {
+
+    }
+
+    @Override
+    protected void onPlayerJoin() {
+
+    }
+
+    @Override
+    public DataBaseTable getTable() {
+        return null;
     }
 
     // ----------
@@ -52,16 +60,6 @@ public class PBPlayer implements PlaceholderObject {
 
     public static PBPlayer of(String name) {
         return ProBending.playerM.getPlayer(name);
-    }
-
-    // ----------
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 
     // ----------

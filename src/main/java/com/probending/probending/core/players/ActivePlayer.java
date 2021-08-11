@@ -1,15 +1,15 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
-import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
+import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
@@ -55,7 +55,7 @@ public class ActivePlayer extends AbstractPlayer {
         this.startingGameMode = player.getGameMode();
         this.ring = teamTag == TeamTag.BLUE ? Ring.BLUE_FIRST : Ring.RED_FIRST;
         bPlayer = BendingPlayer.getBendingPlayer(player);
-        playerData = ProBending.playerM.getPlayer(player.getUniqueId());
+        playerData = (PBPlayer) ProBending.playerDataM.getPlayer(player);
         hasBeenHit = false;
         if (element == null) {
             prefix = ChatColor.GRAY + "N";

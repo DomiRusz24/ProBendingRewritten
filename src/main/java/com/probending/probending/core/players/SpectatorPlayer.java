@@ -1,10 +1,11 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
-import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.core.displayable.CustomScoreboard;
+import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class SpectatorPlayer extends AbstractPlayer {
         this.startingLocation = startingLocation;
         this.startingGameMode = startingGameMode;
         this.isFlying = player.getAllowFlight();
-        ProBending.nmsM.setToSpectator(player);
+        player.setGameMode(GameMode.SPECTATOR);
         this.arena = arena;
         arena.addSpectator(this);
         player.teleport(arena.getArena().getCenter());
@@ -49,7 +50,7 @@ public class SpectatorPlayer extends AbstractPlayer {
     protected void onUnregister() {
         if (startingGameMode != null) {
             player.teleport(startingLocation);
-            ProBending.nmsM.setGameMode(player, startingGameMode);
+            player.setGameMode(startingGameMode);
             player.setAllowFlight(isFlying);
         }
         arena.removeSpectator(this);
@@ -69,9 +70,9 @@ public class SpectatorPlayer extends AbstractPlayer {
     public static String LANG_SCOREBOARD = "%arena_name%||--------------- ||Round: %arena_round%||Time left: %arena_r_time% min||---------------";
 
     @Override
-    protected PBScoreboard scoreboard() {
+    protected CustomScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        PBScoreboard board = new PBScoreboard("spec_" + getPlayer().getName(), scoreboard[0], this, getArena());
+        CustomScoreboard board = new CustomScoreboard("spec_" + getPlayer().getName(), scoreboard[0], this, getArena());
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

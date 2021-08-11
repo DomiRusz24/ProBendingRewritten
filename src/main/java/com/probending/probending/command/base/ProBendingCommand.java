@@ -2,7 +2,7 @@ package com.probending.probending.command.base;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.abstractclasses.BaseCommand;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;

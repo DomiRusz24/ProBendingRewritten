@@ -1,7 +1,6 @@
 package com.probending.probending.config;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.managers.ConfigManager;
 
 import java.io.File;
 

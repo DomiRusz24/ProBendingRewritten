@@ -1,7 +1,7 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.interfaces.PlaceholderObject;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;

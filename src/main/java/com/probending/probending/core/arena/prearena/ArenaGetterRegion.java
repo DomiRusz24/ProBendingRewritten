@@ -1,19 +1,14 @@
 package com.probending.probending.core.arena.prearena;
 
-import com.probending.probending.PBListener;
-import com.probending.probending.core.PBRegion;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
-import com.probending.probending.core.interfaces.PlaceholderObject;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.MenuPlayer;
-import com.probending.probending.core.players.PBPlayerWrapper;
 import com.probending.probending.core.team.PreArenaTeam;
-import com.probending.probending.util.PerTick;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ArenaGetterRegion extends PBRegion {

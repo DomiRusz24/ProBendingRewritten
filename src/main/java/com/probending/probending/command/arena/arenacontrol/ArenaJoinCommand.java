@@ -3,19 +3,15 @@ package com.probending.probending.command.arena.arenacontrol;
 import com.probending.probending.ProBending;
 import com.probending.probending.command.abstractclasses.ArenaSubCommand;
 import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
-import com.probending.probending.core.team.AbstractTeam;
 import com.probending.probending.util.UtilMethods;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ArenaJoinCommand extends ArenaSubCommand {
 

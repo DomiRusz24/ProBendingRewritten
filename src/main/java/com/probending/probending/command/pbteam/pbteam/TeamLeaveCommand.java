@@ -2,7 +2,7 @@ package com.probending.probending.command.pbteam.pbteam;
 
 import com.probending.probending.command.abstractclasses.BaseSubCommand;
 import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.PBTeam;
 import org.bukkit.command.CommandSender;

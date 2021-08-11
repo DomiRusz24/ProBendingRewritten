@@ -1,23 +1,18 @@
 package com.probending.probending.core.team;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
-import com.probending.probending.core.arena.prearena.PreArena;
-import com.probending.probending.core.enums.TeamTag;
-import com.probending.probending.core.gui.guis.TeamPlayGUI;
+import com.probending.probending.core.gui.TeamPlayGUI;
 import com.probending.probending.core.players.PBMember;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.players.PBPlayerWrapper;
-import com.probending.probending.managers.database.TeamDataTable;
+import me.domirusz24.plugincore.core.team.AbstractTeam;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.probending.probending.ProBending.SqlM;

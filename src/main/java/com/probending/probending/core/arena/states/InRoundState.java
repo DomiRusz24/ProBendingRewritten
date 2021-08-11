@@ -10,7 +10,7 @@ import com.probending.probending.core.arena.states.midroundstate.GameEnd;
 import com.probending.probending.core.arena.states.midroundstate.RoundEnd;
 import com.probending.probending.core.arena.states.midroundstate.TieBreakerStart;
 import com.probending.probending.core.players.ActivePlayer;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.enums.ArenaState;
 import com.probending.probending.core.enums.TeamTag;

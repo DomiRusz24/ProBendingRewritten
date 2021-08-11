@@ -1,79 +1,44 @@
 package com.probending.probending;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.managers.*;
-import com.probending.probending.managers.HologramManager;
-import com.probending.probending.managers.database.DataBaseManager;
-import com.probending.probending.managers.nms.NMSManager;
-import com.probending.probending.managers.nms.methods.ChangeItemStackData;
-import com.probending.probending.managers.schematics.EasyRollBackManager;
-import com.probending.probending.managers.schematics.SchematicManager;
-import com.probending.probending.managers.schematics.WorldEditManager;
 import com.projectkorra.projectkorra.ProjectKorra;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import me.domirusz24.plugincore.PluginCore;
+import me.domirusz24.plugincore.core.players.PlayerData;
+import me.domirusz24.plugincore.managers.PAPIManager;
+import me.domirusz24.plugincore.managers.database.DataBaseTable;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Level;
+import java.util.UUID;
 
-public final class ProBending extends JavaPlugin {
+public final class ProBending extends PluginCore {
 
     // Plugin
     public static ProBending plugin;
 
     // Dependencies
     public static ProjectKorra projectKorra = null;
-    public static MultiverseCore multiverse = null;
-    public static ProtocolManager protocol = null;
 
 
     // Managers
-    public static DataBaseManager SqlM;
-    public static ConfigManager configM;
     public static PlayerManager playerM;
     public static TeamManager teamM;
     public static ArenaManager arenaM;
-    public static SchematicManager schematicM;
     public static ProjectKorraManager projectKorraM;
-    public static CommandManager commandM;
-    public static PAPIManager placeHolderM;
-    public static NMSManager nmsM;
-    public static HologramManager hologramM;
-    public static SignManager signM;
-    public static RegionManager regionM;
     public static CustomItemManager itemM;
 
-    @Override
-    public void onEnable() {
-        initialize();
-
-        loadDependencies();
-        loadManagers();
-
-        registerEvents();
-
-        registerCommands();
-    }
-
-    @Override
-    public void onDisable() {
-        disable();
-    }
-
     // onEnable
-    public void initialize() {
+    @Override
+    public void _initialize() {
         plugin = this;
-        log(Level.INFO, "ProBending " + plugin.getDescription().getVersion() + " has been loaded!");
     }
 
 
     // Plugin dependencies, everything external.
-    public void loadDependencies() {
+    @Override
+    public void _loadDependencies() {
 
         // PK
         projectKorra = ProjectKorra.plugin;
@@ -84,51 +49,44 @@ public final class ProBending extends JavaPlugin {
         // Multiverse
         multiverse = (MultiverseCore) hookInto("Multiverse-Core");
 
+    }
 
-        // Holograms
+    @Override
+    protected String databasePrefix() {
+        return "pb";
+    }
 
+    @Override
+    public String packageName() {
+        return "com.probending.probending";
+    }
 
+    @Override
+    public DataBaseTable[] getTables() {
+        return new DataBaseTable[0];
+    }
+
+    @Override
+    protected PAPIManager papiManager() {
+        return new com.probending.probending.managers.PAPIManager(this);
+    }
+
+    @Override
+    protected void loadConfigs() {
 
     }
 
-    private Plugin hookInto(String pluginName) {
-        Plugin jPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
-        if (jPlugin != null) {
-            log(Level.INFO, "Hooked into " + pluginName + "!");
-            return jPlugin;
-        } else {
-            return null;
-        }
-    }
+    @Override
+    public void sqlLoad() {
 
-    private boolean isHookAble(String pluginName) {
-        return Bukkit.getPluginManager().isPluginEnabled(pluginName);
     }
-
 
     // Managers that ease the use of Core classes and dependencies.
-    public void loadManagers() {
-
-        // Config
-        configM = new ConfigManager(plugin);
-
-        // SQL
-        SqlM = new DataBaseManager(plugin);
-
-        // NMS
-        nmsM = new NMSManager(plugin, protocol, new ChangeItemStackData() {
-            @Override
-            public ItemStack setData(ItemStack item, byte data) {
-                item.getData().setData(data);
-                return item;
-            }
-        });
+    @Override
+    public void _loadManagers() {
 
         // Items
         itemM = new CustomItemManager(plugin);
-
-        placeHolderM = new PAPIManager(plugin);
-        placeHolderM.register();
 
         // Player
         playerM = new PlayerManager(plugin);
@@ -136,35 +94,22 @@ public final class ProBending extends JavaPlugin {
         // Team
         teamM = new TeamManager(plugin);
 
-        signM = new SignManager(plugin);
-
-        hologramM = new HologramManager(plugin);
-
-        regionM = new RegionManager(plugin);
-
         // Arena
         arenaM = new ArenaManager(plugin);
 
-        // WorldEdit, FastAsyncWorldEdit
-        if (isHookAble("FastAsyncWorldEdit")) {
-            schematicM = new WorldEditManager(this, (WorldEditPlugin) hookInto("FastAsyncWorldEdit"));
-        } else if (isHookAble("WorldEdit")) {
-            schematicM = new WorldEditManager(this, (WorldEditPlugin) hookInto("WorldEdit"));
-        } else {
-            log(Level.SEVERE, "Your server does not have WorldEdit nor FAWE! Stopping plugin...");
-            shutOffPlugin();
-            return;
-        }
         // ProjectKorra
         projectKorraM = new ProjectKorraManager(plugin);
 
-        // Command
-        commandM = new CommandManager(plugin);
+    }
+
+    @Override
+    protected void _loadCommands() {
 
     }
 
     // Spigot events
-    public void registerEvents() {
+    @Override
+    public void _registerEvents() {
         Bukkit.getPluginManager().registerEvents(new PBListener(), this);
     }
 
@@ -173,8 +118,8 @@ public final class ProBending extends JavaPlugin {
     }
 
     // onDisable
-    public void disable() {
-        log(Level.INFO, "ProBending " + plugin.getDescription().getVersion() + " has been disabled!");
+    @Override
+    public void _disable() {
         arenaM.ARENA_BY_NAME.values().forEach((a) -> {
             if (a.inGame()) {
                 a.getActiveArena().forceUnstableStop();
@@ -183,30 +128,13 @@ public final class ProBending extends JavaPlugin {
         SqlM.onDisable();
     }
 
-    // Use this for printing out info to the console.
-    public void log(Level level, String msg) {
-        this.getLogger().log(level, msg);
-    }
-
-    // Use this when something critical to the functioning of the plugin isn't working.
-    public void shutOffPlugin() {
-        log(Level.SEVERE, "The plugin has been disabled due to a critical error!");
-        setEnabled(false);
-    }
-
-    // Config stuff
     @Override
-    public YamlConfiguration getConfig() {
-        return configM.getConfig();
+    protected void _shutOffPlugin() {
+
     }
 
     @Override
-    public void saveConfig() {
-        configM.getConfig().save();
-    }
-
-    @Override
-    public void reloadConfig() {
-        configM.getConfig().reload();
+    public PlayerData registerPlayer(String s, UUID uuid) {
+        return new PBPlayer(s, uuid);
     }
 }

@@ -1,22 +1,20 @@
-package com.probending.probending.core.gui.guis;
+package com.probending.probending.core.gui;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.pbteam.pbteam.TeamPlayCommand;
-import com.probending.probending.core.annotations.Language;
-import com.probending.probending.core.gui.PBGUI;
 import com.probending.probending.core.team.PBTeam;
-import com.probending.probending.managers.PAPIManager;
-import me.clip.placeholderapi.PlaceholderAPI;
+import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.config.annotations.Language;
+import me.domirusz24.plugincore.core.gui.CustomGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TeamPlayGUI extends PBGUI {
+public class TeamPlayGUI extends CustomGUI {
 
     @Language("GUIS.TeamPlay.Title")
     public static String LANG_TITLE = "&cTeam play";
@@ -30,22 +28,33 @@ public class TeamPlayGUI extends PBGUI {
     public TeamPlayGUI(PBTeam team) {
         super(LANG_TITLE, 9);
         this.team = team;
-        setUp();
-    }
-
-    private void setUp() {
-        refresh();
+        clearItems();
     }
 
     private boolean isReady = false;
 
     @Override
     public void refresh() {
-
-        for (int i = 0; i < 3; i++) {
-            getItem((i + 1) * 2).setItem(PBGUI.EMPTY);
+        super.refresh();
+        if (isReady) {
+            List<Player> players = team.getBukkitPlayers().stream()
+                    .filter((player) ->
+                            ProBending.playerM.getActivePlayer(player) == null
+                                    && ProBending.teamM.getTempTeam(player) == null)
+                    .collect(Collectors.toList());
+            update = false;
+            for (Player player : players) {
+                this.leave(player);
+            }
+            update = true;
+            if (!team.throwIntoGame(players)) {
+                players.forEach((p) -> p.sendMessage(TeamPlayCommand.LANG_NO_ARENAS));
+            }
         }
+    }
 
+    @Override
+    public void onUpdate() {
         List<Player> players = team.getBukkitPlayers().stream()
                 .filter((player) ->
                         ProBending.playerM.getActivePlayer(player) == null
@@ -71,20 +80,16 @@ public class TeamPlayGUI extends PBGUI {
         }
 
         isReady = ready;
-        super.refresh();
-        if (isReady) {
-            players.forEach(this::removePlayer);
-            if (!team.throwIntoGame(players)) {
-                players.forEach((p) -> p.sendMessage(TeamPlayCommand.LANG_NO_ARENAS));
-            }
+    }
+
+    @Override
+    protected void onClear() {
+        for (int i = 0; i < 3; i++) {
+            getItem((i + 1) * 2).makeEmpty().setMaterial(Material.GRAY_STAINED_GLASS_PANE);
         }
-
-
-
     }
 
     public boolean isReady() {
-        refresh();
         return isReady;
     }
 
@@ -98,9 +103,11 @@ public class TeamPlayGUI extends PBGUI {
         firstOpen(player);
     }
 
+    private boolean update = true;
+
     @Override
     protected void close(Player player) {
-        refresh();
+        if (update) refresh();
     }
 
     @Override
@@ -110,6 +117,6 @@ public class TeamPlayGUI extends PBGUI {
 
     @Override
     protected ItemStack emptySlot() {
-        return PBGUI.EMPTY;
+        return UtilMethods.createItem(Material.GRAY_STAINED_GLASS_PANE, (byte) 0, "",  false, "");
     }
 }

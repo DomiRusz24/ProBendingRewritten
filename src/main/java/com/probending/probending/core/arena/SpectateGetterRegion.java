@@ -2,7 +2,6 @@ package com.probending.probending.core.arena;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.config.configvalue.ConfigLocation;
-import com.probending.probending.core.PBRegion;
 import com.probending.probending.core.players.SpectatorPlayer;
 import org.bukkit.entity.Player;
 

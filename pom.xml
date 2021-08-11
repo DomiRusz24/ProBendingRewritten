@@ -132,5 +132,11 @@
             <version>1.17-23</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>me.domirusz24.plugincore</groupId>
+            <artifactId>PluginCore-PH</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -3,10 +3,11 @@ package com.probending.probending.core.team;
 import com.probending.probending.ProBending;
 import com.probending.probending.config.CommandConfig;
 import com.probending.probending.core.players.ActivePlayer;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
+import me.domirusz24.plugincore.core.team.AbstractTeam;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

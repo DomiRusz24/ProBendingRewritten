@@ -1,7 +1,7 @@
 package com.probending.probending.command.arena;
 
 import com.probending.probending.command.abstractclasses.ArenaCommand;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.managers.PAPIManager;
 import org.bukkit.command.CommandSender;

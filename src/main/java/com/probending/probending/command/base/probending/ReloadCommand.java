@@ -3,8 +3,7 @@ package com.probending.probending.command.base.probending;
 import com.probending.probending.ProBending;
 import com.probending.probending.command.abstractclasses.BaseSubCommand;
 import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.core.annotations.Language;
-import com.probending.probending.managers.ConfigManager;
+import me.domirusz24.plugincore.config.annotations.Language;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;

@@ -2,7 +2,7 @@ package com.probending.probending.command.leave;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.abstractclasses.BaseCommand;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.ActivePlayer;
 import com.probending.probending.core.players.MenuPlayer;

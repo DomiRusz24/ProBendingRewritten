@@ -2,14 +2,12 @@ package com.probending.probending.config;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.core.arena.Arena;
-import com.probending.probending.core.interfaces.PlaceholderObject;
-import com.probending.probending.managers.ConfigManager;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.managers.PAPIManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

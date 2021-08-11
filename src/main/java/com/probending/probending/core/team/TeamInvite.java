@@ -1,12 +1,13 @@
 package com.probending.probending.core.team;
 
 import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.core.annotations.Language;
-import com.probending.probending.core.interfaces.PlaceholderObject;
+import me.domirusz24.plugincore.config.annotations.Language;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.PBMember;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.managers.PAPIManager;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.domirusz24.plugincore.core.team.AbstractTeam;
 import org.bukkit.entity.Player;
 
 public class TeamInvite {

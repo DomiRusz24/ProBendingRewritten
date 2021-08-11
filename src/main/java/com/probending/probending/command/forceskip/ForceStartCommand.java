@@ -3,7 +3,7 @@ package com.probending.probending.command.forceskip;
 import com.probending.probending.ProBending;
 import com.probending.probending.command.abstractclasses.BaseCommand;
 import com.probending.probending.command.abstractclasses.Command;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.MenuPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

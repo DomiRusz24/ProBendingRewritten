@@ -1,15 +1,13 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.annotations.Language;
-import com.probending.probending.core.displayable.PBItemStack;
-import com.probending.probending.core.gui.PBGUI;
-import com.probending.probending.core.gui.guis.TeamPlayGUI;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.util.UtilMethods;
-import org.bukkit.Bukkit;
+import me.domirusz24.plugincore.core.displayable.ClickableItemStack;
+import me.domirusz24.plugincore.managers.ConfigManager;
+import me.domirusz24.plugincore.managers.Manager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
@@ -17,13 +15,13 @@ import org.bukkit.potion.PotionType;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomItemManager extends PBManager implements ConfigManager.Reloadable {
+public class CustomItemManager extends Manager implements ConfigManager.Reloadable {
 
-    private final HashSet<PBItemStack> CUSTOM_ITEMS = new HashSet<>();
+    private final HashSet<ClickableItemStack> CUSTOM_ITEMS = new HashSet<>();
 
-    private PBItemStack LEAVE_COMMAND;
+    private ClickableItemStack LEAVE_COMMAND;
 
-    private PBItemStack WATER_BOTTLE;
+    private ClickableItemStack WATER_BOTTLE;
 
     public CustomItemManager(ProBending plugin) {
         super(plugin);
@@ -37,16 +35,16 @@ public class CustomItemManager extends PBManager implements ConfigManager.Reload
     @Language("Item.Leave.Desc")
     public static String LANG_LEAVE_DESC = "Click here to leave!";
 
-    public Set<PBItemStack> getCustomItems() {
+    public Set<ClickableItemStack> getCustomItems() {
         return CUSTOM_ITEMS;
     }
 
-    public void registerItem(PBItemStack item) {
+    public void registerItem(ClickableItemStack item) {
         CUSTOM_ITEMS.add(item);
     }
 
     private void loadItems() {
-        LEAVE_COMMAND = new PBItemStack(
+        LEAVE_COMMAND = new ClickableItemStack(
                 (p) -> {
                     p.performCommand("leave");
                     },
@@ -63,7 +61,7 @@ public class CustomItemManager extends PBManager implements ConfigManager.Reload
         pmeta.setBasePotionData(new PotionData(PotionType.WATER));
         potion.setItemMeta(pmeta);
 
-        WATER_BOTTLE = new PBItemStack(
+        WATER_BOTTLE = new ClickableItemStack(
                 (p) -> {
 
                 },
@@ -73,19 +71,13 @@ public class CustomItemManager extends PBManager implements ConfigManager.Reload
                 potion
         );
         registerItem(WATER_BOTTLE);
-
-
-
-
-
-        PBGUI.EMPTY = UtilMethods.createItem(Material.GRAY_STAINED_GLASS_PANE, (byte) 0, "", false, "");
     }
 
-    public PBItemStack LEAVE_COMMAND() {
+    public ClickableItemStack LEAVE_COMMAND() {
         return LEAVE_COMMAND;
     }
 
-    public PBItemStack WATER_BOTTLE() {
+    public ClickableItemStack WATER_BOTTLE() {
         return WATER_BOTTLE;
     }
 

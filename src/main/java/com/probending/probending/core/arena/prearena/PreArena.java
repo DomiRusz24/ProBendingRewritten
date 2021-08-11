@@ -1,12 +1,11 @@
 package com.probending.probending.core.arena.prearena;
 
 import com.probending.probending.PBListener;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
-import com.probending.probending.core.interfaces.PlaceholderObject;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.MenuPlayer;
-import com.probending.probending.util.PerTick;
 import com.probending.probending.util.UtilMethods;
 import me.clip.placeholderapi.PlaceholderAPI;
 

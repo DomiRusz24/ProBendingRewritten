@@ -1,6 +1,6 @@
 package com.probending.probending.core.enums;
 
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.util.UtilMethods;
 
 public enum ArenaState {

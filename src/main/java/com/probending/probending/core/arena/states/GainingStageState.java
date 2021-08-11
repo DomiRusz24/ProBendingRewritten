@@ -8,7 +8,7 @@ import com.probending.probending.api.events.PBPlayerUpdateStageEvent;
 import com.probending.probending.config.CommandConfig;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.players.ActivePlayer;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.enums.ArenaState;
 import com.probending.probending.core.enums.TeamTag;

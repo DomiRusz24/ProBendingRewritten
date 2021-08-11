@@ -1,16 +1,15 @@
 package com.probending.probending.config;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.config.configvalue.ConfigValue;
-import com.probending.probending.managers.ConfigManager;
+import me.domirusz24.plugincore.config.configvalue.ConfigValue;
 
-public class PluginConfig extends AbstractConfig {
+public class PluginConfig {
 
-    private ConfigValue<Integer> levelY = new ConfigValue<>("Arena.levelY", 14, this);
+    private ConfigValue<Integer> levelY;
 
-    public PluginConfig(String path, ProBending plugin, ConfigManager manager) {
-        super(path, plugin, manager);
-        save();
+    public PluginConfig() {
+        levelY = new ConfigValue<>("Arena.levelY", 14, ProBending.configM.getConfig());
+        ProBending.configM.getConfig().save();
     }
 
     public int getYLevel() {

@@ -1,7 +1,6 @@
 package com.probending.probending.config.arena;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.config.AbstractConfig;
 import com.probending.probending.config.configvalue.ConfigValue;
 import com.probending.probending.core.arena.Arena;
 

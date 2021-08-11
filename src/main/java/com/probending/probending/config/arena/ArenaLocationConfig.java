@@ -1,16 +1,13 @@
 package com.probending.probending.config.arena;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.config.AbstractConfig;
 import com.probending.probending.config.configvalue.ConfigLocation;
-import com.probending.probending.core.PBRegion;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.arena.SpectateGetterRegion;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
-import com.sk89q.worldedit.*;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 

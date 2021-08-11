@@ -1,14 +1,8 @@
 package com.probending.probending.core.players;
-
-import com.probending.probending.core.interfaces.PlaceholderObject;
-import com.probending.probending.core.interfaces.PlaceholderPlayer;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
+import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class PBPlayerWrapper extends AbstractPlayer {
 

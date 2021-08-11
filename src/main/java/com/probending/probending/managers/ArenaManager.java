@@ -1,23 +1,18 @@
 package com.probending.probending.managers;
 
-import com.probending.probending.PBListener;
 import com.probending.probending.ProBending;
-import com.probending.probending.config.CommandConfig;
-import com.probending.probending.config.arena.ArenaCommandConfig;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.arena.prearena.PreArena;
-import com.probending.probending.core.displayable.PBHologram;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.SpectatorPlayer;
 import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.core.team.PreArenaTeam;
-import com.probending.probending.util.PerTick;
 import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.util.PerTick;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
@@ -33,7 +28,7 @@ public class ArenaManager extends PBManager implements PerTick {
     public ArenaManager(ProBending plugin) {
         super(plugin);
         registerArenas();
-        PBListener.hookInListener(this);
+        registerPerTick();
     }
 
     // ------

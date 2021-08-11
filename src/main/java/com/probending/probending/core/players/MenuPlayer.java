@@ -1,11 +1,12 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.core.annotations.Language;
+import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
