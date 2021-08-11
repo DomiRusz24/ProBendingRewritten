@@ -1,12 +1,14 @@
 package com.probending.probending.command.arena.arenacontrol;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.ArenaSubCommand;
-import com.probending.probending.command.abstractclasses.Command;
+
+import com.probending.probending.command.ArenaSubCommand;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.players.SpectatorPlayer;
+import me.domirusz24.plugincore.command.Languages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.List;
 
@@ -20,15 +22,15 @@ public class ArenaSpectateCommand extends ArenaSubCommand {
         if (isPlayer(sender) && hasPermission(sender)) {
             if (correctLength(sender, args.size(), 0, 0)) {
                 if (!arena.inGame()) {
-                    sender.sendMessage(Command.LANG_ARENA_NOT_IN_GAME);
+                    sender.sendMessage(Languages.ARENA_NOT_IN_GAME);
                 } else {
                     Player player = (Player) sender;
                     if (ProBending.playerM.getActivePlayer(player) != null) {
-                        sender.sendMessage(Command.LANG_FAIL);
+                        sender.sendMessage(Languages.FAIL);
                         return;
                     }
                     new SpectatorPlayer(arena.getActiveArena(), player, player.getLocation(), player.getGameMode());
-                    sender.sendMessage(Command.LANG_SUCCESS);
+                    sender.sendMessage(Languages.SUCCESS);
                 }
             }
         }
@@ -52,5 +54,10 @@ public class ArenaSpectateCommand extends ArenaSubCommand {
     @Override
     protected String description() {
         return LANG_DESCRIPTION;
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 }

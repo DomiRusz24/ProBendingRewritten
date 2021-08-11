@@ -1,10 +1,11 @@
 package com.probending.probending.command.arena;
 
-import com.probending.probending.command.abstractclasses.ArenaCommand;
+import com.probending.probending.command.ArenaCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.managers.PAPIManager;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +34,11 @@ public class ArenaConfigCommand extends ArenaCommand {
     }
 
     @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
+    }
+
+    @Override
     protected String name() {
         return "arenaconfig";
     }
@@ -51,4 +57,5 @@ public class ArenaConfigCommand extends ArenaCommand {
     protected List<String> aliases() {
         return Collections.singletonList("arenac");
     }
+
 }

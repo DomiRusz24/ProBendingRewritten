@@ -40,18 +40,18 @@ public class InviteTeamCommand extends BaseSubCommand {
                         if (!team.contains(PBPlayer.of(target))) {
                             PBPlayer pbTarget = PBPlayer.of(target);
                             pbTarget.setInvite(new TeamInvite(player, pbTarget, team, 60000));
-                            sender.sendMessage(Command.LANG_SUCCESS);
+                            sender.sendMessage(Languages.SUCCESS);
                         } else {
                             sender.sendMessage(LANG_OTHER_IN_TEAM);
                         }
                     } else {
-                        sender.sendMessage(Command.LANG_INSUFFICIENT_PERMS);
+                        sender.sendMessage(Languages.INSUFFICIENT_PERMS);
                     }
                 } else {
                     sender.sendMessage(LANG_NOT_IN_TEAM);
                 }
             } else {
-                sender.sendMessage(Command.LANG_PLAYER_NOT_ONLINE.replaceAll("%player%", args.get(0)));
+                sender.sendMessage(Languages.PLAYER_NOT_ONLINE.replaceAll("%player%", args.get(0)));
             }
 
         }

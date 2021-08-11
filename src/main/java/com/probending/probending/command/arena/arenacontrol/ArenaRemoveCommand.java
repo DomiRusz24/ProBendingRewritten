@@ -1,8 +1,9 @@
 package com.probending.probending.command.arena.arenacontrol;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.ArenaSubCommand;
-import com.probending.probending.command.abstractclasses.Command;
+
+import com.probending.probending.command.ArenaSubCommand;
+import me.domirusz24.plugincore.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
@@ -11,6 +12,7 @@ import com.probending.probending.util.UtilMethods;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,19 +31,19 @@ public class ArenaRemoveCommand extends ArenaSubCommand {
                     if (isPlayer(sender)) {
                         Player player = (Player) sender;
                         arena.removePlayerFromTempTeam(player);
-                        sender.sendMessage(Command.LANG_SUCCESS);
+                        sender.sendMessage(Languages.SUCCESS);
                     }
                 } else if (args.size() == 1) {
                     Player player = Bukkit.getPlayer(args.get(0));
                     if (player != null) {
                         if (ProBending.playerM.getActivePlayer(player) != null) {
-                            sender.sendMessage(Command.LANG_FAIL);
+                            sender.sendMessage(Languages.FAIL);
                             return;
                         }
                         arena.removePlayerFromTempTeam(player);
-                        sender.sendMessage(Command.LANG_SUCCESS);
+                        sender.sendMessage(Languages.SUCCESS);
                     } else {
-                        sender.sendMessage(Command.LANG_PLAYER_NOT_ONLINE.replace("%player%", args.get(0)));
+                        sender.sendMessage(Languages.PLAYER_NOT_ONLINE.replace("%player%", args.get(0)));
                     }
                 }
             }
@@ -77,5 +79,10 @@ public class ArenaRemoveCommand extends ArenaSubCommand {
     @Override
     protected List<String> aliases() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 }

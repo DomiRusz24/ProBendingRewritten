@@ -1,7 +1,7 @@
 package com.probending.probending.command.arena.arenacontrol;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.ArenaSubCommand;
+import com.probending.probending.command.ArenaSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
@@ -11,6 +11,7 @@ import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.team.Team;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ArenaRefreshCommand extends ArenaSubCommand {
 
     @Override
     public void execute(CommandSender sender, Arena arena, List<String> args) {
-        if (ProBending.configM.getLocationsConfig().getSpawn() == null) {
+        if (ProBending.locationConfig.getSpawn() == null) {
             sender.sendMessage(ChatColor.RED + "Spawn... Not set!");
         } else {
             sender.sendMessage(ChatColor.GREEN + "Spawn... OK!");
@@ -95,5 +96,10 @@ public class ArenaRefreshCommand extends ArenaSubCommand {
     @Override
     protected String description() {
         return LANG_DESCRIPTION;
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 }

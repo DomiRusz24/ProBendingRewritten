@@ -27,8 +27,8 @@ public enum TeamTag {
 
 
     public static TeamTag getFromName(String name) {
-        String blue = Command.LANG_TEAM_BLUE;
-        String red = Command.LANG_TEAM_RED;
+        String blue = Languages.TEAM_BLUE;
+        String red = Languages.TEAM_RED;
         if (name.equalsIgnoreCase(blue)) {
             return BLUE;
         } else if (name.equalsIgnoreCase(red)) {

@@ -20,9 +20,9 @@ public class ReloadCommand extends BaseSubCommand {
         if (hasPermission(sender)) {
             if (correctLength(sender, args.size(), 0, 0)) {
                 if (ProBending.configM.reloadConfigs()) {
-                    sender.sendMessage(Command.LANG_SUCCESS);
+                    sender.sendMessage(Languages.SUCCESS);
                 } else {
-                    sender.sendMessage(Command.LANG_ERROR_PREFIX + Command.LANG_FAIL_ERROR);
+                    sender.sendMessage(Languages.ERROR_PREFIX + Languages.FAIL_ERROR);
                 }
             }
         }

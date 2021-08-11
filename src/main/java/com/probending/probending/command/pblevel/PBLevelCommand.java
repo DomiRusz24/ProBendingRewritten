@@ -57,6 +57,6 @@ public class PBLevelCommand extends PlayerCommand {
 
     @Override
     public void selfExecute(CommandSender sender, String name) {
-        sender.sendMessage(Command.LANG_PLAYER_NOT_ONLINE.replaceAll("%player%", name));
+        sender.sendMessage(Languages.PLAYER_NOT_ONLINE.replaceAll("%player%", name));
     }
 }

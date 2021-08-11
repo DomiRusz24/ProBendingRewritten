@@ -1,9 +1,8 @@
 package com.probending.probending.command.arena.arenaconfig;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.ArenaCommand;
-import com.probending.probending.command.abstractclasses.ArenaSubCommand;
-import com.probending.probending.command.abstractclasses.Command;
+import com.probending.probending.command.ArenaSubCommand;
+import me.domirusz24.plugincore.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.Ring;
@@ -13,6 +12,7 @@ import com.sk89q.worldedit.WorldEditException;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ArenaGetCommand extends ArenaSubCommand {
                     if (isPlayer(sender)) {
                         Player player = (Player) sender;
                         player.teleport(arena.getCenter());
-                        sender.sendMessage(Command.LANG_SUCCESS);
+                        sender.sendMessage(Languages.SUCCESS);
                     }
                 } else if (args.size() == 2) {
                     if (setType.equals("ring")) {
@@ -48,12 +48,12 @@ public class ArenaGetCommand extends ArenaSubCommand {
                                     Location location = arena.getRingLocation(ringType);
                                     if (location != null) {
                                         player.teleport(location);
-                                        sender.sendMessage(Command.LANG_SUCCESS);
+                                        sender.sendMessage(Languages.SUCCESS);
                                     } else {
-                                        sender.sendMessage(Command.LANG_LOCATION_NOT_SET);
+                                        sender.sendMessage(Languages.LOCATION_NOT_SET);
                                     }
                                 } else {
-                                    sender.sendMessage(Command.LANG_FAIL);
+                                    sender.sendMessage(Languages.FAIL);
                                 }
                             } else {
                                 help(sender, false);
@@ -65,9 +65,9 @@ public class ArenaGetCommand extends ArenaSubCommand {
                             if (tag != null) {
                                 Player player = (Player) sender;
                                 player.teleport(arena.getPreArena().getRegion(tag).getCenter());
-                                sender.sendMessage(Command.LANG_SUCCESS);
+                                sender.sendMessage(Languages.SUCCESS);
                             } else {
-                                sender.sendMessage(Command.LANG_INVALID_TEAM);
+                                sender.sendMessage(Languages.INVALID_TEAM);
                             }
                         }
                     } else if (setType.equals("getterregioncenter")) {
@@ -76,9 +76,9 @@ public class ArenaGetCommand extends ArenaSubCommand {
                             if (tag != null) {
                                 Player player = (Player) sender;
                                 player.teleport(arena.getPreArena().getRegion(tag).getRegionCenter());
-                                sender.sendMessage(Command.LANG_SUCCESS);
+                                sender.sendMessage(Languages.SUCCESS);
                             } else {
-                                sender.sendMessage(Command.LANG_INVALID_TEAM);
+                                sender.sendMessage(Languages.INVALID_TEAM);
                             }
                         }
                     }
@@ -92,9 +92,9 @@ public class ArenaGetCommand extends ArenaSubCommand {
                                 Location location = arena.getStartingLocations(tag, number - 1);
                                 if (location != null) {
                                     player.teleport(location);
-                                    sender.sendMessage(Command.LANG_SUCCESS);
+                                    sender.sendMessage(Languages.SUCCESS);
                                 } else {
-                                    sender.sendMessage(Command.LANG_LOCATION_NOT_SET);
+                                    sender.sendMessage(Languages.LOCATION_NOT_SET);
                                 }
                             } else {
                                 help(sender, false);
@@ -123,8 +123,8 @@ public class ArenaGetCommand extends ArenaSubCommand {
                 }
             }
         } else if (args.size() == 3) {
-            complete.add(Command.LANG_TEAM_BLUE);
-            complete.add(Command.LANG_TEAM_RED);
+            complete.add(Languages.TEAM_BLUE);
+            complete.add(Languages.TEAM_RED);
         }
         return UtilMethods.getPossibleCompletions(args, complete);
     }
@@ -136,7 +136,7 @@ public class ArenaGetCommand extends ArenaSubCommand {
 
     @Override
     protected String usage() {
-        return "get <rollback / startlocation / ring / center> <playernumber / ring> " + "<" + Command.LANG_TEAM_BLUE + " / " + Command.LANG_TEAM_RED + ">";
+        return "get <rollback / startlocation / ring / center> <playernumber / ring> " + "<" + Languages.TEAM_BLUE + " / " + Languages.TEAM_RED + ">";
     }
 
     @Override
@@ -147,5 +147,10 @@ public class ArenaGetCommand extends ArenaSubCommand {
     @Override
     protected List<String> aliases() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 }

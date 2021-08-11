@@ -26,7 +26,7 @@ public class ForceStartCommand extends BaseCommand {
                     mPlayer.setVoteSkip(true);
                 }
             } else {
-                sender.sendMessage(Command.LANG_FAIL);
+                sender.sendMessage(Languages.FAIL);
             }
         }
     }

@@ -1,12 +1,14 @@
 package com.probending.probending.command.arena;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.command.ArenaCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.managers.PAPIManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,11 @@ public class ArenaControlCommand extends ArenaCommand {
     @Override
     protected List<String> aliases() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 
     @Language("Command.ArenaControl.ArenaNotInGame")

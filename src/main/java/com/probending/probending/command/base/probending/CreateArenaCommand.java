@@ -28,9 +28,9 @@ public class CreateArenaCommand extends BaseSubCommand {
                         Arena arena = new Arena(ProBending.arenaM, name);
                         arena.setCenter(player.getLocation());
                         ProBending.arenaM.registerArena(arena);
-                        sender.sendMessage(Command.LANG_SUCCESS);
+                        sender.sendMessage(Languages.SUCCESS);
                     } else {
-                        sender.sendMessage(Command.LANG_FAIL);
+                        sender.sendMessage(Languages.FAIL);
                     }
                 }
             }

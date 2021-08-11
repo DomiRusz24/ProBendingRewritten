@@ -23,9 +23,9 @@ public class TeamLeaveCommand extends BaseSubCommand {
             PBTeam team = player.getTeam();
             if (team != null) {
                 team.removePlayer(player);
-                sender.sendMessage(Command.LANG_SUCCESS);
+                sender.sendMessage(Languages.SUCCESS);
             } else {
-                sender.sendMessage(InviteTeamCommand.LANG_NOT_IN_TEAM);
+                sender.sendMessage(InviteTeamLanguages.NOT_IN_TEAM);
             }
         }
     }

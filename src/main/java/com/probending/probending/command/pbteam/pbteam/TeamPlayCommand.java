@@ -31,10 +31,10 @@ public class TeamPlayCommand extends BaseSubCommand {
                 if (ProBending.playerM.getActivePlayer(player) == null && ProBending.teamM.getTempTeam(player) == null) {
                     team.getPlayGUI().addPlayer((Player) sender);
                 } else {
-                    sender.sendMessage(Command.LANG_PLAYER_IN_GAME);
+                    sender.sendMessage(Languages.PLAYER_IN_GAME);
                 }
             } else {
-                sender.sendMessage(InviteTeamCommand.LANG_NOT_IN_TEAM);
+                sender.sendMessage(InviteTeamLanguages.NOT_IN_TEAM);
             }
         }
     }

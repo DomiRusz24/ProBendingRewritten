@@ -1,10 +1,11 @@
 package com.probending.probending.command.arena.arenacontrol;
 
-import com.probending.probending.command.abstractclasses.ArenaSubCommand;
-import com.probending.probending.command.abstractclasses.Command;
+
+import com.probending.probending.command.ArenaSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ArenaStopCommand extends ArenaSubCommand {
                 if (arena.inGame()) {
                     arena.stop();
                 } else {
-                    sender.sendMessage(Command.LANG_ARENA_NOT_IN_GAME);
+                    sender.sendMessage(Languages.ARENA_NOT_IN_GAME);
                 }
             }
         }
@@ -50,5 +51,10 @@ public class ArenaStopCommand extends ArenaSubCommand {
     @Override
     protected List<String> aliases() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public PermissionDefault getPermissionDefault() {
+        return null;
     }
 }

@@ -37,7 +37,7 @@ public class SetSpawnCommand extends BaseSubCommand {
         if (isPlayer(sender)) {
             if (correctLength(sender, args.size(), 0, 0)) {
                 ProBending.configM.getLocationsConfig().setSpawn(((Player) sender).getLocation());
-                sender.sendMessage(Command.LANG_SUCCESS);
+                sender.sendMessage(Languages.SUCCESS);
             }
         }
     }
