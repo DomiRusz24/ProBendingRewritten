@@ -25,4 +25,8 @@ public class AbstractArenaConfig extends AbstractConfig {
         super(file, plugin);
         this.arena = arena;
     }
+
+    public Arena getArena() {
+        return arena;
+    }
 }

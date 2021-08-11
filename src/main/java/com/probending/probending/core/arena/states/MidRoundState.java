@@ -22,7 +22,7 @@ public class MidRoundState extends AbstractArenaHandler {
     // ---
 
     @Language("ActiveArena.MidRound.TeamResult")
-    public static String LANG_ROUND_TEAM_RESULT = "This round has been won by team %team_name%!";
+    public static String LANG_ROUND_TEAM_RESULT = "Team %team_name% has won!";
     @Language("ActiveArena.MidRound.MatchPoint")
     public static String LANG_ROUND_MATCH_POINT = "If this happens again, team %team_name% will win!";
 

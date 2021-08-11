@@ -2,8 +2,10 @@ package com.probending.probending.config.arena;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.config.AbstractConfig;
+import com.probending.probending.config.configvalue.ConfigLocation;
 import com.probending.probending.core.PBRegion;
 import com.probending.probending.core.arena.Arena;
+import com.probending.probending.core.arena.SpectateGetterRegion;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.enums.Ring;
@@ -39,6 +41,18 @@ public class ArenaLocationConfig extends AbstractArenaConfig {
     public void setCenter(Location location) {
         setLocation(path + "center", location);
     }
+
+    private final ConfigLocation spectatorCenter = new ConfigLocation("SpectateGetter.Center", this);
+
+    public void setSpectatorSpawn(Location location) {
+        spectatorCenter.setValue(location);
+    }
+
+    public Location getSpectatorSpawn() {
+        return spectatorCenter.getValue();
+    }
+
+
 
     // --- Ring locations ---
 
@@ -105,6 +119,11 @@ public class ArenaLocationConfig extends AbstractArenaConfig {
         }
     }
 
+    public void setRegion(SpectateGetterRegion region) {
+        super.setRegion("SpectateGetter.Region", region);
+
+    }
+
     public ArenaGetterRegion getRegion(String path, String ID, TeamTag tag, PreArena preArena) {
         ArenaGetterRegion region = (ArenaGetterRegion) ProBending.regionM.getRegion(ID);
         if (region == null) {
@@ -120,6 +139,18 @@ public class ArenaLocationConfig extends AbstractArenaConfig {
             }
             if (regionCenter != null) {
                 region.setRegionCenter(regionCenter);
+            }
+        }
+        return region;
+    }
+
+    public SpectateGetterRegion getRegion(String path, String ID) {
+        SpectateGetterRegion region = (SpectateGetterRegion) ProBending.regionM.getRegion(ID);
+        if (region == null) {
+            region = new SpectateGetterRegion(ID, getArena());
+            Location[] sel = getWESelection(path);
+            if (sel != null) {
+                region.setLocations(sel[0], sel[1]);
             }
         }
         return region;

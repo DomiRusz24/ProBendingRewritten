@@ -44,9 +44,11 @@ public class PBScoreboard extends PlayerDisplayable {
 
     @Override
     protected void onUpdate(ArrayList<String> values) {
+        /*
         for (Player player : getPlayers()) {
             player.setScoreboard(Bukkit.getServer().getScoreboardManager().getNewScoreboard());
         }
+         */
         obj.unregister();
         obj = scoreboard.registerNewObjective(name, "dummy");
         String title = this.title;

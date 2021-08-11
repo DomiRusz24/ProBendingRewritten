@@ -17,17 +17,18 @@ import com.probending.probending.core.team.PreArenaTeam;
 import com.probending.probending.core.team.Team;
 import com.probending.probending.managers.ArenaManager;
 import com.probending.probending.managers.ConfigManager;
+import com.probending.probending.managers.PlayerManager;
 import com.probending.probending.managers.ProjectKorraManager;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +102,8 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     private final ArenaConfig arenaConfig;
 
+    private final SpectateGetterRegion spectateGetterRegion;
+
     private final ArenaTempTeam blueTeam;
 
     private final ArenaTempTeam redTeam;
@@ -116,6 +119,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
         this.arenaConfig = new ArenaConfig(this, "config.yml", ProBending.plugin);
         this.blueTeam = new ArenaTempTeam(this, TeamTag.BLUE);
         this.redTeam = new ArenaTempTeam(this, TeamTag.RED);
+        this.spectateGetterRegion = locationConfig.getRegion("SpectateGetter.Region", name + "_spectateGetter");
         loadFromConfig();
         activeArena = new ActiveArena(this);
         manager.registerArena(this);
@@ -151,6 +155,10 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                     p.teleport(preArena.getRedRegion().getCenter());
                 } else {
                     p.teleport(preArena.getBlueRegion().getCenter());
+                }
+            } else if (state == State.TAKEN) {
+                if (ProBending.playerM.getActivePlayer(p) == null && ProBending.playerM.getMenuPlayer(p) == null) {
+                    if (getSpectatorSpawn() != null) p.teleport(getSpectatorSpawn());
                 }
             }
         });
@@ -239,7 +247,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
             if (isReadyToPlay()) {
                 if (canStart(blue, red, force)) {
                     List<Player> players = blue.getUnwrappedPlayers();
-                    players.addAll(players = red.getUnwrappedPlayers());
+                    players.addAll(red.getUnwrappedPlayers());
                     for (Player player : players) {
                         ProjectKorraManager.BendingState state = ProBending.projectKorraM.getBendingState(BendingPlayer.getBendingPlayer(player));
                         String message;
@@ -354,6 +362,15 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
         isReadyToPlay();
     }
 
+    public void setSpectatorSpawn(Location location) {
+        locationConfig.setSpectatorSpawn(location);
+        locationConfig.save();
+    }
+
+    public Location getSpectatorSpawn() {
+        return locationConfig.getSpectatorSpawn();
+    }
+
     // --- Ring locations ---
 
     private final HashMap<Ring, Location> ringLocations = new HashMap<>();
@@ -421,12 +438,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
         if (rollbackLocation == null) {
             return false;
         }
-        // TODO: MAKE THIS WORK!!!!!!!!!!!!!!!!!!!!
-        if (true) {
-            return false;
-        } else {
-            return locationConfig.getRollback(sender, rollbackLocation);
-        }
+        return locationConfig.getRollback(sender, rollbackLocation);
     }
 
     // --- Sign ---
@@ -444,6 +456,12 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
     public void setRegionSelection(Location min, Location max, TeamTag tag) {
         preArena.getRegion(tag).setLocations(min, max);
         locationConfig.setRegion(preArena.getRegion(tag).getPath(), preArena.getRegion(tag));
+        locationConfig.save();
+    }
+
+    public void setSpectatorRegion(Location min, Location max) {
+        spectateGetterRegion.setLocations(min, max);
+        locationConfig.setRegion(spectateGetterRegion);
         locationConfig.save();
     }
 
@@ -501,6 +519,8 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                 return getName();
             case "in_game":
                 return inGame() ? Command.LANG_YES : Command.LANG_NO;
+            case "in_game_color":
+                return inGame() ? "&a" : "&c";
             case "x":
                 return String.valueOf(getCenter().getBlockX());
             case "y":

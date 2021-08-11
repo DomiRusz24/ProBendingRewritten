@@ -18,6 +18,7 @@ import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.core.team.PBActiveTeam;
 import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.Team;
+import com.probending.probending.managers.PAPIManager;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
@@ -458,10 +459,13 @@ public class ActiveArena implements PlaceholderObject {
         }
     }
 
+    @Language("Spectator.Start")
+    public static String LANG_START = "You are currently spectating arena %arena_name%!";
+
 
     public void addSpectator(SpectatorPlayer player) {
         SPECTATORS.add(player);
-        player.getPlayer().teleport(getArena().getCenter());
+        player.getPlayer().sendMessage(PAPIManager.setPlaceholders(getArena(), LANG_START));
         CommandConfig.Commands.ArenaSpectatorJoinPlayer.run(getArena(), player.getPlayer());
     }
 
@@ -475,12 +479,14 @@ public class ActiveArena implements PlaceholderObject {
     public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut, boolean spectators) {
         blueTeam.sendTitle(title, subtitle, fadeIn, stay, fadeOut, spectators);
         redTeam.sendTitle(title, subtitle, fadeIn, stay, fadeOut, spectators);
+        spectators = true;
         if (spectators) SPECTATORS.forEach(p -> p.getPlayer().sendTitle(title, subtitle, fadeIn, stay, fadeOut));
     }
 
     public void sendMessage(String message, boolean spectators) {
         blueTeam.sendMessage(message, spectators);
         redTeam.sendMessage(message, spectators);
+        spectators = true;
         if (spectators) SPECTATORS.forEach(p -> p.getPlayer().sendMessage(message));
     }
 

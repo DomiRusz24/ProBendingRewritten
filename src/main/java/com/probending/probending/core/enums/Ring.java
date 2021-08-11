@@ -27,7 +27,7 @@ public enum Ring {
 
     private static final Ring[] RED_RINGS = {RED_BACK, RED_THIRD, RED_SECOND, RED_FIRST, RED_TIEBREAKER};
 
-    private static final Ring[] OTHER_RINGS = {RED_BACK, RED_THIRD, RED_SECOND, RED_FIRST, RED_TIEBREAKER};
+    private static final Ring[] OTHER_RINGS = {RED_BACK, BLUE_BACK};
 
 
     public static Ring fromIndex(int index) {
@@ -99,7 +99,9 @@ public enum Ring {
     // ---
 
     public TeamTag getTeam() {
-        return getIndex() == -1 ? null : getIndex() > 4 ? TeamTag.BLUE : TeamTag.RED;
+        if (this == RED_TIEBREAKER) return TeamTag.RED;
+        if (this == BLUE_TIEBREAKER) return TeamTag.BLUE;
+        return getIndex() == -1 ? null : getIndex() >= 4 ? TeamTag.BLUE : TeamTag.RED;
     }
 
     // ---

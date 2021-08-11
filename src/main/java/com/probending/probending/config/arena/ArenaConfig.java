@@ -13,9 +13,11 @@ public class ArenaConfig extends AbstractArenaConfig {
     private final ConfigValue<Integer> roundWin = new ConfigValue<>("RoundWin", 3, this, true);
     private final ConfigValue<Integer> minimalPlayerAmount = new ConfigValue<>("MinimalPlayerAmount", 2, this, true);
     private ConfigValue<Boolean> damage = new ConfigValue<>("Damage", true, this);
+    private ConfigValue<Boolean> publicArena = new ConfigValue<>("Public", true, this);
     private ConfigValue<Double> dragValue = new ConfigValue<>("DragForce", 1.0, this, true);
     private ConfigValue<Integer> tirednessMax = new ConfigValue<>("FatigueMax", 200, this, true);
     private ConfigValue<Integer> hpToTirednessRatio = new ConfigValue<>("HPToFatigueRatio", 4, this, true);
+    private ConfigValue<Boolean> resetFatigueOnStageLose = new ConfigValue<>("ResetFatigueOnStageLose", false, this, true);
 
 
     public ArenaConfig(Arena arena, String path, ProBending plugin) {
@@ -53,5 +55,13 @@ public class ArenaConfig extends AbstractArenaConfig {
 
     public double getDragValue() {
         return dragValue.getValue();
+    }
+
+    public boolean getResetFatigueOnStageLose() {
+        return resetFatigueOnStageLose.getValue();
+    }
+
+    public boolean isPublic() {
+        return publicArena.getValue();
     }
 }

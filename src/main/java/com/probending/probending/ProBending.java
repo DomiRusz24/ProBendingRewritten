@@ -146,10 +146,12 @@ public final class ProBending extends JavaPlugin {
         arenaM = new ArenaManager(plugin);
 
         // WorldEdit, FastAsyncWorldEdit
-        if (isHookAble("WorldEdit")) {
-            schematicM = new EasyRollBackManager(this, (WorldEditPlugin) hookInto("WorldEdit"));
+        if (isHookAble("FastAsyncWorldEdit")) {
+            schematicM = new WorldEditManager(this, (WorldEditPlugin) hookInto("FastAsyncWorldEdit"));
+        } else if (isHookAble("WorldEdit")) {
+            schematicM = new WorldEditManager(this, (WorldEditPlugin) hookInto("WorldEdit"));
         } else {
-            log(Level.SEVERE, "Your server does not have WorldEdit! Stopping plugin...");
+            log(Level.SEVERE, "Your server does not have WorldEdit nor FAWE! Stopping plugin...");
             shutOffPlugin();
             return;
         }

@@ -17,6 +17,8 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
@@ -58,11 +60,16 @@ public class ActivePlayer extends AbstractPlayer {
         if (element == null) {
             prefix = ChatColor.GRAY + "N";
         } else {
-            prefix = element.getColor() + String.valueOf(element.getName().toUpperCase().charAt(0));
+            String c = element.getColor().toString();
+            prefix = c + ChatColor.BOLD + "[" + ChatColor.BOLD + c +  String.valueOf(element.getName().toUpperCase().charAt(0)) + ChatColor.BOLD + "]";
         }
         bossBar.setColor(teamTag.getBarColor());
         scoreboard.addPlaceholder(getArena().getArena());
         scoreboard.addPlaceholder(getArena().getTeam(teamTag));
+        if (getArena().getArena().getArenaConfig().getDamage()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 999999, 10));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 999999, 10));
+        }
         if (teamTag == TeamTag.BLUE) {
             player.getInventory().setArmorContents(ProBending.teamM.BLUE_ARMOR);
         } else {
@@ -73,6 +80,8 @@ public class ActivePlayer extends AbstractPlayer {
 
     @Override
     protected void onUnregister() {
+        player.removePotionEffect(PotionEffectType.REGENERATION);
+        player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
         player.teleport(ProBending.configM.getLocationsConfig().getSpawn());
         ProBending.nmsM.setGameMode(player, startingGameMode);
         ProBending.playerM.removeActivePlayer(this);
@@ -156,15 +165,10 @@ public class ActivePlayer extends AbstractPlayer {
 
     public void dragTo(Ring ring) {
         Location l = arena.getArena().getRingLocation(ring);
-        l.add(0, 1, 0);
+        l.clone().add(0, 1, 0);
         if (l.getWorld().equals(player.getLocation().getWorld())) {
             Vector vector = l.subtract(player.getPlayer().getLocation()).toVector().normalize();
-            double y = vector.getY();
-            vector.setY(0);
-            vector.normalize();
-            double power = getArena().getArena().getArenaConfig().getDragValue();
-            vector.multiply(power);
-            vector.setY(y * power);
+            vector.multiply(getArena().getArena().getArenaConfig().getDragValue());
             try {
                 getPlayer().setVelocity(vector);
             } catch (IllegalArgumentException e) {
@@ -231,6 +235,7 @@ public class ActivePlayer extends AbstractPlayer {
 
     public void resetTiredness() {
         tiredness = 0;
+        update();
     }
 
     // ---------- //

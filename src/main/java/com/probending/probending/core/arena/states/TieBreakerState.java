@@ -77,10 +77,11 @@ public class TieBreakerState extends AbstractArenaHandler {
         countdown--;
         if (countdown < 0) return;
         if (countdown == 9) {
-            getArena().sendTitle(LANG_START
-                    .replaceAll("%player_1%", players.get(0).getPlayer().getName())
-                    .replaceAll("%player_2%", players.get(1).getPlayer().getName())
-                    , "", 5, 50, 5, true);
+            getArena().sendTitle("",
+                    LANG_START
+                            .replaceAll("%player_1%", players.get(0).getPlayer().getName())
+                            .replaceAll("%player_2%", players.get(1).getPlayer().getName())
+                    , 5, 50, 5, true);
         } else if (countdown < 6) {
             if (countdown == 0) {
                 getArena().sendTitle(InRoundState.LANG_START, "", 5, 20, 5, true);

@@ -7,10 +7,7 @@ import com.probending.probending.util.UtilMethods;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public class LanguageConfig extends AbstractConfig {
@@ -39,29 +36,37 @@ public class LanguageConfig extends AbstractConfig {
         }
 
         Language annotation;
-
         for (Class<?> clazz : classes) {
             ANNOTATIONS_BY_CLASS.put(clazz, new ArrayList<>());
-            for (Field field : clazz.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Language.class)) {
-                    if (Modifier.isStatic(field.getModifiers())) {
-                        field.setAccessible(true);
-                        annotation = field.getAnnotation(Language.class);
-                        ANNOTATIONS_BY_CLASS.get(clazz).add(field);
-                        try {
-                            addDefault(annotation.value(), field.get(null));
-                            if (isString(annotation.value())) {
-                                field.set(null, UtilMethods.translateColor((String) get(annotation.value())));
-                            } else {
-                                field.set(null, get(annotation.value()));
-                            }
-                        } catch (Exception e) {
-                            ProBending.plugin.log(Level.WARNING, "Error loading language annotations in " + field.getName() + ", in class " + clazz.getName());
-                            e.printStackTrace();
-                        }
 
-                    }
+            for (int i = 0; i < clazz.getDeclaredFields().length; i++) {
+                Field field;
+                try {
+                    field = clazz.getDeclaredFields()[i];
+                } catch (Exception e) {
+                    continue;
                 }
+                try {
+                    if (field.isAnnotationPresent(Language.class)) {
+                        if (Modifier.isStatic(field.getModifiers())) {
+                            field.setAccessible(true);
+                            annotation = field.getAnnotation(Language.class);
+                            ANNOTATIONS_BY_CLASS.get(clazz).add(field);
+                            try {
+                                addDefault(annotation.value(), field.get(null));
+                                if (isString(annotation.value())) {
+                                    field.set(null, UtilMethods.translateColor((String) get(annotation.value())));
+                                } else {
+                                    field.set(null, get(annotation.value()));
+                                }
+                            } catch (Exception e) {
+                                ProBending.plugin.log(Level.WARNING, "Error loading language annotations in " + field.getName() + ", in class " + clazz.getName());
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
+                } catch (Exception ignored) {}
             }
         }
         return save();

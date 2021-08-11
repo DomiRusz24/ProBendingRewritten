@@ -26,7 +26,6 @@ commands:
     aliases: [fs]
   team:
     usage: /team
-
 permissions:
   probending:
     command:

@@ -1,7 +1,6 @@
 package com.probending.probending.managers.schematics;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.command.abstractclasses.Command;
 import com.probending.probending.util.Pair;
 import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;

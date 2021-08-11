@@ -45,6 +45,9 @@ public class ArenaSetCommand extends ArenaSubCommand {
                         } else {
                             sender.sendMessage(LANG_INCORRECT_SELECTION);
                         }
+                    } else if (setType.equals("spectatorspawn")) {
+                        arena.setSpectatorSpawn(player.getLocation());
+                        sender.sendMessage(Command.LANG_SUCCESS);
                     } else if (setType.equals("center")) {
                         arena.setCenter(player.getLocation());
                         sender.sendMessage(Command.LANG_SUCCESS);
@@ -57,6 +60,14 @@ public class ArenaSetCommand extends ArenaSubCommand {
                                     .replaceAll("y", String.valueOf(arena.getJoinSign().getLocation().getBlockY()))
                                     .replaceAll("z", String.valueOf(arena.getJoinSign().getLocation().getBlockZ()))
                             );
+                        } else {
+                            sender.sendMessage(LANG_INCORRECT_SELECTION);
+                        }
+                    } else if (setType.equals("spectatorgetter")) {
+                        Pair<Location, Location> selection = ProBending.schematicM.getPlayerSelection(player);
+                        if (selection != null) {
+                            arena.setSpectatorRegion(selection.getKey(), selection.getValue());
+                            sender.sendMessage(Command.LANG_SUCCESS);
                         } else {
                             sender.sendMessage(LANG_INCORRECT_SELECTION);
                         }
@@ -124,7 +135,7 @@ public class ArenaSetCommand extends ArenaSubCommand {
     public List<String> autoComplete(CommandSender sender, Arena arena, List<String> args) {
         List<String> complete = new ArrayList<>();
         if (args.size() == 1) {
-            complete.addAll(Arrays.asList("rollback", "startlocation", "ring", "center", "sign", "gettercenter", "getterregioncenter", "getter"));
+            complete.addAll(Arrays.asList("rollback", "startlocation", "ring", "center", "sign", "gettercenter", "getterregioncenter", "getter", "spectatorgetter", "spectatorspawn"));
         } else if (args.size() == 2) {
             String s = args.get(0);
             if (s.equalsIgnoreCase("ring")) {
@@ -151,7 +162,7 @@ public class ArenaSetCommand extends ArenaSubCommand {
 
     @Override
     protected String usage() {
-        return "set <rollback / startlocation / ring / center / sign / getter / gettercenter / getterregioncenter> <playernumber / ring / " + Command.LANG_TEAM_BLUE + " / " + Command.LANG_TEAM_RED + " > " + "<" + Command.LANG_TEAM_BLUE + " / " + Command.LANG_TEAM_RED + ">";
+        return "set <rollback / startlocation / ring / center / sign / getter / gettercenter / getterregioncenter / spectatorgetter / spectatorspawn> <playernumber / ring / " + Command.LANG_TEAM_BLUE + " / " + Command.LANG_TEAM_RED + " > " + "<" + Command.LANG_TEAM_BLUE + " / " + Command.LANG_TEAM_RED + ">";
     }
 
     @Override

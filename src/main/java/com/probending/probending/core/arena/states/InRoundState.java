@@ -83,6 +83,9 @@ public class InRoundState extends AbstractArenaHandler {
                 event.getPlayer().getPlayer().sendTitle((LANG_WARNING), (LANG_LOSE_STAGE), 5, 20, 5);
                 getArena().setTeamToCheck(event.getPlayer().getTeamTag());
                 CommandConfig.Commands.RoundPlayerLoseStage.run(getArena().getArena(), event.getPlayer().getPlayer());
+                if (getArena().getArena().getArenaConfig().getResetFatigueOnStageLose()) {
+                    event.getPlayer().resetTiredness();
+                }
             }
             event.getPlayer().dragTo(event.getPlayer().getRing());
         }
@@ -96,18 +99,22 @@ public class InRoundState extends AbstractArenaHandler {
     public void onUpdate() {
         sec++;
         if (sec > duration) {
+            int redPoints = getArena().getTeam(TeamTag.RED).getPoints();
+            int bluePoints = getArena().getTeam(TeamTag.BLUE).getPoints();
+            int roundWin = getArena().getArena().getArenaConfig().getRoundWin();
             TeamTag winningTeam = getArena().getWinningTeamByRound();
             if (winningTeam == null) {
                 for (TeamTag tag : TeamTag.values()) {
                     getArena().getTeam(tag).raisePoint();
                 }
                 getArena().setState(ArenaState.MID_ROUND);
-                getArena().setHandler(new MidRoundState(getArena(), new InRoundState(getArena()), ArenaState.IN_ROUND, null, new RoundEnd()));
+                if ((bluePoints >= roundWin) && (redPoints >= roundWin)) {
+                    getArena().setHandler(new MidRoundState(getArena(), new TieBreakerState(getArena()), ArenaState.TIE_BREAKER, null, new TieBreakerStart()));
+                } else {
+                    getArena().setHandler(new MidRoundState(getArena(), new InRoundState(getArena()), ArenaState.IN_ROUND, null, new RoundEnd()));
+                }
             } else {
                 getArena().getTeam(winningTeam).raisePoint();
-                int redPoints = getArena().getTeam(TeamTag.RED).getPoints();
-                int bluePoints = getArena().getTeam(TeamTag.BLUE).getPoints();
-                int roundWin = getArena().getArena().getArenaConfig().getRoundWin();
                 if ((bluePoints >= roundWin) && (redPoints >= roundWin)) {
                     getArena().setState(ArenaState.MID_ROUND);
                     getArena().setHandler(new MidRoundState(getArena(), new TieBreakerState(getArena()), ArenaState.TIE_BREAKER, null, new TieBreakerStart()));

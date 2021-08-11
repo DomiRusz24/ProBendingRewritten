@@ -6,7 +6,7 @@
 
     <groupId>com.probending.probending</groupId>
     <artifactId>ProBending</artifactId>
-    <version>1.0</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>ProBending</name>
@@ -77,12 +77,12 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>IntellectualSites</id>
-            <url>https://mvn.intellectualsites.com/content/repositories/releases/</url>
-        </repository>
-        <repository>
             <id>enginehub-maven</id>
             <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
+            <id>IntellectualSites</id>
+            <url>https://mvn.intellectualsites.com/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -110,7 +110,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.2-SNAPSHOT</version>
+            <version>LATEST</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -121,15 +121,15 @@
             <systemPath>${project.basedir}/lib/Multiverse-Core-2.5.0.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>net.shadowxcraft</groupId>
-            <artifactId>rollbackcore</artifactId>
-            <version>3.5.0-BETA</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fastasyncworldedit</groupId>
+            <artifactId>FAWE-Bukkit</artifactId>
+            <version>1.17-23</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

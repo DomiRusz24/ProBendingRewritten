@@ -69,7 +69,7 @@ public class ArenaManager extends PBManager implements PerTick {
 
     public boolean throwIntoGame(List<Player> players) {
         for (Arena arena : ProBending.arenaM.getArenas()) {
-            if (arena.getPreArena().getState() == PreArena.State.WAITING && arena.getState().equals(Arena.State.READY)) {
+            if (arena.getArenaConfig().isPublic() && arena.getPreArena().getState() == PreArena.State.WAITING && arena.getState().equals(Arena.State.READY)) {
                 PreArena pArena = arena.getPreArena();
                 for (TeamTag tag : TeamTag.values()) {
                     PreArenaTeam pTeam = pArena.getRegion(tag).getTeam();

@@ -1,6 +1,7 @@
 package com.probending.probending.managers.schematics;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.command.abstractclasses.Command;
 import com.probending.probending.util.Pair;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.IncompleteRegionException;
@@ -56,41 +57,55 @@ public class WorldEditManager extends SchematicManager {
     @Override
     public void saveSchematic(CommandSender sender, Location min, Location max, File folder, String name) {
         CuboidRegion region = new CuboidRegion(Vector3.toBlockPoint(min.getX(), min.getY(), min.getZ()), Vector3.toBlockPoint(max.getX(), max.getY(), max.getZ()));
+        region.setWorld(BukkitAdapter.adapt(min.getWorld()));
         BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
 
-        EditSession editSession = WorldEdit.getInstance().newEditSession(region.getWorld());
+        try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(region.getWorld(), -1)) {
+            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(
+                    editSession, region, clipboard, region.getMinimumPoint()
+            );
+            try {
+                Operations.complete(forwardExtentCopy);
+            } catch (WorldEditException e) {
+                e.printStackTrace();
+            }
+        }
 
-        ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(editSession, region, clipboard, region.getMinimumPoint());
-        forwardExtentCopy.setCopyingEntities(true);
+        File file = new File(folder, name + ".schem");
+
+        if (!file.getParentFile().exists()) {
+            file.mkdirs();
+        } else if (file.exists()) {
+            file.delete();
+        }
         try {
-            Operations.complete(forwardExtentCopy);
-        } catch (WorldEditException e) {
+            file.createNewFile();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        File file = new File(folder, name + ".schematic");
-
         try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(file))) {
             writer.write(clipboard);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public boolean getSchematic(CommandSender sender, Location location, File folder, String name) {
-        File file = new File(folder, name + ".schematic");
-
-        if (!file.exists()) {
+        if (location == null) {
+            if (sender != null) sender.sendMessage(Command.LANG_FAIL + " (Location null)");
             return false;
         }
+        File file = new File(folder, name + ".schem");
 
-        ClipboardFormat format = BuiltInClipboardFormat.SPONGE_SCHEMATIC;
+        if (!file.exists()) {
+            if (sender != null) sender.sendMessage(Command.LANG_FAIL + " (File doesn't exist)");
+            return false;
+        }
         ClipboardReader reader;
         try {
-            reader = format.getReader(new FileInputStream(file));
+            reader = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getReader(new FileInputStream(file));
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -104,18 +119,19 @@ public class WorldEditManager extends SchematicManager {
         }
 
 
-        EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(location.getWorld()));
-        assert clipboard != null;
-        Operation operation = new ClipboardHolder(clipboard)
-                .createPaste(editSession)
-                .to(BlockVector3.at(location.getX(), location.getY(), location.getZ()))
-                .ignoreAirBlocks(false)
-                .build();
-        try {
-            Operations.complete(operation);
-        } catch (WorldEditException e) {
-            e.printStackTrace();
+        try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(location.getWorld()), -1)) {
+            Operation operation = new ClipboardHolder(clipboard)
+                    .createPaste(editSession)
+                    .to(BlockVector3.at(location.getX(), location.getY(), location.getZ()))
+                    .ignoreAirBlocks(false)
+                    .build();
+            try {
+                Operations.complete(operation);
+            } catch (WorldEditException e) {
+                e.printStackTrace();
+            }
         }
+        if (sender != null) sender.sendMessage(Command.LANG_SUCCESS);
         return true;
     }
 }

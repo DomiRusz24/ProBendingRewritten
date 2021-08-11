@@ -37,7 +37,7 @@ public class UtilMethods {
 
 
     public static String translateColor(String string) {
-        return ChatColor.translateAlternateColorCodes('&', string.replaceAll("\\Q|\\E\\Q|\\E", "\n&r"));
+        return ChatColor.translateAlternateColorCodes('&', string.replaceAll("\\Q||\\E",  "\n&r"));
     }
 
     public static String[] stringToList(String string) {
