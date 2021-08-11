@@ -2,15 +2,15 @@ package com.probending.probending.core.arena;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.api.events.PBArenaStartEvent;
-import com.probending.probending.command.abstractclasses.Command;
 import com.probending.probending.config.arena.ArenaCommandConfig;
 import com.probending.probending.config.arena.ArenaConfig;
 import com.probending.probending.config.arena.ArenaLocationConfig;
+import me.domirusz24.plugincore.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.PreArena;
-import com.probending.probending.core.displayable.PBSign;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.enums.TeamTag;
+import me.domirusz24.plugincore.core.displayable.CustomSign;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.team.ArenaTempTeam;
 import com.probending.probending.core.team.PreArenaTeam;
@@ -20,6 +20,7 @@ import com.probending.probending.managers.ProjectKorraManager;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.domirusz24.plugincore.managers.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -193,7 +194,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
     }
 
     public boolean isReadyToPlay() {
-        if (ProBending.configM.getLocationsConfig().getSpawn() == null) {
+        if (ProBending.locationConfig.getSpawn() == null) {
             ProBending.plugin.log(Level.WARNING, "ProBending spawn is not set!");
             return false;
         }
@@ -301,7 +302,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
         return state == State.TAKEN;
     }
 
-    public PBSign getJoinSign() {
+    public CustomSign getJoinSign() {
         return joinSign;
     }
 
@@ -440,7 +441,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
 
     // --- Sign ---
 
-    private final PBSign joinSign;
+    private final CustomSign joinSign;
 
     public void setSignLocation(Sign sign) {
         joinSign.setSign(sign);
@@ -515,7 +516,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
             case "name":
                 return getName();
             case "in_game":
-                return inGame() ? Command.LANG_YES : Command.LANG_NO;
+                return inGame() ? Languages.YES : Languages.NO;
             case "in_game_color":
                 return inGame() ? "&a" : "&c";
             case "x":
@@ -525,7 +526,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
             case "z":
                 return String.valueOf(getCenter().getBlockZ());
             case "has_backup": {
-                return getRollbackLocation() == null ? Command.LANG_NO : Command.LANG_YES;
+                return getRollbackLocation() == null ? Languages.NO : Languages.YES;
             }
             case "prearena_state": {
                 return preArena.getState().toString();

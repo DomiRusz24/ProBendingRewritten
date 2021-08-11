@@ -4,13 +4,14 @@ import com.probending.probending.ProBending;
 import com.probending.probending.core.players.PBMember;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.PBTeam;
-import com.probending.probending.managers.database.values.DataBaseValue;
-import com.probending.probending.managers.database.values.IntegerValue;
-import com.probending.probending.managers.database.values.StringValue;
+import me.domirusz24.plugincore.managers.database.DataBaseManager;
+import me.domirusz24.plugincore.managers.database.DataBaseTable;
+import me.domirusz24.plugincore.managers.database.values.DataBaseValue;
+import me.domirusz24.plugincore.managers.database.values.IntegerValue;
+import me.domirusz24.plugincore.managers.database.values.StringValue;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +24,6 @@ public class TeamDataTable extends DataBaseTable {
     public final String LOST = "lost";
 
     public final String PLAYERS = "players";
-
-
-    public TeamDataTable(DataBaseManager manager) {
-        super(manager);
-    }
 
     @Override
     public String getName() {
@@ -52,12 +48,12 @@ public class TeamDataTable extends DataBaseTable {
     }
 
     public void createTeam(String uuid, String playerName, String name, Consumer<PBTeam> teamConsumer) {
-        PBPlayer player = ProBending.playerM.getPlayer(UUID.fromString(uuid));
+        PBPlayer player = (PBPlayer) ProBending.playerDataM.getPlayer(playerName, UUID.fromString(uuid));
         if (player != null && name.length() <= 20 && !name.equalsIgnoreCase("null")) {
             getIndex(name, (rs) -> {
                 try {
                     if (rs != null) {
-                        List<PBMember> players = stringToList(rs.getString(PLAYERS)).stream().map(PBMember::getFromString).collect(Collectors.toList());
+                        List<PBMember> players = DataBaseTable.stringToList(rs.getString(PLAYERS)).stream().map(PBMember::getFromString).collect(Collectors.toList());
                         int wins = rs.getInt(WINS);
                         int lost = rs.getInt(LOST);
                         if (players.stream().filter(p -> uuid.equals(p.getUuid().toString())).toArray().length == 1) {

@@ -9,6 +9,7 @@ import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
+import me.domirusz24.plugincore.core.displayable.CustomScoreboard;
 import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -82,7 +83,7 @@ public class ActivePlayer extends AbstractPlayer {
     protected void onUnregister() {
         player.removePotionEffect(PotionEffectType.REGENERATION);
         player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
-        player.teleport(ProBending.configM.getLocationsConfig().getSpawn());
+        player.teleport(ProBending.locationConfig.getSpawn());
         ProBending.nmsM.setGameMode(player, startingGameMode);
         ProBending.playerM.removeActivePlayer(this);
     }
@@ -144,7 +145,7 @@ public class ActivePlayer extends AbstractPlayer {
     }
 
     public Ring getCurrentRing() {
-        Block block = player.getWorld().getBlockAt(player.getLocation().getBlockX(), ProBending.configM.getConfig().getYLevel(), player.getLocation().getBlockZ());
+        Block block = player.getWorld().getBlockAt(player.getLocation().getBlockX(), ProBending.pluginConfig.getYLevel(), player.getLocation().getBlockZ());
         if (block.getState().getData() instanceof Wool) {
             Wool wool = (Wool) block.getState().getData();
             Ring ring = Ring.fromID(wool.getColor().getWoolData());
@@ -250,9 +251,9 @@ public class ActivePlayer extends AbstractPlayer {
     }
 
     @Override
-    protected PBScoreboard scoreboard() {
+    protected CustomScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        PBScoreboard board = new PBScoreboard("pb_" + getPlayer().getName(), scoreboard[0], this);
+        CustomScoreboard board = new CustomScoreboard("pb_" + getPlayer().getName(), scoreboard[0], this);
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

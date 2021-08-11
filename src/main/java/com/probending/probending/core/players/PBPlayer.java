@@ -1,24 +1,20 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
-import me.domirusz24.plugincore.attributes.AttributeAble;
 import me.domirusz24.plugincore.attributes.PlayerAttribute;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.core.team.TeamInvite;
-import com.probending.probending.managers.PAPIManager;
-import com.probending.probending.managers.database.DataBaseManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import me.domirusz24.plugincore.core.players.PlayerData;
 import me.domirusz24.plugincore.managers.database.DataBaseTable;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PBPlayer extends PlayerData implements PlaceholderObject {
+public class PBPlayer extends PlayerData {
 
     // Player used for outside of game, just data.
 
@@ -46,7 +42,7 @@ public class PBPlayer extends PlayerData implements PlaceholderObject {
 
     @Override
     public DataBaseTable getTable() {
-        return null;
+        return ProBending.playerTable;
     }
 
     // ----------
@@ -58,30 +54,29 @@ public class PBPlayer extends PlayerData implements PlaceholderObject {
     // ----------
 
     public void setLost(int lost) {
-        getAttribute(PlayerAttribute.SQL).setIntegerValue();
         this.lost = lost;
-        ProBending.SqlM.playerTable.setIntegerField(uuid, ProBending.SqlM.playerTable.LOST, lost);
+        getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.LOST, lost);
     }
 
     public void setWins(int wins) {
         this.wins = wins;
-        ProBending.SqlM.playerTable.setIntegerField(uuid, ProBending.SqlM.playerTable.WINS, wins);
+        getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.WINS, wins);
     }
 
     public void setKills(int kills) {
         this.kills = kills;
-        ProBending.SqlM.playerTable.setIntegerField(uuid, ProBending.SqlM.playerTable.KILLS, kills);
+        getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.KILLS, kills);
     }
 
     public void setTies(int ties) {
         this.ties = ties;
-        ProBending.SqlM.playerTable.setIntegerField(uuid, ProBending.SqlM.playerTable.TIES, ties);
+        getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.TIES, ties);
     }
 
     public void setTeam(String team) {
         if (!team.equals(this.team)) {
             this.team = team;
-            ProBending.SqlM.playerTable.setStringField(uuid, ProBending.SqlM.playerTable.TEAM, team);
+            getAttribute(PlayerAttribute.SQL).setStringValue(ProBending.playerTable.TEAM, team);
         }
     }
 
@@ -166,7 +161,7 @@ public class PBPlayer extends PlayerData implements PlaceholderObject {
         if (player != null) {
             return PlaceholderAPI.setPlaceholders(player.getPlayer(), param);
         } else {
-            return PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(UUID.fromString(uuid)), param);
+            return PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(uuid), param);
         }
     }
 

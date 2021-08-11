@@ -1,8 +1,9 @@
 package com.probending.probending.config;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.config.configvalue.AbstractConfigValue;
-import com.probending.probending.config.configvalue.ConfigLocation;
+import me.domirusz24.plugincore.config.AbstractConfig;
+import me.domirusz24.plugincore.config.configvalue.ConfigLocation;
+import me.domirusz24.plugincore.managers.ConfigManager;
 import org.bukkit.Location;
 
 public class PluginLocationsConfig extends AbstractConfig {

@@ -2,13 +2,20 @@ package com.probending.probending;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.probending.probending.config.PluginConfig;
+import com.probending.probending.config.PluginLocationsConfig;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.managers.*;
+import com.probending.probending.managers.database.PlayerDataTable;
+import com.probending.probending.managers.database.TeamDataTable;
 import com.projectkorra.projectkorra.ProjectKorra;
+import com.projectkorra.projectkorra.util.TempBlock;
 import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.core.players.PlayerData;
 import me.domirusz24.plugincore.managers.PAPIManager;
 import me.domirusz24.plugincore.managers.database.DataBaseTable;
+import me.domirusz24.plugincore.managers.database.values.DataBaseValue;
+import net.bytebuddy.build.Plugin;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
@@ -28,6 +35,12 @@ public final class ProBending extends PluginCore {
     public static ArenaManager arenaM;
     public static ProjectKorraManager projectKorraM;
     public static CustomItemManager itemM;
+
+    public static PlayerDataTable playerTable;
+    public static TeamDataTable teamTable;
+
+    public static PluginLocationsConfig locationConfig;
+    public static PluginConfig pluginConfig;
 
     // onEnable
     @Override
@@ -63,7 +76,12 @@ public final class ProBending extends PluginCore {
 
     @Override
     public DataBaseTable[] getTables() {
-        return new DataBaseTable[0];
+        playerTable = new PlayerDataTable();
+        teamTable = new TeamDataTable();
+        return new DataBaseTable[] {
+                playerTable,
+                teamTable
+        };
     }
 
     @Override
@@ -73,7 +91,8 @@ public final class ProBending extends PluginCore {
 
     @Override
     protected void loadConfigs() {
-
+        locationConfig = new PluginLocationsConfig("locations.yml", plugin, configM);
+        pluginConfig = new PluginConfig();
     }
 
     @Override

@@ -3,9 +3,9 @@ package com.probending.probending.core.players;
 import com.probending.probending.ProBending;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
-import com.probending.probending.core.displayable.PBScoreboard;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.core.displayable.CustomScoreboard;
 import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.entity.Player;
 
@@ -53,9 +53,9 @@ public class MenuPlayer extends AbstractPlayer {
     public static String LANG_SCOREBOARD = "%team_name%||--------------- ||%player_name%|| ||Use /fs to force the game!||---------------";
 
     @Override
-    protected PBScoreboard scoreboard() {
+    protected CustomScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        PBScoreboard board = new PBScoreboard("pA_" + getPlayer().getName(), scoreboard[0], this);
+        CustomScoreboard board = new CustomScoreboard("pA_" + getPlayer().getName(), scoreboard[0], this);
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

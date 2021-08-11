@@ -6,12 +6,13 @@ import com.probending.probending.core.enums.TeamTag;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.MenuPlayer;
 import com.probending.probending.core.team.PreArenaTeam;
+import me.domirusz24.plugincore.core.region.CustomRegion;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class ArenaGetterRegion extends PBRegion {
+public class ArenaGetterRegion extends CustomRegion {
 
     private Location center;
 
@@ -68,6 +69,11 @@ public class ArenaGetterRegion extends PBRegion {
 
     @Language("ArenaPreGame.Join.BLUE")
     public static String LANG_JOIN_BLUE = "You have joined the blue team!";
+
+    @Override
+    public int delay() {
+        return 1;
+    }
 
     @Override
     public void onPlayerEnter(Player player) {

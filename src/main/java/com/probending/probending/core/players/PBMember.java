@@ -21,14 +21,14 @@ public class PBMember implements PlaceholderObject {
     public PBMember(String name, String uuid) {
         this.name = name;
         this.uuid = uuid;
-        player = ProBending.playerM.getPlayer(name);
+        player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
     }
 
     public PBMember(String name, String uuid, List<Role> roles) {
         this.name = name;
         this.uuid = uuid;
         this.roles.addAll(roles);
-        player = ProBending.playerM.getPlayer(name);
+        player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
     }
 
     public String getName() {
@@ -92,7 +92,7 @@ public class PBMember implements PlaceholderObject {
     }
 
     public boolean isOnline() {
-        player = ProBending.playerM.getPlayer(name);
+        player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
         return player != null;
     }
 

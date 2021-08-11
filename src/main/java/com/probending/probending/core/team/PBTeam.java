@@ -115,13 +115,13 @@ public class PBTeam extends AbstractTeam<PBMember> {
     public boolean addPlayer(PBMember player) {
         boolean bool = super.addPlayer(player);
         if (bool) {
-            PBPlayer pbPlayer = PBPlayer.of(player.getName());
+            PBPlayer pbPlayer = PBPlayer.of(player.getPlayer().getPlayer());
             if (pbPlayer != null) {
                 pbPlayer.setTeam(getName());
             } else {
-                ProBending.SqlM.playerTable.setStringField(player.getUuid().toString(), ProBending.SqlM.playerTable.TEAM, getName());
+                ProBending.playerTable.setStringField(player.getUuid().toString(), ProBending.playerTable.TEAM, getName());
             }
-            SqlM.teamTable.setStringField(getName(), SqlM.teamTable.PLAYERS, getPlayersList());
+            ProBending.teamTable.setStringField(getName(), ProBending.teamTable.PLAYERS, getPlayersList());
             ProBending.teamM.PBTEAM_BY_PLAYER.put(player.getName(), this);
         }
         return bool;
@@ -139,17 +139,17 @@ public class PBTeam extends AbstractTeam<PBMember> {
         } else {
             remove = false;
         }
-        PBPlayer pbPlayer = PBPlayer.of(player.getName());
+        PBPlayer pbPlayer = PBPlayer.of(player.getPlayer().getPlayer());
         if (pbPlayer != null) {
             pbPlayer.setTeam("NULL");
         } else {
-            ProBending.SqlM.playerTable.setStringField(player.getUuid().toString(), ProBending.SqlM.playerTable.TEAM, "NULL");
+            ProBending.playerTable.setStringField(player.getUuid().toString(), ProBending.playerTable.TEAM, "NULL");
         }
         boolean bool = super.removePlayer(player);
         if (remove) {
             Bukkit.getScheduler().runTask(ProBending.plugin, this::removeTeam);
         } else {
-            SqlM.teamTable.setStringField(getName(), SqlM.teamTable.PLAYERS, getPlayersList());
+            ProBending.teamTable.setStringField(getName(), ProBending.teamTable.PLAYERS, getPlayersList());
             ProBending.teamM.PBTEAM_BY_PLAYER.remove(player.getName());
         }
         return bool;
@@ -157,7 +157,7 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     public void removeTeam() {
         purgePlayers();
-        SqlM.teamTable.removeIndex(getName());
+        ProBending.teamTable.removeIndex(getName());
         ProBending.teamM.PBTEAM_BY_NAME.remove(this.getName());
     }
 
@@ -227,12 +227,12 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     public void setWins(int wins) {
         this.wins = wins;
-        SqlM.teamTable.setIntegerField(getName(), SqlM.teamTable.WINS, wins);
+        ProBending.teamTable.setIntegerField(getName(), ProBending.teamTable.WINS, wins);
     }
 
     public void setLost(int lost) {
         this.lost = lost;
-        SqlM.teamTable.setIntegerField(getName(), SqlM.teamTable.LOST, lost);
+        ProBending.teamTable.setIntegerField(getName(), ProBending.teamTable.LOST, lost);
     }
 
     public TeamPlayGUI getPlayGUI() {

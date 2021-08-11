@@ -1,17 +1,22 @@
 package com.probending.probending.core.arena;
 
 import com.probending.probending.ProBending;
-import com.probending.probending.config.configvalue.ConfigLocation;
 import com.probending.probending.core.players.SpectatorPlayer;
+import me.domirusz24.plugincore.core.region.CustomRegion;
 import org.bukkit.entity.Player;
 
-public class SpectateGetterRegion extends PBRegion {
+public class SpectateGetterRegion extends CustomRegion {
 
     private final Arena arena;
 
     public SpectateGetterRegion(String ID, Arena arena) {
         super(ID);
         this.arena = arena;
+    }
+
+    @Override
+    public int delay() {
+        return 1;
     }
 
     @Override

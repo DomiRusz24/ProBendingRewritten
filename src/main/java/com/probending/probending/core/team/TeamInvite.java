@@ -1,6 +1,6 @@
 package com.probending.probending.core.team;
 
-import com.probending.probending.command.abstractclasses.Command;
+import me.domirusz24.plugincore.command.Languages;
 import me.domirusz24.plugincore.config.annotations.Language;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.PBMember;
@@ -39,10 +39,10 @@ public class TeamInvite {
 
     public void accept() {
         if (time >= System.currentTimeMillis()) {
-            team.addPlayer(new PBMember(reciever.getName(), reciever.getUuid()));
+            team.addPlayer(new PBMember(reciever.getName(), reciever.getUuid().toString()));
             if (sender.isOnline()) {
                 sender.sendMessage(PlaceholderAPI.setPlaceholders(reciever.getOnlinePlayer().getPlayer(), LANG_INVITE_ACCEPT));
-                reciever.getOnlinePlayer().getPlayer().sendMessage(Command.LANG_SUCCESS);
+                reciever.getOnlinePlayer().getPlayer().sendMessage(Languages.SUCCESS);
             }
         } else {
             reciever.getOnlinePlayer().getPlayer().sendMessage(LANG_EXPIRED);
