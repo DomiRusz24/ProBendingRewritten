@@ -18,12 +18,6 @@ public class PBPlayer extends PlayerData {
 
     // Player used for outside of game, just data.
 
-    private int wins;
-    private int lost;
-    private int kills;
-    private int ties;
-    private String team;
-
     private TeamInvite invite;
 
     public PBPlayer(String name, UUID uuid) {
@@ -54,30 +48,23 @@ public class PBPlayer extends PlayerData {
     // ----------
 
     public void setLost(int lost) {
-        this.lost = lost;
         getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.LOST, lost);
     }
 
     public void setWins(int wins) {
-        this.wins = wins;
         getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.WINS, wins);
     }
 
     public void setKills(int kills) {
-        this.kills = kills;
         getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.KILLS, kills);
     }
 
     public void setTies(int ties) {
-        this.ties = ties;
         getAttribute(PlayerAttribute.SQL).setIntegerValue(ProBending.playerTable.TIES, ties);
     }
 
     public void setTeam(String team) {
-        if (!team.equals(this.team)) {
-            this.team = team;
-            getAttribute(PlayerAttribute.SQL).setStringValue(ProBending.playerTable.TEAM, team);
-        }
+        getAttribute(PlayerAttribute.SQL).setStringValue(ProBending.playerTable.TEAM, team);
     }
 
     public void setInvite(TeamInvite invite) {
@@ -104,25 +91,26 @@ public class PBPlayer extends PlayerData {
     // ----------
 
     public int getLost() {
-        return lost;
+        return getAttribute(PlayerAttribute.SQL).getIntegerValue(ProBending.playerTable.LOST);
     }
 
     public int getWins() {
-        return wins;
+        return getAttribute(PlayerAttribute.SQL).getIntegerValue(ProBending.playerTable.WINS);
     }
 
     public int getKills() {
-        return kills;
+        return getAttribute(PlayerAttribute.SQL).getIntegerValue(ProBending.playerTable.KILLS);
     }
 
     public int getTies() {
-        return ties;
+        return getAttribute(PlayerAttribute.SQL).getIntegerValue(ProBending.playerTable.TIES);
     }
 
     @Language("PBPlayer.NoTeam")
     public static String LANG_NO_TEAM = "None";
 
     public String getTeamName() {
+        String team = getAttribute(PlayerAttribute.SQL).getStringValue(ProBending.playerTable.TEAM);
         return team.equals("NULL") ? LANG_NO_TEAM : team;
     }
 

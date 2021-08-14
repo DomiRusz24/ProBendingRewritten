@@ -36,7 +36,7 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     public boolean contains(PBPlayer player) {
         for (PBMember member : getPlayers()) {
-            if (player.getUuid().equals(member.getUuid().toString())) {
+            if (player.getUuid().equals(member.getUuid())) {
                 return true;
             }
         }
@@ -45,7 +45,7 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     public boolean removePlayer(PBPlayer player) {
         for (PBMember member : getPlayers()) {
-            if (player.getUuid().equals(member.getUuid().toString())) {
+            if (player.getUuid().equals(member.getUuid())) {
                 removePlayer(member);
                 return true;
             }

@@ -26,6 +26,8 @@
     <orderEntry type="library" name="CoreProtect-19.5" level="project" />
     <orderEntry type="library" name="RollbackCore-2.4.2(for 1.12.2 or older)" level="project" />
     <orderEntry type="library" name="RollbackCore-3.5.0-BETA" level="project" />
+    <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.ProjectKorra:ProjectKorra:1.9.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.13.2-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: me.clip:placeholderapi:2.10.9">
