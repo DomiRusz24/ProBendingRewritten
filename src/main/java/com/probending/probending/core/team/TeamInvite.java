@@ -1,7 +1,9 @@
 package com.probending.probending.core.team;
 
 import com.probending.probending.command.Languages;
+import com.probending.probending.core.players.PBPlayerWrapper;
 import me.domirusz24.plugincore.config.annotations.Language;
+import me.domirusz24.plugincore.config.language.dynamics.ClickableMessage;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.PBMember;
 import com.probending.probending.core.players.PBPlayer;
@@ -24,11 +26,10 @@ public class TeamInvite {
         this.time = System.currentTimeMillis() + duration;
     }
 
-    @Language("Team.Invite")
-    public static String LANG_INVITE = "Player %player_name% has invited you to his team %team_name%!||Type in /team accept to accept the invite!";
+    public static ClickableMessage LANG_INVITE = ClickableMessage.of("Player %player_name% has invited you to his team %team_name%!||Click here to accept!", "Team.Invite", "Click here to accept!", "/team accept");
 
     public void send() {
-        reciever.getOnlinePlayer().getPlayer().sendMessage(PlaceholderAPI.setPlaceholders(sender, PAPIManager.setPlaceholders(team, LANG_INVITE)));
+        reciever.getOnlinePlayer().getPlayer().spigot().sendMessage(LANG_INVITE.getText(team, PBPlayerWrapper.of(sender)));
     }
 
     @Language("Team.InviteAccept")

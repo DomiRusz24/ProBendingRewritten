@@ -185,7 +185,6 @@ public class ActivePlayer extends AbstractPlayer {
         }
         getPlayer().teleport(l);
     }
-
     // ---------- //
 
     private boolean spectating = false;

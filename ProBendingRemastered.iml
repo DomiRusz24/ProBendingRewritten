@@ -26,21 +26,7 @@
     <orderEntry type="library" name="CoreProtect-19.5" level="project" />
     <orderEntry type="library" name="RollbackCore-2.4.2(for 1.12.2 or older)" level="project" />
     <orderEntry type="library" name="RollbackCore-3.5.0-BETA" level="project" />
-    <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
-    <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
-    <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
-    <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
-    <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.13.2-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: com.projectkorra:projectkorra:1.8.7">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/ProjectKorra-1.8.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module-library">
       <library name="Maven: me.clip:placeholderapi:2.10.9">
         <CLASSES>
@@ -84,5 +70,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.bytebuddy:byte-buddy:1.10.16" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.fastasyncworldedit:FAWE-Bukkit:1.17-23" level="project" />
     <orderEntry type="library" name="Maven: me.domirusz24.plugincore:PluginCore-PH:1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.github.ProjectKorra:ProjectKorra:1.9.2" level="project" />
   </component>
 </module>

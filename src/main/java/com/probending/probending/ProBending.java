@@ -2,6 +2,20 @@ package com.probending.probending;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.probending.probending.command.arena.ArenaConfigCommand;
+import com.probending.probending.command.arena.ArenaControlCommand;
+import com.probending.probending.command.arena.arenaconfig.ArenaGetCommand;
+import com.probending.probending.command.arena.arenaconfig.ArenaSetCommand;
+import com.probending.probending.command.arena.arenacontrol.*;
+import com.probending.probending.command.base.ProBendingCommand;
+import com.probending.probending.command.base.probending.CreateArenaCommand;
+import com.probending.probending.command.base.probending.RulesCommand;
+import com.probending.probending.command.base.probending.SetSpawnCommand;
+import com.probending.probending.command.forceskip.ForceStartCommand;
+import com.probending.probending.command.leave.LeaveCommand;
+import com.probending.probending.command.pblevel.PBLevelCommand;
+import com.probending.probending.command.pbteam.PBTeamCommand;
+import com.probending.probending.command.pbteam.pbteam.*;
 import com.probending.probending.config.CommandConfig;
 import com.probending.probending.config.PluginConfig;
 import com.probending.probending.config.PluginLocationsConfig;
@@ -12,6 +26,7 @@ import com.probending.probending.managers.database.TeamDataTable;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.util.TempBlock;
 import me.domirusz24.plugincore.PluginCore;
+import me.domirusz24.plugincore.command.ReloadSubCommand;
 import me.domirusz24.plugincore.core.players.PlayerData;
 import me.domirusz24.plugincore.managers.PAPIManager;
 import me.domirusz24.plugincore.managers.database.DataBaseTable;
@@ -61,8 +76,6 @@ public final class ProBending extends PluginCore {
         // Protocol
         protocol = ProtocolLibrary.getProtocolManager();
 
-        // Multiverse
-        multiverse = (MultiverseCore) hookInto("Multiverse-Core");
 
     }
 
@@ -126,7 +139,41 @@ public final class ProBending extends PluginCore {
 
     @Override
     protected void _loadCommands() {
+        commandM.registerCommand(new ArenaControlCommand()
+                .addSubCommand(new ArenaJoinCommand())
+                .addSubCommand(new ArenaAddCommand())
+                .addSubCommand(new ArenaRemoveCommand())
+                .addSubCommand(new ArenaStartCommand())
+                .addSubCommand(new ArenaStopCommand())
+                .addSubCommand(new ArenaSpectateCommand())
+        );
 
+        commandM.registerCommand(new ArenaConfigCommand()
+                .addSubCommand(new ArenaGetCommand())
+                .addSubCommand(new ArenaSetCommand())
+                .addSubCommand(new ArenaRefreshCommand())
+        );
+
+        commandM.registerCommand(new ProBendingCommand()
+                .addSubCommand(new ReloadSubCommand())
+                .addSubCommand(new RulesCommand())
+                .addSubCommand(new CreateArenaCommand())
+                .addSubCommand(new SetSpawnCommand())
+        );
+
+        commandM.registerCommand(new LeaveCommand());
+
+        commandM.registerCommand(new PBLevelCommand());
+
+        commandM.registerCommand(new ForceStartCommand());
+
+        commandM.registerCommand(new PBTeamCommand()
+                .addSubCommand(new CreateTeamCommand())
+                .addSubCommand(new InviteTeamCommand())
+                .addSubCommand(new TeamAcceptCommand())
+                .addSubCommand(new TeamLeaveCommand())
+                .addSubCommand(new TeamPlayCommand())
+        );
     }
 
     // Spigot events

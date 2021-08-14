@@ -55,7 +55,7 @@ public class PBTeam extends AbstractTeam<PBMember> {
 
     public PBMember getMember(PBPlayer player) {
         for (PBMember member : getPlayers()) {
-            if (player.getUuid().equals(member.getUuid().toString())) {
+            if (player.getUuid().equals(member.getUuid())) {
                 return member;
             }
         }

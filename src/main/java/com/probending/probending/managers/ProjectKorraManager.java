@@ -1,9 +1,12 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.core.arena.states.StartingState;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ability.CoreAbility;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Objective;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +57,15 @@ public class ProjectKorraManager extends PBManager {
         }
 
         return element == null ? BendingState.NONE : BendingState.CORRECT;
+    }
+
+    public boolean hasBoardEnabled(Player player) {
+        for (Objective objective : player.getScoreboard().getObjectives()) {
+            if (objective.getDisplayName().equals(StartingState.BoardChooseGUI.LANG_PB_BOARD_TITLE)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
