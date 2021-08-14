@@ -26,7 +26,9 @@ public class PBPlayer extends PlayerData {
 
     @Override
     protected void onSqlLoad() {
-
+        if (!getTeamName().equals(PBPlayer.LANG_NO_TEAM) && getTeam() == null) {
+            ProBending.teamTable.createTeam(getPlayer(), getTeamName());
+        }
     }
 
     @Override
