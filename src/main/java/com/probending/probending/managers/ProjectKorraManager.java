@@ -32,7 +32,7 @@ public class ProjectKorraManager extends PBManager {
         return null;
     }
 
-    public BendingState getBendingState(BendingPlayer bendingPlayer) {
+    public BendingState getBendingState(BendingPlayer bendingPlayer, List<String> illegalAbilities) {
 
         if (bendingPlayer == null) return BendingState.NONE;
 
@@ -42,7 +42,7 @@ public class ProjectKorraManager extends PBManager {
             CoreAbility ability = CoreAbility.getAbility(name);
             if (ability != null) {
                 Element ele = getBasicElement(ability.getElement());
-                if (LEGAL_ELEMENTS.contains(ele.getName())) {
+                if (LEGAL_ELEMENTS.contains(ele.getName()) && !illegalAbilities.contains(ability.getName())) {
                     if (element == null) {
                         element = ele;
                     } else {
@@ -61,7 +61,7 @@ public class ProjectKorraManager extends PBManager {
 
     public boolean hasBoardEnabled(Player player) {
         for (Objective objective : player.getScoreboard().getObjectives()) {
-            if (objective.getDisplayName().equals(StartingState.BoardChooseGUI.LANG_PB_BOARD_TITLE)) {
+            if (objective.getDisplayName().equals(StartingState.LANG_PB_BOARD_TITLE)) {
                 return true;
             }
         }

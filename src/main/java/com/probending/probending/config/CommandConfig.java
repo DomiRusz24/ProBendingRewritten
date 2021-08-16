@@ -19,6 +19,7 @@ public class CommandConfig extends AbstractConfig {
 
     public CommandConfig(String path, ProBending plugin, ConfigManager manager) {
         super(path, plugin, manager);
+        save();
         for (Commands value : Commands.values()) {
             value.reload(this);
         }
@@ -45,11 +46,11 @@ public class CommandConfig extends AbstractConfig {
 
     public enum Commands {
 
-        ArenaStartPlayer("Player.ArenaStart", Arrays.asList("msg %player_name% hello!")),
-        ArenaStartSingle("Single.ArenaStart", Arrays.asList("broadcast %arena_name% has started!")),
+        ArenaStartPlayer("Player.ArenaStart", Arrays.asList("")),
+        ArenaStartSingle("Single.ArenaStart", Arrays.asList("")),
 
-        ArenaStopPlayer("Player.ArenaStop", Arrays.asList("msg %player_name% hello!")),
-        ArenaStopSingle("Single.ArenaStop", Arrays.asList("broadcast %arena_name% has ended! Result: %arena_winningteam%")),
+        ArenaStopPlayer("Player.ArenaStop", Arrays.asList("")),
+        ArenaStopSingle("Single.ArenaStop", Arrays.asList("")),
 
         ArenaWinPlayer("Player.Game.Win", Arrays.asList("")),
         ArenaLosePlayer("Player.Game.Lose", Arrays.asList("")),
@@ -71,6 +72,7 @@ public class CommandConfig extends AbstractConfig {
         private final List<String> defaultCommands;
 
         private HashMap<YamlConfiguration, List<String>> commands = new HashMap<>();
+
         Commands(String configPath, List<String> defaultCommands) {
             this.configPath = configPath;
             this.defaultCommands = defaultCommands;
@@ -113,7 +115,12 @@ public class CommandConfig extends AbstractConfig {
         private void run(YamlConfiguration file, Player... players) {
             if (file.contains(configPath)) {
                 List<Player> playerList = Arrays.asList(players);
-                commands.get(file).forEach(c -> playerList.forEach(p -> ProBending.plugin.getServer().dispatchCommand(ProBending.plugin.getServer().getConsoleSender(), PlaceholderAPI.setPlaceholders(p, c))));
+                commands.get(file).forEach(c ->
+                        playerList
+                                .forEach(p ->
+                                ProBending.plugin.getServer().dispatchCommand(
+                                        ProBending.plugin.getServer().getConsoleSender(),
+                                        PlaceholderAPI.setPlaceholders(p, c))));
             }
         }
 

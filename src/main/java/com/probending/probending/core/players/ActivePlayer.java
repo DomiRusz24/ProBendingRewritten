@@ -1,6 +1,7 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.config.arena.ArenaConfig;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.enums.Ring;
@@ -71,11 +72,8 @@ public class ActivePlayer extends AbstractPlayer {
             player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 999999, 10));
             player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 999999, 10));
         }
-        if (teamTag == TeamTag.BLUE) {
-            player.getInventory().setArmorContents(ProBending.teamM.BLUE_ARMOR);
-        } else {
-            player.getInventory().setArmorContents(ProBending.teamM.RED_ARMOR);
-        }
+        ArenaConfig c = getArena().getArena().getArenaConfig();
+        player.getInventory().setArmorContents(ProBending.teamM.getArmor(teamTag, c.getBody(), c.getBody(), c.getBody(), c.getHat()));
         ProBending.playerM.addActivePlayer(this);
     }
 
@@ -257,6 +255,11 @@ public class ActivePlayer extends AbstractPlayer {
             board.addValue(s);
         }
         return board;
+    }
+
+    @Override
+    protected boolean overrideScoreBoard() {
+        return false;
     }
 
     // --------- //

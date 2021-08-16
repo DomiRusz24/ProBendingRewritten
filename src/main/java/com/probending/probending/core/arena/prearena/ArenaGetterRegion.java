@@ -71,11 +71,6 @@ public class ArenaGetterRegion extends CustomRegion {
     public static String LANG_JOIN_BLUE = "You have joined the blue team!";
 
     @Override
-    public int delay() {
-        return 1;
-    }
-
-    @Override
     public void onPlayerEnter(Player player) {
         for (MenuPlayer menuPlayer : team.getPlayers()) {
             if (menuPlayer.getPlayer().equals(player)) return;

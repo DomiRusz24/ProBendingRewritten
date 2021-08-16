@@ -1,6 +1,7 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.config.arena.ArenaConfig;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.enums.TeamTag;
@@ -23,11 +24,7 @@ public class MenuPlayer extends AbstractPlayer {
         super(player);
         this.tag = tag;
         this.region = region;
-        if (tag == TeamTag.BLUE) {
-            player.getInventory().setArmorContents(ProBending.teamM.BLUE_ARMOR);
-        } else {
-            player.getInventory().setArmorContents(ProBending.teamM.RED_ARMOR);
-        }
+        player.getInventory().setArmorContents(ProBending.teamM.getArmor(tag,false, false, false, true));
         ProBending.itemM.LEAVE_COMMAND().giveToPlayer(player, 1, 8);
         scoreboard.addPlaceholder(region.getArena());
         scoreboard.addPlaceholder(region.getTeam());
@@ -60,6 +57,11 @@ public class MenuPlayer extends AbstractPlayer {
             board.addValue(s);
         }
         return board;
+    }
+
+    @Override
+    protected boolean overrideScoreBoard() {
+        return false;
     }
 
     @Override

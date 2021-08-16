@@ -1,6 +1,7 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.core.players.ActivePlayer;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.ActiveTeam;
@@ -31,14 +32,23 @@ public class TeamManager extends PBManager {
 
     public final HashMap<Player, PreArenaTeam> PREARENATEAM_BY_PLAYER = new HashMap<>();
 
-    public final ItemStack[] BLUE_ARMOR;
+    private final ItemStack[] BLUE_ARMOR;
 
-    public final ItemStack[] RED_ARMOR;
+    private final ItemStack[] RED_ARMOR;
 
     public TeamManager(ProBending plugin) {
         super(plugin);
         BLUE_ARMOR = getArmorByColor(Color.BLUE);
         RED_ARMOR = getArmorByColor(Color.RED);
+    }
+
+    public ItemStack[] getArmor(TeamTag team, boolean boots, boolean leggings, boolean chestplate, boolean helmet) {
+        ItemStack[] armor = team == TeamTag.BLUE ? BLUE_ARMOR.clone() : RED_ARMOR.clone();
+        if (!boots) armor[0] = new ItemStack(Material.AIR);
+        if (!leggings) armor[1] = new ItemStack(Material.AIR);
+        if (!chestplate) armor[2] = new ItemStack(Material.AIR);
+        if (!helmet) armor[3] = new ItemStack(Material.AIR);
+        return armor;
     }
 
     public ItemStack[] getArmorByColor(Color color, boolean unbreakable) {

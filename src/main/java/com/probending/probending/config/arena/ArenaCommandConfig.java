@@ -12,6 +12,9 @@ public class ArenaCommandConfig extends AbstractArenaConfig {
     public ArenaCommandConfig(Arena arena, String path, ProBending plugin) {
         super(arena, path, plugin);
         save();
+        for (CommandConfig.Commands value : CommandConfig.Commands.values()) {
+            value.reload(this);
+        }
     }
 
     public ArenaCommandConfig(Arena arena, File file, ProBending plugin) {

@@ -15,11 +15,6 @@ public class SpectateGetterRegion extends CustomRegion {
     }
 
     @Override
-    public int delay() {
-        return 1;
-    }
-
-    @Override
     protected void onPlayerEnter(Player player) {
         if (!arena.inGame()) return;
         if (ProBending.playerM.getActivePlayer(player) == null && ProBending.playerM.getMenuPlayer(player) == null && ProBending.playerM.getSpectator(player) == null) {

@@ -5,6 +5,9 @@ import com.probending.probending.core.arena.Arena;
 import me.domirusz24.plugincore.config.configvalue.ConfigValue;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ArenaConfig extends AbstractArenaConfig {
 
@@ -13,10 +16,14 @@ public class ArenaConfig extends AbstractArenaConfig {
     private final ConfigValue<Integer> minimalPlayerAmount = new ConfigValue<>("MinimalPlayerAmount", 2, this, true);
     private ConfigValue<Boolean> damage = new ConfigValue<>("Damage", true, this);
     private ConfigValue<Boolean> publicArena = new ConfigValue<>("Public", true, this);
+    private ConfigValue<List<String>> bannedAbilities = new ConfigValue<>("BannedAbilities", Arrays.asList(""), this);
     private ConfigValue<Double> dragValue = new ConfigValue<>("DragForce", 1.0, this, true);
     private ConfigValue<Integer> tirednessMax = new ConfigValue<>("FatigueMax", 200, this, true);
     private ConfigValue<Integer> hpToTirednessRatio = new ConfigValue<>("HPToFatigueRatio", 4, this, true);
     private ConfigValue<Boolean> resetFatigueOnStageLose = new ConfigValue<>("ResetFatigueOnStageLose", false, this, true);
+
+    private ConfigValue<Boolean> hat = new ConfigValue<>("Armor.Hat", true, this);
+    private ConfigValue<Boolean> body = new ConfigValue<>("Armor.Body", true, this);
 
 
     public ArenaConfig(Arena arena, String path, ProBending plugin) {
@@ -28,6 +35,13 @@ public class ArenaConfig extends AbstractArenaConfig {
         super(arena, file, plugin);
         save();
     }
+
+    public List<String> getBannedAbilities() {
+        List<String> s = new ArrayList<>(bannedAbilities.getValue());
+        s.addAll(ProBending.pluginConfig.getBannedAbilities());
+        return s;
+    }
+
     public Integer getRoundTime() {
         return Math.max(roundTime.getValue(), 60);
     }
@@ -62,5 +76,13 @@ public class ArenaConfig extends AbstractArenaConfig {
 
     public boolean isPublic() {
         return publicArena.getValue();
+    }
+
+    public Boolean getHat() {
+        return hat.getValue();
+    }
+
+    public Boolean getBody() {
+        return body.getValue();
     }
 }

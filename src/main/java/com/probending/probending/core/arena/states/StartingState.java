@@ -27,11 +27,11 @@ public class StartingState extends AbstractArenaHandler {
     public void onStart() {
         getArena().teleportToStartingLocations();
         for (ActivePlayer player : getArena().getPlayers(false)) {
-            if (player.getPlayer().getScoreboard() == Bukkit.getScoreboardManager().getMainScoreboard()) {
-                new BoardChooseGUI(player);
+            if (!UtilMethods.hasScoreboard(player.getPlayer())) {
+                new BoardChooseGUI(player).addPlayer(player.getPlayer());
             } else {
                 if (ProBending.projectKorraM.hasBoardEnabled(player.getPlayer())) {
-                    new BoardChooseGUI(player);
+                    new BoardChooseGUI(player).addPlayer(player.getPlayer());
                 }
             }
         }
@@ -85,10 +85,31 @@ public class StartingState extends AbstractArenaHandler {
         }
     }
 
-    public static class BoardChooseGUI extends CustomGUI {
+    @Language("BoardChoose.GUI.Name")
+    public static String LANG_NAME = "&d&lBending board &r&7| &3&lProBending board";
 
-        @Language("BoardChoose.GUI.Name")
-        public static String LANG_NAME = "&d&lBending board &r&7| &3&lProBending board";
+    @Language("BoardChoose.GUI.Item.Selected")
+    public static String LANG_SELECTED = "&a[SELECTED] ";
+
+    @Language("BoardChoose.GUI.Item.PKBoard.Display")
+    public static String LANG_PK_NAME = "&d&lBending board";
+
+    @Language("BoardChoose.GUI.Item.PKBoard.Description")
+    public static String LANG_PK_DESCRIPTION = "&7If you select this, your normal bending board will||&7be shown during the game.";
+
+    @Language("BoardChoose.GUI.Item.PBBoard.Display")
+    public static String LANG_PB_NAME = "&3&lProBending board";
+
+    @Language("BoardChoose.GUI.Item.PBBoard.Description")
+    public static String LANG_PB_DESCRIPTION = "&7If you select this, the ProBending board will||&7be shown during the game.||&7&l(SUGGESTED)";
+
+    @Language("BoardChoose.GUI.Command.ToggleBoard")
+    public static String LANG_PB_TOGGLE_BOARD = "bending board";
+
+    @Language("BoardChoose.GUI.Command.BoardTitle")
+    public static String LANG_PB_BOARD_TITLE = "&lAbilities";
+
+    public static class BoardChooseGUI extends CustomGUI {
 
         private final ActivePlayer player;
 
@@ -96,34 +117,12 @@ public class StartingState extends AbstractArenaHandler {
             super(LANG_NAME, 9);
             this.player = player;
             clearItems();
-            addPlayer(player.getPlayer());
         }
 
         @Override
         protected void onUpdate() {
 
         }
-
-        @Language("BoardChoose.GUI.Item.Selected")
-        public static String LANG_SELECTED = "&a[SELECTED] ";
-
-        @Language("BoardChoose.GUI.Item.PKBoard.Display")
-        public static String LANG_PK_NAME = "&d&lBending board";
-
-        @Language("BoardChoose.GUI.Item.PKBoard.Description")
-        public static String LANG_PK_DESCRIPTION = "&7If you select this, your normal bending board will||&7be shown during the game.";
-
-        @Language("BoardChoose.GUI.Item.PBBoard.Display")
-        public static String LANG_PB_NAME = "&3&lProBending board";
-
-        @Language("BoardChoose.GUI.Item.PBBoard.Description")
-        public static String LANG_PB_DESCRIPTION = "&7If you select this, the ProBending board will||&7be shown during the game.||&7&l(SUGGESTED)";
-
-        @Language("BoardChoose.GUI.Command.ToggleBoard")
-        public static String LANG_PB_TOGGLE_BOARD = "bending board";
-
-        @Language("BoardChoose.GUI.Command.BoardTitle")
-        public static String LANG_PB_BOARD_TITLE = "&lAbilities";
 
         @Override
         protected void onClear() {

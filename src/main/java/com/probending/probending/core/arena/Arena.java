@@ -247,7 +247,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                     List<Player> players = blue.getUnwrappedPlayers();
                     players.addAll(red.getUnwrappedPlayers());
                     for (Player player : players) {
-                        ProjectKorraManager.BendingState state = ProBending.projectKorraM.getBendingState(BendingPlayer.getBendingPlayer(player));
+                        ProjectKorraManager.BendingState state = ProBending.projectKorraM.getBendingState(BendingPlayer.getBendingPlayer(player), getArenaConfig().getBannedAbilities());
                         String message;
                         if (state == null) {
                             message = PlaceholderAPI.setPlaceholders(player, LANG_NO_ABILITIES);
