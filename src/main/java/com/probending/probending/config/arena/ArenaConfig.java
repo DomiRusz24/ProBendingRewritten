@@ -1,6 +1,7 @@
 package com.probending.probending.config.arena;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.config.PluginConfig;
 import com.probending.probending.core.arena.Arena;
 import me.domirusz24.plugincore.config.configvalue.ConfigValue;
 
@@ -21,6 +22,7 @@ public class ArenaConfig extends AbstractArenaConfig {
     private ConfigValue<Integer> tirednessMax = new ConfigValue<>("FatigueMax", 200, this, true);
     private ConfigValue<Integer> hpToTirednessRatio = new ConfigValue<>("HPToFatigueRatio", 4, this, true);
     private ConfigValue<Boolean> resetFatigueOnStageLose = new ConfigValue<>("ResetFatigueOnStageLose", false, this, true);
+    private ConfigValue<Integer> woolLayerLevel = new ConfigValue<>("WoolLayerLevel", ProBending.pluginConfig.getYLevel(), this, true);
 
     private ConfigValue<Boolean> hat = new ConfigValue<>("Armor.Hat", true, this);
     private ConfigValue<Boolean> body = new ConfigValue<>("Armor.Body", true, this);
@@ -84,5 +86,9 @@ public class ArenaConfig extends AbstractArenaConfig {
 
     public Boolean getBody() {
         return body.getValue();
+    }
+
+    public Integer getYLevel() {
+        return woolLayerLevel.getValue();
     }
 }

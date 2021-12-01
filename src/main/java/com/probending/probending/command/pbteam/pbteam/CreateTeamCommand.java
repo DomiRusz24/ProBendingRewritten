@@ -1,6 +1,7 @@
 package com.probending.probending.command.pbteam.pbteam;
 
 import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.BaseSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
@@ -67,5 +68,10 @@ public class CreateTeamCommand extends BaseSubCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return PermissionDefault.TRUE;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

@@ -62,7 +62,7 @@ public class MidRoundState extends AbstractArenaHandler {
 
     @Override
     public void onStart() {
-        getArena().sendTitle(PAPIManager.setPlaceholders(getArena(), LANG_ROUND_END), "", 5, 50, 5, true);
+        getArena().sendTitle(PAPIManager.setPlaceholder(getArena(), LANG_ROUND_END), "", 5, 50, 5, true);
         for (ActivePlayer p : getArena().getPlayers(false)) {
             UtilMethods.freezePlayer(p.getPlayer(), true);
         }
@@ -124,6 +124,7 @@ public class MidRoundState extends AbstractArenaHandler {
     private void endMidRoundState() {
         for (ActivePlayer p : getArena().getPlayers(false)) {
             UtilMethods.freezePlayer(p.getPlayer(), false);
+            p.getPlayer().setHealth(20);
         }
         type.runFourthStage(this);
         getArena().setState(nextState);

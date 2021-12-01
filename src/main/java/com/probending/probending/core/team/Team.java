@@ -1,6 +1,7 @@
 package com.probending.probending.core.team;
 
 import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.players.PBPlayer;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class Team extends AbstractTeam<PBPlayerWrapper> {
 
     public Team(String name, int size) {
-        super(name, size);
+        super(ProBending.plugin, name, size);
     }
 
     public boolean removePlayer(Player player) {

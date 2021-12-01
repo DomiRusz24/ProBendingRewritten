@@ -1,5 +1,7 @@
 package com.probending.probending.command.base.probending;
 
+import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.BaseSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
@@ -52,5 +54,10 @@ public class RulesCommand extends BaseSubCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return PermissionDefault.TRUE;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

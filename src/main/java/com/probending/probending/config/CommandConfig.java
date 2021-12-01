@@ -137,7 +137,7 @@ public class CommandConfig extends AbstractConfig {
                     for (String command : commands.get(file)) {
                         String com = command;
                         for (PlaceholderObject i : object) {
-                            com = PAPIManager.setPlaceholders(i, com);
+                            com = PAPIManager.setPlaceholder(i, com);
                         }
                         ProBending.plugin.getServer().dispatchCommand(ProBending.plugin.getServer().getConsoleSender(), com);
                     }

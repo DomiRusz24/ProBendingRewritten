@@ -1,4 +1,5 @@
 package com.probending.probending.core.players;
+import com.probending.probending.ProBending;
 import me.domirusz24.plugincore.core.players.AbstractPlayer;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,7 @@ public class PBPlayerWrapper extends AbstractPlayer {
 
     private final static HashMap<UUID, PBPlayerWrapper> WRAPPER_BY_PLAYER = new HashMap<>();
     protected PBPlayerWrapper(Player player) {
-        super(player);
+        super(ProBending.plugin, player);
         WRAPPER_BY_PLAYER.put(player.getUniqueId(), this);
     }
 

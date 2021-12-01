@@ -2,6 +2,7 @@ package com.probending.probending.command.arena;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.ArenaCommand;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
@@ -63,7 +64,7 @@ public class ArenaControlCommand extends ArenaCommand {
                 value = value.replaceAll("%team_blue%", arena.getTeam(TeamTag.BLUE).getInfo());
                 value = value.replaceAll("%team_red%", arena.getTeam(TeamTag.RED).getInfo());
             }
-            sender.sendMessage(PAPIManager.setPlaceholders(arena, value));
+            sender.sendMessage(PAPIManager.setPlaceholder(arena, value));
         }
     }
 
@@ -78,9 +79,14 @@ public class ArenaControlCommand extends ArenaCommand {
         if (hasPermission(sender)) {
             StringBuilder arenaList = new StringBuilder();
             for (Arena arena : ProBending.arenaM.getArenas()) {
-                arenaList.append(PAPIManager.setPlaceholders(arena, LANG_SINGLE_ARENA));
+                arenaList.append(PAPIManager.setPlaceholder(arena, LANG_SINGLE_ARENA));
             }
             sender.sendMessage(LANG_ARENA_LIST.replaceAll("%arena_list%", arenaList.toString()));
         }
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

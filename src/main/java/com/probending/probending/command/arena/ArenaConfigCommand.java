@@ -1,6 +1,8 @@
 package com.probending.probending.command.arena;
 
+import com.probending.probending.ProBending;
 import com.probending.probending.command.ArenaCommand;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.managers.PAPIManager;
@@ -22,7 +24,7 @@ public class ArenaConfigCommand extends ArenaCommand {
     @Override
     public void selfExecute(CommandSender sender, Arena arena) {
         if (hasPermission(sender)) {
-            sender.sendMessage(PAPIManager.setPlaceholders(arena, LANG_ARENA));
+            sender.sendMessage(PAPIManager.setPlaceholder(arena, LANG_ARENA));
         }
     }
 
@@ -58,4 +60,8 @@ public class ArenaConfigCommand extends ArenaCommand {
         return Collections.singletonList("arenac");
     }
 
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
+    }
 }

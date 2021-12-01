@@ -6,10 +6,10 @@ import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.ActivePlayer;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.core.team.PBTeam;
-import com.probending.probending.util.UtilMethods;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderHook;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.domirusz24.plugincore.util.UtilMethods;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -69,5 +69,9 @@ public class PAPIManager extends me.domirusz24.plugincore.managers.PAPIManager {
                 return pbPlayer.getTeamName();
         }
         return null;
+    }
+
+    public static String setPlaceholder(PlaceholderObject object, String text) {
+        return ProBending.papiM.setPlaceholders(object, text);
     }
 }

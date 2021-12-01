@@ -25,6 +25,10 @@ public class TeamDataTable extends DataBaseTable {
 
     public final String PLAYERS = "players";
 
+    public TeamDataTable(DataBaseManager manager) {
+        super(manager);
+    }
+
     @Override
     public String getName() {
         return "PBTeams";
@@ -49,6 +53,7 @@ public class TeamDataTable extends DataBaseTable {
 
     public void createTeam(String uuid, String playerName, String name, Consumer<PBTeam> teamConsumer) {
         PBPlayer player = (PBPlayer) ProBending.playerDataM.getPlayer(playerName, UUID.fromString(uuid));
+        if (ProBending.teamM.getPBTeamByName(name) != null) return;
         if (player != null && name.length() <= 20 && !name.equalsIgnoreCase("null")) {
             getIndex(name, (rs) -> {
                 try {

@@ -9,6 +9,7 @@ import com.probending.probending.core.players.SpectatorPlayer;
 import com.probending.probending.core.team.ActiveTeam;
 import com.probending.probending.core.team.PreArenaTeam;
 import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.util.PerTick;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -130,6 +131,11 @@ public class ArenaManager extends PBManager implements PerTick {
     }
 
     // --------------------------
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
+    }
 
 
 

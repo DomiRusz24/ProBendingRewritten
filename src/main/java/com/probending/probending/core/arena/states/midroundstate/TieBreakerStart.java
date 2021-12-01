@@ -14,13 +14,13 @@ public class TieBreakerStart extends MidRoundStateType {
     @Override
     public void runSecondStage(MidRoundState stage) {
         stage.getArena().sendTitle("",
-                PAPIManager.setPlaceholders(stage.getArena(), LANG_ROUND_TIEBREAKER_RESULT),
+                PAPIManager.setPlaceholder(stage.getArena(), LANG_ROUND_TIEBREAKER_RESULT),
                 5, 50, 5, true);
     }
 
     @Override
     public void runThirdStage(MidRoundState stage) {
-        stage.getArena().sendTitle(PAPIManager.setPlaceholders(stage.getArena(), MidRoundState.LANG_ROUND_SHORTLY_START.replace("%arena_round%", String.valueOf(stage.getArena().getRound() + 1))),
+        stage.getArena().sendTitle(PAPIManager.setPlaceholder(stage.getArena(), MidRoundState.LANG_ROUND_SHORTLY_START.replace("%arena_round%", String.valueOf(stage.getArena().getRound() + 1))),
                 "",
                 5, 50, 5, true);
     }

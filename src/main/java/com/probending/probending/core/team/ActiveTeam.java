@@ -26,7 +26,7 @@ public class ActiveTeam extends AbstractTeam<ActivePlayer> {
     private int points = 0;
 
     public ActiveTeam(ActiveArena arena, TeamTag tag) {
-        super(tag.toString(), 3);
+        super(ProBending.plugin, tag.toString(), 3);
         this.arena = arena;
         this.tag = tag;
     }

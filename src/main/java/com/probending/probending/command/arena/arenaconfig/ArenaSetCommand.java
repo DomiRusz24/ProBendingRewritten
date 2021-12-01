@@ -3,6 +3,7 @@ package com.probending.probending.command.arena.arenaconfig;
 import com.probending.probending.ProBending;
 import com.probending.probending.command.ArenaSubCommand;
 import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.Ring;
@@ -53,7 +54,7 @@ public class ArenaSetCommand extends ArenaSubCommand {
                         sender.sendMessage(Languages.SUCCESS);
                     } else if (setType.equals("sign")) {
                         Block block = player.getTargetBlock(null, 8);
-                        if (block.getType().equals(Material.WALL_SIGN) || block.getType().equals(Material.SIGN)) {
+                        if (block.getType().name().contains("SIGN")) {
                             arena.setSignLocation((Sign) block.getState());
                             sender.sendMessage(Languages.SUCCESS + " (x, y, z)"
                                     .replaceAll("x", String.valueOf(arena.getJoinSign().getLocation().getBlockX()))
@@ -178,5 +179,10 @@ public class ArenaSetCommand extends ArenaSubCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return null;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

@@ -2,6 +2,7 @@ package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.config.arena.ArenaConfig;
+import com.probending.probending.managers.CustomItemManager;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
 import com.probending.probending.core.enums.TeamTag;
@@ -21,11 +22,11 @@ public class MenuPlayer extends AbstractPlayer {
     private boolean voteSkip = false;
 
     public MenuPlayer(Player player, ArenaGetterRegion region, TeamTag tag) {
-        super(player);
+        super(ProBending.plugin, player);
         this.tag = tag;
         this.region = region;
         player.getInventory().setArmorContents(ProBending.teamM.getArmor(tag,false, false, false, true));
-        ProBending.itemM.LEAVE_COMMAND().giveToPlayer(player, 1, 8);
+        CustomItemManager.LEAVE_COMMAND().giveToPlayer(player, 1, 8);
         scoreboard.addPlaceholder(region.getArena());
         scoreboard.addPlaceholder(region.getTeam());
         ProBending.playerM.addMenuPlayer(this);
@@ -52,7 +53,7 @@ public class MenuPlayer extends AbstractPlayer {
     @Override
     protected CustomScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        CustomScoreboard board = new CustomScoreboard("pA_" + getPlayer().getName(), scoreboard[0], this);
+        CustomScoreboard board = new CustomScoreboard(ProBending.plugin, "pA_" + getPlayer().getName(), scoreboard[0], this);
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

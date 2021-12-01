@@ -10,7 +10,7 @@ public class SpectateGetterRegion extends CustomRegion {
     private final Arena arena;
 
     public SpectateGetterRegion(String ID, Arena arena) {
-        super(ID);
+        super(ProBending.plugin, ID);
         this.arena = arena;
     }
 

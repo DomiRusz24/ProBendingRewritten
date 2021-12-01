@@ -21,7 +21,7 @@ public class PBPlayer extends PlayerData {
     private TeamInvite invite;
 
     public PBPlayer(String name, UUID uuid) {
-        super(name, uuid);
+        super(ProBending.plugin, name, uuid);
     }
 
     @Override
@@ -33,7 +33,27 @@ public class PBPlayer extends PlayerData {
 
     @Override
     protected void onPlayerJoin() {
+        if (getTeam() != null) {
+            for (PBMember player : getTeam().getPlayers()) {
+                if (player.getName().equals(getName())) {
+                    player.setPBPlayer(this);
+                    break;
+                }
+            }
+        }
+    }
 
+    @Override
+    public void onLeave() {
+        if (getTeam() != null) {
+            for (PBMember player : getTeam().getPlayers()) {
+                if (player.getName().equals(getName())) {
+                    player.setPBPlayer(null);
+                    break;
+                }
+            }
+        }
+        super.onLeave();
     }
 
     @Override
@@ -45,6 +65,15 @@ public class PBPlayer extends PlayerData {
 
     public static PBPlayer of(Player player) {
         return (PBPlayer) ProBending.playerDataM.getPlayer(player);
+    }
+
+    public static PBPlayer of(String name, UUID uuid) {
+        return (PBPlayer) ProBending.playerDataM.getPlayer(name, uuid);
+    }
+
+
+    public static boolean exists(UUID uuid) {
+        return ProBending.playerDataM.exists(uuid);
     }
 
     // ----------

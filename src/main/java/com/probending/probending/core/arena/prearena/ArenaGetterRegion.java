@@ -1,5 +1,6 @@
 package com.probending.probending.core.arena.prearena;
 
+import com.probending.probending.ProBending;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
@@ -27,7 +28,7 @@ public class ArenaGetterRegion extends CustomRegion {
     private final PreArenaTeam team;
 
     public ArenaGetterRegion(String ID, PreArena arena, TeamTag tag) {
-        super(ID);
+        super(ProBending.plugin, ID);
         this.tag = tag;
         this.arena = arena;
         this.team = new PreArenaTeam(tag.toString(), 3, this, tag);

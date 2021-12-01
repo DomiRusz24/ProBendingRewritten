@@ -2,6 +2,7 @@ package com.probending.probending.command.pblevel;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.PlayerCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.PBPlayer;
@@ -25,7 +26,7 @@ public class PBLevelCommand extends PlayerCommand {
     public void selfExecute(CommandSender sender) {
         if (isPlayer(sender) && hasPermission(sender)) {
             PBPlayer player = (PBPlayer) ProBending.playerDataM.getPlayer((Player) sender);
-            sender.sendMessage(PAPIManager.setPlaceholders(player, LANG_INFORMATION));
+            sender.sendMessage(PAPIManager.setPlaceholder(player, LANG_INFORMATION));
         }
     }
 
@@ -57,11 +58,16 @@ public class PBLevelCommand extends PlayerCommand {
     @Override
     public void selfExecute(CommandSender sender, Player player) {
         PBPlayer p = (PBPlayer) ProBending.playerDataM.getPlayer(player);
-        sender.sendMessage(PAPIManager.setPlaceholders(p, LANG_INFORMATION));
+        sender.sendMessage(PAPIManager.setPlaceholder(p, LANG_INFORMATION));
     }
 
     @Override
     public void selfExecute(CommandSender sender, String name) {
         sender.sendMessage(Languages.PLAYER_NOT_ONLINE.replaceAll("%player%", name));
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

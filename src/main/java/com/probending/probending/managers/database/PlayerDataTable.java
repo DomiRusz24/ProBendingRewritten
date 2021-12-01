@@ -24,6 +24,10 @@ public class PlayerDataTable extends PlayerDataBaseTable {
     public final String TIES = "ties";
     public final String TEAM = "team";
 
+    public PlayerDataTable(DataBaseManager manager) {
+        super(manager);
+    }
+
 
     @Override
     public String getName() {

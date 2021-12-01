@@ -10,10 +10,12 @@ import com.probending.probending.core.enums.ArenaState;
 import com.probending.probending.core.enums.TeamTag;
 import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import me.domirusz24.plugincore.core.gui.CustomGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -27,6 +29,7 @@ public class StartingState extends AbstractArenaHandler {
     public void onStart() {
         getArena().teleportToStartingLocations();
         for (ActivePlayer player : getArena().getPlayers(false)) {
+            player.getPlayer().setHealth(20);
             if (!UtilMethods.hasScoreboard(player.getPlayer())) {
                 new BoardChooseGUI(player).addPlayer(player.getPlayer());
             } else {
@@ -114,7 +117,7 @@ public class StartingState extends AbstractArenaHandler {
         private final ActivePlayer player;
 
         public BoardChooseGUI(ActivePlayer player) {
-            super(LANG_NAME, 9);
+            super(ProBending.plugin, LANG_NAME, 9);
             this.player = player;
             clearItems();
         }
@@ -182,6 +185,11 @@ public class StartingState extends AbstractArenaHandler {
 
         public ActivePlayer getPlayer() {
             return player;
+        }
+
+        @Override
+        public PluginCore getCorePlugin() {
+            return ProBending.plugin;
         }
     }
 }

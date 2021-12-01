@@ -4,6 +4,8 @@ import com.probending.probending.ProBending;
 import com.probending.probending.api.enums.KnockOutCause;
 import com.probending.probending.api.events.*;
 import com.probending.probending.config.CommandConfig;
+import com.probending.probending.managers.CustomItemManager;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.arena.states.*;
@@ -335,9 +337,9 @@ public class ActiveArena implements PlaceholderObject {
 
                 current = handler.onPlayerPreProcess(player, current);
 
-                if (getGameTime() % 100 == 0) {
+                if (getGameTime() % 20 == 0) {
                     if (player.getElement().equals(Element.WATER)) {
-                        ProBending.itemM.WATER_BOTTLE().giveToPlayer(player.getPlayer(), 64, 1);
+                        CustomItemManager.WATER_BOTTLE().giveToPlayer(player.getPlayer(), 1, 1);
                     }
                 }
 
@@ -465,7 +467,7 @@ public class ActiveArena implements PlaceholderObject {
 
     public void addSpectator(SpectatorPlayer player) {
         SPECTATORS.add(player);
-        player.getPlayer().sendMessage(PAPIManager.setPlaceholders(getArena(), LANG_START));
+        player.getPlayer().sendMessage(getCorePlugin().papiM.setPlaceholders(getArena(), LANG_START));
         CommandConfig.Commands.ArenaSpectatorJoinPlayer.run(getArena(), player.getPlayer());
     }
 
@@ -537,6 +539,11 @@ public class ActiveArena implements PlaceholderObject {
     @Override
     public String placeHolderPrefix() {
         return "arena";
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 
     // -----------

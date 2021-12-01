@@ -3,6 +3,7 @@ package com.probending.probending.command.forceskip;
 import com.probending.probending.ProBending;
 
 import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.BaseCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.players.MenuPlayer;
@@ -20,7 +21,7 @@ public class ForceStartCommand extends BaseCommand {
 
     @Override
     public void selfExecute(CommandSender sender) {
-        if (isPlayer(sender) && hasPermission(sender)) {
+        if (isPlayer(sender)) {
             Player player = (Player) sender;
             MenuPlayer mPlayer = ProBending.playerM.getMenuPlayer(player);
             if (mPlayer != null) {
@@ -56,5 +57,10 @@ public class ForceStartCommand extends BaseCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return PermissionDefault.TRUE;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

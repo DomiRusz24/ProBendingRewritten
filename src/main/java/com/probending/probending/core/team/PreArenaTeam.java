@@ -14,7 +14,7 @@ public class PreArenaTeam extends AbstractTeam<MenuPlayer> {
     private final TeamTag tag;
 
     public PreArenaTeam(String name, int size, ArenaGetterRegion region, TeamTag tag) {
-        super(name, size);
+        super(ProBending.plugin, name, size);
         this.tag = tag;
         this.region = region;
     }

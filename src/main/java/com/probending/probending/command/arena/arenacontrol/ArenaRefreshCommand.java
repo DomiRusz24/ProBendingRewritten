@@ -2,6 +2,7 @@ package com.probending.probending.command.arena.arenacontrol;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.ArenaSubCommand;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.arena.prearena.ArenaGetterRegion;
@@ -101,5 +102,10 @@ public class ArenaRefreshCommand extends ArenaSubCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return null;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

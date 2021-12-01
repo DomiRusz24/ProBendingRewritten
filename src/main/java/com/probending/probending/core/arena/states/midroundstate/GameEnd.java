@@ -15,10 +15,10 @@ public class GameEnd extends MidRoundStateType {
     public void runFirstStage(MidRoundState state) {
         if (state.getWinningRound() != null)
             state.getArena().sendTitle(LANG_END,
-                    PAPIManager.setPlaceholders(state.getArena(), PAPIManager.setPlaceholders(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_GAME_END)),
+                    PAPIManager.setPlaceholder(state.getArena(), PAPIManager.setPlaceholder(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_GAME_END)),
                     5, 50, 5, true);
         else
-            state.getArena().sendTitle(PAPIManager.setPlaceholders(state.getArena(), LANG_ROUND_GAME_END_TIE),
+            state.getArena().sendTitle(PAPIManager.setPlaceholder(state.getArena(), LANG_ROUND_GAME_END_TIE),
                     "",
                     5, 50, 5, true);
     }
@@ -27,10 +27,10 @@ public class GameEnd extends MidRoundStateType {
     public void runSecondStage(MidRoundState state) {
         if (state.getWinningRound() != null) {
             state.getArena().sendTitle(LANG_END,
-                    PAPIManager.setPlaceholders(state.getArena(), PAPIManager.setPlaceholders(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_GAME_END)),
+                    PAPIManager.setPlaceholder(state.getArena(), PAPIManager.setPlaceholder(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_GAME_END)),
                     5, 50, 5, true);
         } else {
-            state.getArena().sendTitle(PAPIManager.setPlaceholders(state.getArena(), LANG_ROUND_GAME_END_TIE),
+            state.getArena().sendTitle(PAPIManager.setPlaceholder(state.getArena(), LANG_ROUND_GAME_END_TIE),
                     "",
                     5, 50, 5, true);
         }
@@ -38,7 +38,7 @@ public class GameEnd extends MidRoundStateType {
 
     @Override
     public void runThirdStage(MidRoundState stage) {
-        stage.getArena().sendTitle(PAPIManager.setPlaceholders(stage.getArena(), LANG_GAME_SHORTLY_END), "", 5, 50, 5, true);
+        stage.getArena().sendTitle(PAPIManager.setPlaceholder(stage.getArena(), LANG_GAME_SHORTLY_END), "", 5, 50, 5, true);
     }
 
     @Override

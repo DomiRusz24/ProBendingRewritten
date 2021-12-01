@@ -48,7 +48,7 @@ public class ActivePlayer extends AbstractPlayer {
     // ----------
 
     public ActivePlayer(Player player, TeamTag teamTag, ActiveArena arena, Element element) {
-        super(player);
+        super(ProBending.plugin, player);
         this.teamTag = teamTag;
         this.arena = arena;
         this.element = element;
@@ -143,7 +143,7 @@ public class ActivePlayer extends AbstractPlayer {
     }
 
     public Ring getCurrentRing() {
-        Block block = player.getWorld().getBlockAt(player.getLocation().getBlockX(), ProBending.pluginConfig.getYLevel(), player.getLocation().getBlockZ());
+        Block block = player.getWorld().getBlockAt(player.getLocation().getBlockX(), getArena().getArena().getArenaConfig().getYLevel(), player.getLocation().getBlockZ());
         if (block.getState().getData() instanceof Wool) {
             Wool wool = (Wool) block.getState().getData();
             Ring ring = Ring.fromID(wool.getColor().getWoolData());
@@ -250,7 +250,7 @@ public class ActivePlayer extends AbstractPlayer {
     @Override
     protected CustomScoreboard scoreboard() {
         String[] scoreboard = UtilMethods.stringToList(LANG_SCOREBOARD);
-        CustomScoreboard board = new CustomScoreboard("pb_" + getPlayer().getName(), scoreboard[0], this);
+        CustomScoreboard board = new CustomScoreboard(ProBending.plugin, "pb_" + getPlayer().getName(), scoreboard[0], this);
         for (String s : Arrays.asList(scoreboard).subList(1, scoreboard.length)) {
             board.addValue(s);
         }

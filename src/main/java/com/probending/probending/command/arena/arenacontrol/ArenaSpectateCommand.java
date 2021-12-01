@@ -6,6 +6,7 @@ import com.probending.probending.command.ArenaSubCommand;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.players.SpectatorPlayer;
 import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.PluginCore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionDefault;
@@ -59,5 +60,10 @@ public class ArenaSpectateCommand extends ArenaSubCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return null;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

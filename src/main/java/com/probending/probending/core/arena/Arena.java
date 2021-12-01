@@ -6,6 +6,7 @@ import com.probending.probending.config.arena.ArenaCommandConfig;
 import com.probending.probending.config.arena.ArenaConfig;
 import com.probending.probending.config.arena.ArenaLocationConfig;
 import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.prearena.PreArena;
 import com.probending.probending.core.enums.Ring;
@@ -548,6 +549,11 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
     @Override
     public String placeHolderPrefix() {
         return "arena";
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 
 

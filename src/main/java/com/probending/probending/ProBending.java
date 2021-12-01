@@ -1,6 +1,7 @@
 package com.probending.probending;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.probending.probending.command.arena.ArenaConfigCommand;
 import com.probending.probending.command.arena.ArenaControlCommand;
@@ -21,16 +22,21 @@ import com.probending.probending.config.PluginConfig;
 import com.probending.probending.config.PluginLocationsConfig;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.managers.*;
+import com.probending.probending.managers.PAPIManager;
 import com.probending.probending.managers.database.PlayerDataTable;
 import com.probending.probending.managers.database.TeamDataTable;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.util.TempBlock;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import me.domirusz24.plugincore.CoreListener;
 import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.ReloadSubCommand;
 import me.domirusz24.plugincore.core.players.PlayerData;
-import me.domirusz24.plugincore.managers.PAPIManager;
+import me.domirusz24.plugincore.managers.*;
+import me.domirusz24.plugincore.managers.database.DataBaseManager;
 import me.domirusz24.plugincore.managers.database.DataBaseTable;
 import me.domirusz24.plugincore.managers.database.values.DataBaseValue;
+import me.domirusz24.plugincore.util.UtilMethods;
 import net.bytebuddy.build.Plugin;
 import org.bukkit.Bukkit;
 
@@ -41,6 +47,56 @@ public final class ProBending extends PluginCore {
     // Plugin
     public static ProBending plugin;
 
+    // ***********************
+    public static WorldEditPlugin worldEdit = null;
+    public static MultiverseCore multiverse = null;
+    public static ProtocolManager protocol = null;
+
+    public static DataBaseManager SqlM;
+    public static ConfigManager configM;
+    public static CommandManager commandM;
+    public static GUIManager guiM;
+    public static RegionManager regionM;
+    public static WorldEditManager worldEditM;
+    public static ChatGUIManager chatGuiM;
+    public static ScoreboardManager boardM;
+    public static me.domirusz24.plugincore.managers.ProtocolManager nmsM;
+    public static SignManager signM;
+    public static PAPIManager papiM;
+    public static PlayerDataManager playerDataM;
+
+    public static UtilMethods util;
+
+    public static CoreListener listener;
+
+
+    protected void __loadDependencies() {
+        worldEdit = super.worldEdit;
+        multiverse = super.multiverse;
+        protocol = super.protocol;
+    }
+
+    protected void __loadManagers() {
+        SqlM = super.SqlM;
+        configM = super.configM;
+        commandM = super.commandM;
+        guiM = super.guiM;
+        regionM = super.regionM;
+        worldEditM = super.worldEditM;
+        chatGuiM = super.chatGuiM;
+        boardM = super.boardM;
+        nmsM = super.nmsM;
+        signM = super.signM;
+        papiM = (PAPIManager) super.papiM;
+        playerDataM = super.playerDataM;
+    }
+
+
+    protected void __registerEvents() {
+        listener = super.listener;
+    }
+    // ***********************
+
     // Dependencies
     public static ProjectKorra projectKorra = null;
 
@@ -50,7 +106,6 @@ public final class ProBending extends PluginCore {
     public static TeamManager teamM;
     public static ArenaManager arenaM;
     public static ProjectKorraManager projectKorraM;
-    public static CustomItemManager itemM;
 
     public static PlayerDataTable playerTable;
     public static TeamDataTable teamTable;
@@ -69,7 +124,7 @@ public final class ProBending extends PluginCore {
     // Plugin dependencies, everything external.
     @Override
     public void _loadDependencies() {
-
+        __loadDependencies();
         // PK
         projectKorra = ProjectKorra.plugin;
 
@@ -91,8 +146,9 @@ public final class ProBending extends PluginCore {
 
     @Override
     public DataBaseTable[] getTables() {
-        playerTable = new PlayerDataTable();
-        teamTable = new TeamDataTable();
+        SqlM = super.SqlM;
+        playerTable = new PlayerDataTable(SqlM);
+        teamTable = new TeamDataTable(SqlM);
         return new DataBaseTable[] {
                 playerTable,
                 teamTable
@@ -106,6 +162,8 @@ public final class ProBending extends PluginCore {
 
     @Override
     protected void loadConfigs() {
+        util = new com.probending.probending.util.UtilMethods(super.util);
+        configM = super.configM;
         locationConfig = new PluginLocationsConfig("locations.yml", plugin, configM);
         pluginConfig = new PluginConfig();
         commandConfig = new CommandConfig("commands.yml", plugin, configM);
@@ -119,9 +177,9 @@ public final class ProBending extends PluginCore {
     // Managers that ease the use of Core classes and dependencies.
     @Override
     public void _loadManagers() {
+        __loadManagers();
 
-        // Items
-        itemM = new CustomItemManager(plugin);
+        new CustomItemManager(plugin);
 
         // Player
         playerM = new PlayerManager(plugin);
@@ -139,6 +197,7 @@ public final class ProBending extends PluginCore {
 
     @Override
     protected void _loadCommands() {
+        commandM = super.commandM;
         commandM.registerCommand(new ArenaControlCommand()
                 .addSubCommand(new ArenaJoinCommand())
                 .addSubCommand(new ArenaAddCommand())
@@ -155,7 +214,7 @@ public final class ProBending extends PluginCore {
         );
 
         commandM.registerCommand(new ProBendingCommand()
-                .addSubCommand(new ReloadSubCommand())
+                .addSubCommand(new ReloadSubCommand(plugin))
                 .addSubCommand(new RulesCommand())
                 .addSubCommand(new CreateArenaCommand())
                 .addSubCommand(new SetSpawnCommand())
@@ -179,6 +238,7 @@ public final class ProBending extends PluginCore {
     // Spigot events
     @Override
     public void _registerEvents() {
+        __registerEvents();
         Bukkit.getPluginManager().registerEvents(new PBListener(), this);
     }
 

@@ -1,6 +1,7 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.util.UtilMethods;
 import me.domirusz24.plugincore.core.displayable.ClickableItemStack;
@@ -17,11 +18,9 @@ import java.util.Set;
 
 public class CustomItemManager extends Manager implements ConfigManager.Reloadable {
 
-    private final HashSet<ClickableItemStack> CUSTOM_ITEMS = new HashSet<>();
+    private static ClickableItemStack LEAVE_COMMAND;
 
-    private ClickableItemStack LEAVE_COMMAND;
-
-    private ClickableItemStack WATER_BOTTLE;
+    private static ClickableItemStack WATER_BOTTLE;
 
     public CustomItemManager(ProBending plugin) {
         super(plugin);
@@ -35,16 +34,9 @@ public class CustomItemManager extends Manager implements ConfigManager.Reloadab
     @Language("Item.Leave.Desc")
     public static String LANG_LEAVE_DESC = "Click here to leave!";
 
-    public Set<ClickableItemStack> getCustomItems() {
-        return CUSTOM_ITEMS;
-    }
-
-    public void registerItem(ClickableItemStack item) {
-        CUSTOM_ITEMS.add(item);
-    }
-
     private void loadItems() {
         LEAVE_COMMAND = new ClickableItemStack(
+                ProBending.plugin,
                 (p) -> {
                     p.performCommand("leave");
                     },
@@ -53,15 +45,15 @@ public class CustomItemManager extends Manager implements ConfigManager.Reloadab
                     },
                 UtilMethods.createItem(Material.MAGMA_CREAM, (byte) 0, LANG_LEAVE_TITLE, true, UtilMethods.stringToList(LANG_LEAVE_DESC))
                 );
-        registerItem(LEAVE_COMMAND);
 
         ItemStack potion = UtilMethods.createItem(Material.POTION, (byte) 0, "", false, "");
-        potion.setAmount(64);
+        potion.setAmount(1);
         PotionMeta pmeta = (PotionMeta) potion.getItemMeta();
         pmeta.setBasePotionData(new PotionData(PotionType.WATER));
         potion.setItemMeta(pmeta);
 
         WATER_BOTTLE = new ClickableItemStack(
+                ProBending.plugin,
                 (p) -> {
 
                 },
@@ -70,20 +62,25 @@ public class CustomItemManager extends Manager implements ConfigManager.Reloadab
                 },
                 potion
         );
-        registerItem(WATER_BOTTLE);
     }
 
-    public ClickableItemStack LEAVE_COMMAND() {
+    public static ClickableItemStack LEAVE_COMMAND() {
         return LEAVE_COMMAND;
     }
 
-    public ClickableItemStack WATER_BOTTLE() {
+    public static ClickableItemStack WATER_BOTTLE() {
         return WATER_BOTTLE;
     }
 
     @Override
     public void onReload() {
         LEAVE_COMMAND.unregister();
+        WATER_BOTTLE.unregister();
         loadItems();
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

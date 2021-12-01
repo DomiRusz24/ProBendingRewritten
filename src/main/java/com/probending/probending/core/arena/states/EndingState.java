@@ -27,7 +27,7 @@ public class EndingState extends AbstractArenaHandler {
     @Override
     public void onStart() {
         getArena().getPlayers(false).forEach((player) -> {UtilMethods.freezePlayer(player.getPlayer(), false);});
-        getArena().sendTitle(PAPIManager.setPlaceholders(getArena(), LANG_END_MESSAGE), PAPIManager.setPlaceholders(getArena(), LANG_END_MESSAGE_DESC), 5, 50, 5, true);
+        getArena().sendTitle(PAPIManager.setPlaceholder(getArena(), LANG_END_MESSAGE), PAPIManager.setPlaceholder(getArena(), LANG_END_MESSAGE_DESC), 5, 50, 5, true);
     }
 
     @Override

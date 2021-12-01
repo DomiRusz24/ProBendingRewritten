@@ -26,7 +26,7 @@ public class PBTeam extends AbstractTeam<PBMember> {
     
 
     public PBTeam(String name, int wins, int lost) {
-        super(name, 3);
+        super(ProBending.plugin, name, 3);
         this.wins = wins;
         this.lost = lost;
         playGUI = new TeamPlayGUI(this);
@@ -115,8 +115,8 @@ public class PBTeam extends AbstractTeam<PBMember> {
     public boolean addPlayer(PBMember player) {
         boolean bool = super.addPlayer(player);
         if (bool) {
-            PBPlayer pbPlayer = PBPlayer.of(player.getPlayer().getPlayer());
-            if (pbPlayer != null) {
+            if (PBPlayer.exists(player.getUuid())) {
+                PBPlayer pbPlayer = PBPlayer.of(player.getName(), player.getUuid());
                 pbPlayer.setTeam(getName());
             } else {
                 ProBending.playerTable.setStringField(player.getUuid().toString(), ProBending.playerTable.TEAM, getName());

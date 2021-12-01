@@ -1,6 +1,7 @@
 package com.probending.probending.command.base;
 
 import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.BaseCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import org.bukkit.command.CommandSender;
@@ -45,5 +46,10 @@ public class ProBendingCommand extends BaseCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return PermissionDefault.TRUE;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

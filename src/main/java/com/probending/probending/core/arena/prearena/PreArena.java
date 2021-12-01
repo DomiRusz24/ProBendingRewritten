@@ -1,6 +1,8 @@
 package com.probending.probending.core.arena.prearena;
 
 import com.probending.probending.PBListener;
+import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.enums.TeamTag;
@@ -218,6 +220,11 @@ public class PreArena implements PlaceholderObject, PerTick {
 
     @Language("PreArena.State.TAKEN")
     public static String LANG_TAKEN = "&cTaken!";
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
+    }
 
     public enum State {
         OFFLINE,

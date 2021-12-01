@@ -1,5 +1,6 @@
 package com.probending.probending.core.team;
 
+import com.probending.probending.ProBending;
 import com.probending.probending.command.Languages;
 import com.probending.probending.core.players.PBPlayerWrapper;
 import me.domirusz24.plugincore.config.annotations.Language;
@@ -26,7 +27,7 @@ public class TeamInvite {
         this.time = System.currentTimeMillis() + duration;
     }
 
-    public static ClickableMessage LANG_INVITE = ClickableMessage.of("Player %player_name% has invited you to his team %team_name%!||Click here to accept!", "Team.Invite", "Click here to accept!", "/team accept");
+    public static ClickableMessage LANG_INVITE = ClickableMessage.of(ProBending.plugin, "Player %player_name% has invited you to his team %team_name%!||Click here to accept!", "Team.Invite", "Click here to accept!", "/team accept");
 
     public void send() {
         reciever.getOnlinePlayer().getPlayer().spigot().sendMessage(LANG_INVITE.getText(team, PBPlayerWrapper.of(sender)));

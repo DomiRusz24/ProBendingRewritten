@@ -1,16 +1,10 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.managers.Manager;
 
-public class PBManager {
-
-    protected ProBending plugin;
-
+public class PBManager extends Manager {
     public PBManager(ProBending plugin) {
-        this.plugin = plugin;
-    }
-
-    public ProBending getPlugin() {
-        return plugin;
+        super(plugin);
     }
 }

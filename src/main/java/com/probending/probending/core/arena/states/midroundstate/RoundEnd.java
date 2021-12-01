@@ -29,16 +29,16 @@ public class RoundEnd extends MidRoundStateType {
     public void runSecondStage(MidRoundState state) {
         if (state.getWinningRound() != null) {
             if (roundPoint) {
-                state.getArena().sendTitle(PAPIManager.setPlaceholders(state.getArena(), PAPIManager.setPlaceholders(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_TEAM_RESULT)),
-                        PAPIManager.setPlaceholders(state.getArena(), LANG_ROUND_MATCH_POINT.replaceAll("%team%", state.getWinningRound().toString())),
+                state.getArena().sendTitle(PAPIManager.setPlaceholder(state.getArena(), PAPIManager.setPlaceholder(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_TEAM_RESULT)),
+                        PAPIManager.setPlaceholder(state.getArena(), LANG_ROUND_MATCH_POINT.replaceAll("%team%", state.getWinningRound().toString())),
                         5, 50, 5, true);
             } else {
-                state.getArena().sendTitle(PAPIManager.setPlaceholders(state.getArena(), PAPIManager.setPlaceholders(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_TEAM_RESULT)),
+                state.getArena().sendTitle(PAPIManager.setPlaceholder(state.getArena(), PAPIManager.setPlaceholder(state.getArena().getTeam(state.getWinningRound()), LANG_ROUND_TEAM_RESULT)),
                         "",
                         5, 50, 5, true);
             }
         } else {
-            state.getArena().sendTitle(PAPIManager.setPlaceholders(state.getArena(), LANG_ROUND_TIE_RESULT),
+            state.getArena().sendTitle(PAPIManager.setPlaceholder(state.getArena(), LANG_ROUND_TIE_RESULT),
                     "",
                     5, 50, 5, true);
         }
@@ -48,7 +48,7 @@ public class RoundEnd extends MidRoundStateType {
     public void runThirdStage(MidRoundState state) {
         state.getArena().teleportToStartingLocations();
         state.getArena().getArena().getRollback(null);
-        state.getArena().sendTitle(PAPIManager.setPlaceholders(state.getArena(), MidRoundState.LANG_ROUND_SHORTLY_START.replace("%arena_round%", String.valueOf(state.getArena().getRound() + 1))), "", 5, 50, 5, true);
+        state.getArena().sendTitle(PAPIManager.setPlaceholder(state.getArena(), MidRoundState.LANG_ROUND_SHORTLY_START.replace("%arena_round%", String.valueOf(state.getArena().getRound() + 1))), "", 5, 50, 5, true);
     }
 
     @Override

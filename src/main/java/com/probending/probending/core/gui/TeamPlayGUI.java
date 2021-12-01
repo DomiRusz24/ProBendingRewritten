@@ -4,6 +4,7 @@ import com.probending.probending.ProBending;
 import com.probending.probending.command.pbteam.pbteam.TeamPlayCommand;
 import com.probending.probending.core.team.PBTeam;
 import com.probending.probending.util.UtilMethods;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import me.domirusz24.plugincore.core.gui.CustomGUI;
 import org.bukkit.ChatColor;
@@ -26,7 +27,7 @@ public class TeamPlayGUI extends CustomGUI {
 
 
     public TeamPlayGUI(PBTeam team) {
-        super(LANG_TITLE, 9);
+        super(ProBending.plugin, LANG_TITLE, 9);
         this.team = team;
         clearItems();
     }
@@ -118,5 +119,10 @@ public class TeamPlayGUI extends CustomGUI {
     @Override
     protected ItemStack emptySlot() {
         return UtilMethods.createItem(Material.GRAY_STAINED_GLASS_PANE, (byte) 0, "",  false, "");
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

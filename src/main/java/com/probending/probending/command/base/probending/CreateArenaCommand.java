@@ -2,6 +2,7 @@ package com.probending.probending.command.base.probending;
 
 import com.probending.probending.ProBending;
 import com.probending.probending.command.Languages;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.BaseSubCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.Arena;
@@ -66,5 +67,10 @@ public class CreateArenaCommand extends BaseSubCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return null;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

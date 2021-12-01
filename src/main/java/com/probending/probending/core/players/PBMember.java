@@ -1,6 +1,7 @@
 package com.probending.probending.core.players;
 
 import com.probending.probending.ProBending;
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 
 import java.util.ArrayList;
@@ -21,14 +22,22 @@ public class PBMember implements PlaceholderObject {
     public PBMember(String name, String uuid) {
         this.name = name;
         this.uuid = uuid;
-        player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
+        if (ProBending.playerDataM.exists(UUID.fromString(uuid))) {
+            player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
+        }
     }
 
     public PBMember(String name, String uuid, List<Role> roles) {
         this.name = name;
         this.uuid = uuid;
         this.roles.addAll(roles);
-        player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
+        if (ProBending.playerDataM.exists(UUID.fromString(uuid))) {
+            player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
+        }
+    }
+
+    public void setPBPlayer(PBPlayer player) {
+        this.player = player;
     }
 
     public String getName() {
@@ -92,6 +101,7 @@ public class PBMember implements PlaceholderObject {
     }
 
     public boolean isOnline() {
+        if (player == null) return false;
         player = (PBPlayer) ProBending.playerDataM.getPlayer(name, UUID.fromString(uuid));
         return player != null;
     }
@@ -131,5 +141,10 @@ public class PBMember implements PlaceholderObject {
     @Override
     public String placeHolderPrefix() {
         return "member";
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }

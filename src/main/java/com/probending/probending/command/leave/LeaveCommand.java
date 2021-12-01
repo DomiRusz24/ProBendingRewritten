@@ -2,6 +2,7 @@ package com.probending.probending.command.leave;
 
 import com.probending.probending.ProBending;
 
+import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.command.abstractclasses.BaseCommand;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.enums.TeamTag;
@@ -65,5 +66,10 @@ public class LeaveCommand extends BaseCommand {
     @Override
     public PermissionDefault getPermissionDefault() {
         return PermissionDefault.TRUE;
+    }
+
+    @Override
+    public PluginCore getCorePlugin() {
+        return ProBending.plugin;
     }
 }
