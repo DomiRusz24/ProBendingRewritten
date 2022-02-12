@@ -5,7 +5,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import me.domirusz24.plugincore.core.protocollib.AbstractPacket;
+import me.domirusz24.plugincore.core.protocol.AbstractPacket;
 
 import java.util.Set;
 

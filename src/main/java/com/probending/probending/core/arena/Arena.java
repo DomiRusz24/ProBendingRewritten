@@ -204,12 +204,6 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                 ProBending.plugin.log(Level.WARNING, "Arena " + getName() + " center is not set!");
                 return false;
             }
-            /*
-            if (rollbackLocation == null) {
-                ProBending.plugin.log(Level.WARNING, "Arena " + getName() + " rollback is not set!");
-                return false;
-            }
-             */
             for (Ring ring : Ring.values()) {
                 if (ring.isTeleportRing()) {
                     if (getRingLocation(ring) == null) {
@@ -263,11 +257,13 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                                 red.sendTitle(message, "", 5, 20, 5);
                                 return;
                             case MULTI:
+                                if (getArenaConfig().getMultiBending()) break;
                                 message = PlaceholderAPI.setPlaceholders(player, LANG_MULTI_ABILITY);
                                 blue.sendTitle(message, "", 5, 20, 5);
                                 red.sendTitle(message, "", 5, 20, 5);
                                 return;
                             case ILLEGAL:
+                                if (getArenaConfig().getOtherElements()) break;
                                 message = PlaceholderAPI.setPlaceholders(player, LANG_ILLEGAL_ABILITIES);
                                 blue.sendTitle(message, "", 5, 20, 5);
                                 red.sendTitle(message, "", 5, 20, 5);

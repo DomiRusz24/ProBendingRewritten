@@ -1,5 +1,6 @@
 package com.probending.probending.core.arena.states;
 
+import com.probending.probending.PBListener;
 import com.probending.probending.api.enums.KnockOutCause;
 import com.probending.probending.api.events.PBPlayerDamagePBPlayerEvent;
 import com.probending.probending.api.events.PBPlayerGainStageEvent;
@@ -8,6 +9,7 @@ import com.probending.probending.api.events.PBPlayerUpdateStageEvent;
 import com.probending.probending.config.CommandConfig;
 import com.probending.probending.core.enums.Ring;
 import com.probending.probending.core.players.ActivePlayer;
+import com.probending.probending.core.players.PBPlayer;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.core.arena.ActiveArena;
 import com.probending.probending.core.enums.ArenaState;
@@ -110,19 +112,40 @@ public class GainingStageState extends AbstractArenaHandler {
             if (needToGainStage.containsKey(event.getPlayer())) {
                 int stagesLeft = needToGainStage.get(event.getPlayer());
                 if (stagesLeft > 0) {
-                    PBPlayerGainStageEvent gainEvent = new PBPlayerGainStageEvent(getArena(), getArena().getState(), event.getPlayer(), event.getPlayer().getRing().getFromOffset(team, 1), 1);
-                    Bukkit.getPluginManager().callEvent(gainEvent);
-                    if (!gainEvent.isCancelled()) {
-                        event.getPlayer().setRing(event.getPlayer().getRing().getFromOffset(team, 1));
-                    }
+                    advancePlayer(event.getPlayer(), true);
                     needToGainStage.put(event.getPlayer(), stagesLeft - 1);
+                } else {
+                    denyMoving(event.getPlayer());
                 }
+            } else {
+                denyMoving(event.getPlayer());
             }
-            event.getPlayer().dragTo(event.getPlayer().getRing());
+
         } else if (event.getRingOffset() < 0) {
             event.getPlayer().getPlayer().sendTitle((LANG_STAGE_BACKWARD), "", 10, 40, 10);
-            event.getPlayer().dragTo(event.getPlayer().getRing());
+            if (needToGainStage.containsKey(event.getPlayer())) {
+                int stagesLeft = needToGainStage.get(event.getPlayer());
+                for (int i = 0; i < stagesLeft; i++) {
+                    advancePlayer(event.getPlayer(), false);
+                }
+                needToGainStage.put(event.getPlayer(), 0);
+            }
+            denyMoving(event.getPlayer());
         }
+    }
+
+    private void advancePlayer(ActivePlayer player, boolean drag) {
+        PBPlayerGainStageEvent gainEvent = new PBPlayerGainStageEvent(getArena(), getArena().getState(), player, player.getRing().getFromOffset(team, 1), 1);
+        Bukkit.getPluginManager().callEvent(gainEvent);
+        if (!gainEvent.isCancelled()) {
+            player.setRing(player.getRing().getFromOffset(team, 1));
+            if (drag) player.dragTo(player.getRing());
+        }
+    }
+
+    private void denyMoving(ActivePlayer player) {
+        player.teleportTo(player.getRing());
+        UtilMethods.freezePlayer(player.getPlayer(), true);
     }
 
     @Override

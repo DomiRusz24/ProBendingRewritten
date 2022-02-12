@@ -27,6 +27,9 @@ public class ArenaConfig extends AbstractArenaConfig {
     private ConfigValue<Boolean> hat = new ConfigValue<>("Armor.Hat", true, this);
     private ConfigValue<Boolean> body = new ConfigValue<>("Armor.Body", true, this);
 
+    private ConfigValue<Boolean> multibending = new ConfigValue<>("AllowedElements.MultiBending", false, this);
+    private ConfigValue<Boolean> otherelements = new ConfigValue<>("AllowedElements.OtherElement", false, this);
+
 
     public ArenaConfig(Arena arena, String path, ProBending plugin) {
         super(arena, path, plugin);
@@ -90,5 +93,13 @@ public class ArenaConfig extends AbstractArenaConfig {
 
     public Integer getYLevel() {
         return woolLayerLevel.getValue();
+    }
+
+    public boolean getMultiBending() {
+        return multibending.getValue();
+    }
+
+    public boolean getOtherElements() {
+        return otherelements.getValue();
     }
 }
