@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.probending.probending.ProBending.SqlM;
-
 public class PBTeam extends AbstractTeam<PBMember> {
 
     private int wins;

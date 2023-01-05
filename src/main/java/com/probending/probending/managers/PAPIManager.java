@@ -1,6 +1,8 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.core.arena.Arena;
+import me.domirusz24.plugincore.attributes.PlayerAttribute;
 import me.domirusz24.plugincore.config.annotations.Language;
 import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
 import com.probending.probending.core.players.ActivePlayer;
@@ -28,16 +30,28 @@ public class PAPIManager extends me.domirusz24.plugincore.managers.PAPIManager {
         return null;
     }
 
+    public String onMiscPlaceholderRequest(String params) {
+        if (params.startsWith("arena")) {
+            String arenaName = params.split("_")[1];
+            Arena arena = ProBending.arenaM.getArena(arenaName);
+            if (arena == null) return null;
+            return arena.onPlaceholderRequest("%" + params.replaceAll("arena." + arenaName, "") + "%");
+        }
+        return null;
+    }
+
     @Override
-    public String onPlaceholderRequest(Player player, String params){
+    public String onPlaceholderRequest(Player player, String params) {
 
         if(player == null) {
-            return null;
+            return onMiscPlaceholderRequest(params);
         }
         params = params.toLowerCase();
         ActivePlayer activePlayer = ProBending.playerM.getActivePlayer(player);
         if (activePlayer != null) {
             switch (params) {
+                case "arena":
+                    return activePlayer.getArena().getArena().getName();
                 case "element":
                     return activePlayer.getElementPrefix();
                 case "state":
@@ -47,6 +61,7 @@ public class PAPIManager extends me.domirusz24.plugincore.managers.PAPIManager {
             }
         }
         PBPlayer pbPlayer = (PBPlayer) ProBending.playerDataM.getPlayer(player);
+        if (!pbPlayer.isSqlLoaded()) return "NOT LOADED";
         return setPBPlayerPlaceHolders(pbPlayer, params);
     }
 
@@ -64,7 +79,7 @@ public class PAPIManager extends me.domirusz24.plugincore.managers.PAPIManager {
             case "ties":
                 return String.valueOf(pbPlayer.getTies());
             case "average":
-                return String.valueOf((float) ((int) (((float) pbPlayer.getWins() / ((float) pbPlayer.getLost() + (float) pbPlayer.getTies())) * 100)) * 0.01);
+                return String.valueOf((float) Math.round(((float) pbPlayer.getWins() / ((float) pbPlayer.getLost() + (float) pbPlayer.getTies())) * 100) * 0.01);
             case "team":
                 return pbPlayer.getTeamName();
         }

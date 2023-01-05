@@ -121,6 +121,10 @@ public class PBPlayer extends PlayerData {
 
     // ----------
 
+    public boolean isSqlLoaded() {
+        return getAttribute(PlayerAttribute.SQL).isReadyToAccess();
+    }
+
     public int getLost() {
         return getAttribute(PlayerAttribute.SQL).getIntegerValue(ProBending.playerTable.LOST);
     }

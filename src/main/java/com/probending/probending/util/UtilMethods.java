@@ -37,7 +37,7 @@ public class UtilMethods extends me.domirusz24.plugincore.util.UtilMethods {
 
     public static void freezePlayer(Player player, boolean freeze) {
         ProBending.playerM.freezePlayer(player, freeze);
-        BendingPlayer bp = BendingPlayer.getBendingPlayer(player);
+        BendingPlayer bp = ProBending.projectKorraM.getBendingPlayer(player);
         if (freeze) {
             if (bp != null) bp.blockChi();
         } else {

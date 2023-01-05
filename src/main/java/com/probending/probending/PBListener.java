@@ -1,7 +1,10 @@
 package com.probending.probending;
 
 import com.probending.probending.api.events.PBPlayerDamagePBPlayerEvent;
+import com.probending.probending.core.arena.ActiveArena;
+import com.probending.probending.core.arena.Arena;
 import com.probending.probending.core.players.ActivePlayer;
+import com.projectkorra.projectkorra.event.BendingPlayerCreationEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -11,8 +14,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PBListener implements Listener {
+
+    @EventHandler
+    public void onBendingPlayer(BendingPlayerCreationEvent event) {
+        ProBending.projectKorraM.getBendingPlayerByUUID().put(event.getBendingPlayer().getPlayer().getUniqueId(), event.getBendingPlayer());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        ProBending.projectKorraM.getBendingPlayerByUUID().remove(event.getPlayer().getUniqueId());
+    }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         ActivePlayer player = ProBending.playerM.getActivePlayer(event.getEntity());
@@ -32,32 +47,52 @@ public class PBListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager().getType().equals(EntityType.PLAYER) && event.getEntity().getType().equals(EntityType.PLAYER)) {
-            ActivePlayer damager = ProBending.playerM.getActivePlayer((Player) event.getDamager());
-            ActivePlayer entity = ProBending.playerM.getActivePlayer((Player) event.getEntity());
-            if (damager != null && entity != null) {
-                if (damager.getArena().equals(entity.getArena())) {
-                    if (damager.getTeamTag().equals(entity.getTeamTag())) {
-                        event.setCancelled(true);
-                    } else {
-                        PBPlayerDamagePBPlayerEvent pbPlayerEvent = new PBPlayerDamagePBPlayerEvent(damager.getArena(), damager.getArena().getState(), event);
-                        Bukkit.getPluginManager().callEvent(pbPlayerEvent);
-                        damager.getArena().callDamageEvent(pbPlayerEvent);
-                        if (damager.getArena().getArena().getArenaConfig().getDamage()) {
-                            pbPlayerEvent.setDamage(0);
-                        }
-                    }
-                } else {
-                    event.setCancelled(true);
-                }
-                if (!event.isCancelled()) {
-                    ProBending.playerM.registerHit(damager.getPlayer(), entity.getPlayer());
-                }
-            } else if (damager != null || entity != null) {
-                event.setCancelled(true);
-            }
+        if (!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) return;
+
+        Player debug = (Player) event.getDamager();
+
+        //TODO: REMOVE DEBUGER
+
+        ActivePlayer damager = ProBending.playerM.getActivePlayer((Player) event.getDamager());
+        ActivePlayer entity = ProBending.playerM.getActivePlayer((Player) event.getEntity());
+
+        if (damager == null && entity == null) {
+            debug.sendMessage("1");
+            return;
         }
+        if (damager == null || entity == null) {
+            debug.sendMessage("2 (you: " + (damager == null) + " it: " + (entity == null) + ")");
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!damager.getArena().equals(entity.getArena())) {
+            debug.sendMessage("3");
+            event.setCancelled(true);
+            return;
+        }
+
+        if (damager.getTeamTag() == entity.getTeamTag()) {
+            debug.sendMessage("4");
+            event.setCancelled(true);
+            return;
+        }
+
+        ActiveArena arena = damager.getArena();
+
+        PBPlayerDamagePBPlayerEvent pbPlayerEvent = new PBPlayerDamagePBPlayerEvent(arena, arena.getState(), event);
+        Bukkit.getPluginManager().callEvent(pbPlayerEvent);
+
+        if (pbPlayerEvent.isCancelled()) {
+            debug.sendMessage("6");
+            event.setCancelled(true);
+            return;
+        }
+
+        ProBending.playerM.registerHit(damager.getPlayer(), entity.getPlayer());
+
+        damager.getArena().callDamageEvent(pbPlayerEvent);
     }
 }

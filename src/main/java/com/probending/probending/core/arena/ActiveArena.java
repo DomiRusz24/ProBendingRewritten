@@ -77,12 +77,12 @@ public class ActiveArena implements PlaceholderObject {
             }
         }
         for (Player p : blue.getUnwrappedPlayers()) {
-            ActivePlayer ap = new ActivePlayer(p, TeamTag.BLUE, this, ProBending.projectKorraM.getFirstElement(BendingPlayer.getBendingPlayer(p)));
+            ActivePlayer ap = new ActivePlayer(p, TeamTag.BLUE, this, ProBending.projectKorraM.getFirstElement(ProBending.projectKorraM.getBendingPlayer(p)));
             blueTeam.addPlayer(ap);
             CommandConfig.Commands.ArenaStartPlayer.run(getArena(), p);
         }
         for (Player p : red.getUnwrappedPlayers()) {
-            ActivePlayer ap = new ActivePlayer(p, TeamTag.RED, this, ProBending.projectKorraM.getFirstElement(BendingPlayer.getBendingPlayer(p)));
+            ActivePlayer ap = new ActivePlayer(p, TeamTag.RED, this, ProBending.projectKorraM.getFirstElement(ProBending.projectKorraM.getBendingPlayer(p)));
             redTeam.addPlayer(ap);
             CommandConfig.Commands.ArenaStartPlayer.run(getArena(), p);
         }
@@ -238,9 +238,49 @@ public class ActiveArena implements PlaceholderObject {
         handler.onPlayerUpdateStage(event);
     }
 
+    public String populateBossBarTitle() {
+        String title = ProBending.uiConfig.getBossBarTitle();
+
+        return populateStringWithPlayers(ProBending.papiM.setPlaceholders(this, title));
+    }
+
+    public String populateActionBarValue() {
+        String value = ProBending.uiConfig.getActionBarValue();
+
+        return populateStringWithPlayers(ProBending.papiM.setPlaceholders(this, value));
+    }
+
+    public String populateStringWithPlayers(String text) {
+        for (TeamTag team : TeamTag.values()) {
+            String teamName = team.name().toLowerCase();
+
+            List<ActivePlayer> players = getTeam(team).getPlayers(true);
+
+            for (int i = 0; i < 3; i++) {
+                if (i >= players.size()) {
+                    text = text.replaceAll("%" + teamName + (i + 1) + "%", ProBending.uiConfig.getPlayerIconDead());
+                } else {
+                    ActivePlayer p = players.get(i);
+                    text = text.replaceAll("%" + teamName + (i + 1) + "%", p.getIcon());
+                }
+
+            }
+        }
+
+        return text;
+    }
+
     private void onSecond() {
-        getPlayers(false).forEach(ActivePlayer::update);
+        String title = populateBossBarTitle();
+        getPlayers(false).forEach((a) -> a.update(title));
         handler.onUpdate();
+    }
+
+    private void onTick() {
+        if (ProBending.uiConfig.isActionBarEnabled()) {
+            String value = populateActionBarValue();
+            getPlayers(false).forEach((a) -> a.actionBar(value));
+        }
     }
 
     private void onWipeOut(TeamTag team) {
@@ -361,8 +401,11 @@ public class ActiveArena implements PlaceholderObject {
                     onGap(teamToCheck, gap, getTeam(teamToCheck).getFurthestRing());
                 }
             }
-        } else if (getGameTime() % 20 == 0) {
-            onSecond();
+        } else {
+            onTick();
+            if (getGameTime() % 20 == 0) {
+                onSecond();
+            }
         }
     }
 
@@ -527,12 +570,23 @@ public class ActiveArena implements PlaceholderObject {
             case "round":
                 return String.valueOf(getRound());
             case "r_time":
-                return handler.getTimeLeft() == -1 ? "0" : UtilMethods.secondsToMinutes((int) ((float) handler.getTimeLeft() / 20f));
+                return handler.getTimeLeft() == -1 ? "0:00" : UtilMethods.secondsToMinutes((int) ((float) handler.getTimeLeft() / 20f));
             case "game_time":
                 return UtilMethods.secondsToMinutes((int) ((float) arenaTick / 20f));
             case "spectators":
                 return String.valueOf(SPECTATORS.size());
         }
+
+        if (param.startsWith("blue_") || param.startsWith("red_")) {
+            String teamParam = param.substring(param.indexOf("_") + 1);
+
+            if (param.startsWith("blue_")) {
+                return getTeam(TeamTag.BLUE).onPlaceholderRequest(teamParam);
+            } else {
+                return getTeam(TeamTag.RED).onPlaceholderRequest(teamParam);
+            }
+        }
+
         return null;
     }
 

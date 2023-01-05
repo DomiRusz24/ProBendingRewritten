@@ -30,6 +30,8 @@ public class ArenaConfig extends AbstractArenaConfig {
     private ConfigValue<Boolean> multibending = new ConfigValue<>("AllowedElements.MultiBending", false, this);
     private ConfigValue<Boolean> otherelements = new ConfigValue<>("AllowedElements.OtherElement", false, this);
 
+    private ConfigValue<Boolean> runLeaveCommandInMenu = new ConfigValue<>("Lobby.RunLeaveCommand", true, this);
+
 
     public ArenaConfig(Arena arena, String path, ProBending plugin) {
         super(arena, path, plugin);
@@ -101,5 +103,9 @@ public class ArenaConfig extends AbstractArenaConfig {
 
     public boolean getOtherElements() {
         return otherelements.getValue();
+    }
+
+    public boolean getRunLeaveCommandInMenu() {
+        return runLeaveCommandInMenu.getValue();
     }
 }

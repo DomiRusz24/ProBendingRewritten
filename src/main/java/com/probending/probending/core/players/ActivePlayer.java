@@ -11,7 +11,11 @@ import com.probending.probending.util.UtilMethods;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
 import me.domirusz24.plugincore.core.displayable.CustomScoreboard;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderObject;
+import me.domirusz24.plugincore.core.placeholders.PlaceholderPlayer;
 import me.domirusz24.plugincore.core.players.AbstractPlayer;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
@@ -24,6 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class ActivePlayer extends AbstractPlayer {
 
@@ -56,13 +61,13 @@ public class ActivePlayer extends AbstractPlayer {
         tiredness = 0;
         this.startingGameMode = player.getGameMode();
         this.ring = teamTag == TeamTag.BLUE ? Ring.BLUE_FIRST : Ring.RED_FIRST;
-        bPlayer = BendingPlayer.getBendingPlayer(player);
+        bPlayer = ProBending.projectKorraM.getBendingPlayer(player);
         playerData = (PBPlayer) ProBending.playerDataM.getPlayer(player);
         hasBeenHit = false;
         if (element == null) {
             prefix = ChatColor.GRAY + "N";
         } else {
-            String c = element.getColor().toString();
+            String c = ProBending.projectKorraM.getColor(element);
             prefix = c + ChatColor.BOLD + "[" + ChatColor.BOLD + c +  String.valueOf(element.getName().toUpperCase().charAt(0)) + ChatColor.BOLD + "]";
         }
         bossBar.setColor(teamTag.getBarColor());
@@ -90,13 +95,32 @@ public class ActivePlayer extends AbstractPlayer {
     public boolean resetInventory() {
         return true;
     }
-
-    public void update() {
-        getBossBar().setTitle(UtilMethods.getPercentPrefix(getTiredness()) + getTiredness() + "%");
+    public void update(String title) {
+        getBossBar().setTitle(title.replaceAll("%fatigue%", formatTiredness()));
         double percent = (double) getTiredness() / (double) getArena().getArena().getArenaConfig().getTirednessMax();
         getBossBar().setProgress(percent);
         getBossBar().setColor(UtilMethods.getBarColorFromPercent((int) ((1 - percent) * 100)));
         getScoreBoard().update();
+    }
+
+    public void actionBar(String bar) {
+        getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(bar.replaceAll("%fatigue%", formatTiredness())));
+    }
+
+    private String formatTiredness() {
+        return UtilMethods.getPercentPrefix(getTiredness()) + getTiredness() + "%";
+    }
+    public String getIcon() {
+        switch (state) {
+            case PLAYING:
+                return ProBending.uiConfig.getPlayerIconAlive();
+            case DEAD:
+            case LEFT:
+            case SPECTATING:
+                return ProBending.uiConfig.getPlayerIconDead();
+        }
+
+        return "";
     }
 
     // ----------
@@ -233,7 +257,6 @@ public class ActivePlayer extends AbstractPlayer {
 
     public void resetTiredness() {
         tiredness = 0;
-        update();
     }
 
     // ---------- //
@@ -244,7 +267,7 @@ public class ActivePlayer extends AbstractPlayer {
 
     @Override
     protected BossBar bossBar() {
-        return Bukkit.getServer().createBossBar("In mid round!", BarColor.WHITE, BarStyle.SOLID);
+        return Bukkit.getServer().createBossBar("", BarColor.WHITE, BarStyle.SOLID);
     }
 
     @Override

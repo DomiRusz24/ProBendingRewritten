@@ -20,13 +20,13 @@ import com.probending.probending.command.pbteam.pbteam.*;
 import com.probending.probending.config.CommandConfig;
 import com.probending.probending.config.PluginConfig;
 import com.probending.probending.config.PluginLocationsConfig;
+import com.probending.probending.config.UIConfig;
 import com.probending.probending.core.players.PBPlayer;
 import com.probending.probending.managers.*;
 import com.probending.probending.managers.PAPIManager;
 import com.probending.probending.managers.database.PlayerDataTable;
 import com.probending.probending.managers.database.TeamDataTable;
 import com.projectkorra.projectkorra.ProjectKorra;
-import com.projectkorra.projectkorra.util.TempBlock;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import me.domirusz24.plugincore.CoreListener;
 import me.domirusz24.plugincore.PluginCore;
@@ -35,9 +35,7 @@ import me.domirusz24.plugincore.core.players.PlayerData;
 import me.domirusz24.plugincore.managers.*;
 import me.domirusz24.plugincore.managers.database.DataBaseManager;
 import me.domirusz24.plugincore.managers.database.DataBaseTable;
-import me.domirusz24.plugincore.managers.database.values.DataBaseValue;
 import me.domirusz24.plugincore.util.UtilMethods;
-import net.bytebuddy.build.Plugin;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
@@ -52,7 +50,7 @@ public final class ProBending extends PluginCore {
     public static MultiverseCore multiverse = null;
     public static ProtocolManager protocol = null;
 
-    public static DataBaseManager SqlM;
+    public static DataBaseManager sqlM;
     public static ConfigManager configM;
     public static CommandManager commandM;
     public static GUIManager guiM;
@@ -77,13 +75,12 @@ public final class ProBending extends PluginCore {
     }
 
     protected void __loadManagers() {
-        SqlM = super.SqlM;
+        sqlM = super.SqlM;
         configM = super.configM;
         commandM = super.commandM;
         guiM = super.guiM;
         regionM = super.regionM;
         worldEditM = super.worldEditM;
-        chatGuiM = super.chatGuiM;
         boardM = super.boardM;
         nmsM = super.nmsM;
         signM = super.signM;
@@ -113,6 +110,7 @@ public final class ProBending extends PluginCore {
     public static PluginLocationsConfig locationConfig;
     public static PluginConfig pluginConfig;
     public static CommandConfig commandConfig;
+    public static UIConfig uiConfig;
 
     // onEnable
     @Override
@@ -146,9 +144,9 @@ public final class ProBending extends PluginCore {
 
     @Override
     public DataBaseTable[] getTables() {
-        SqlM = super.SqlM;
-        playerTable = new PlayerDataTable(SqlM);
-        teamTable = new TeamDataTable(SqlM);
+        sqlM = super.SqlM;
+        playerTable = new PlayerDataTable(sqlM);
+        teamTable = new TeamDataTable(sqlM);
         return new DataBaseTable[] {
                 playerTable,
                 teamTable
@@ -167,6 +165,7 @@ public final class ProBending extends PluginCore {
         locationConfig = new PluginLocationsConfig("locations.yml", plugin, configM);
         pluginConfig = new PluginConfig();
         commandConfig = new CommandConfig("commands.yml", plugin, configM);
+        uiConfig = new UIConfig(plugin);
     }
 
     @Override
@@ -249,12 +248,16 @@ public final class ProBending extends PluginCore {
     // onDisable
     @Override
     public void _disable() {
-        arenaM.ARENA_BY_NAME.values().forEach((a) -> {
-            if (a.inGame()) {
-                a.getActiveArena().forceUnstableStop();
-            }
-        });
-        SqlM.onDisable();
+        if (arenaM != null) {
+            arenaM.ARENA_BY_NAME.values().forEach((a) -> {
+                if (a.inGame()) {
+                    a.getActiveArena().forceUnstableStop();
+                }
+            });
+        }
+        if (sqlM != null) {
+            sqlM.onDisable();
+        }
     }
 
     @Override

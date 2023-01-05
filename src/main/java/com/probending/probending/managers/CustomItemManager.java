@@ -1,6 +1,8 @@
 package com.probending.probending.managers;
 
 import com.probending.probending.ProBending;
+import com.probending.probending.config.CommandConfig;
+import com.probending.probending.core.team.ArenaTempTeam;
 import me.domirusz24.plugincore.PluginCore;
 import me.domirusz24.plugincore.config.annotations.Language;
 import com.probending.probending.util.UtilMethods;
@@ -13,6 +15,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,10 +41,20 @@ public class CustomItemManager extends Manager implements ConfigManager.Reloadab
         LEAVE_COMMAND = new ClickableItemStack(
                 ProBending.plugin,
                 (p) -> {
-                    p.performCommand("leave");
+                    ArenaTempTeam team = ProBending.teamM.getTempTeam(p);
+                    if (team == null) return;
+                    if (team.getArena().getArenaConfig().getRunLeaveCommandInMenu()) {
+                        p.performCommand("leave");
+                    }
+                    CommandConfig.Commands.LeaveArenaTeamByItem.run(team.getArena(), p);
                     },
                 (p) -> {
-                    p.performCommand("leave");
+                    ArenaTempTeam team = ProBending.teamM.getTempTeam(p);
+                    if (team == null) return;
+                    if (team.getArena().getArenaConfig().getRunLeaveCommandInMenu()) {
+                        p.performCommand("leave");
+                    }
+                    CommandConfig.Commands.LeaveArenaTeamByItem.run(team.getArena(), p);
                     },
                 UtilMethods.createItem(Material.MAGMA_CREAM, (byte) 0, LANG_LEAVE_TITLE, true, UtilMethods.stringToList(LANG_LEAVE_DESC))
                 );

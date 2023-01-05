@@ -242,7 +242,7 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                     List<Player> players = blue.getUnwrappedPlayers();
                     players.addAll(red.getUnwrappedPlayers());
                     for (Player player : players) {
-                        ProjectKorraManager.BendingState state = ProBending.projectKorraM.getBendingState(BendingPlayer.getBendingPlayer(player), getArenaConfig().getBannedAbilities());
+                        ProjectKorraManager.BendingState state = ProBending.projectKorraM.getBendingState(ProBending.projectKorraM.getBendingPlayer(player), getArenaConfig().getBannedAbilities());
                         String message;
                         if (state == null) {
                             message = PlaceholderAPI.setPlaceholders(player, LANG_NO_ABILITIES);
@@ -265,6 +265,11 @@ public class Arena implements PlaceholderObject, ConfigManager.Reloadable {
                             case ILLEGAL:
                                 if (getArenaConfig().getOtherElements()) break;
                                 message = PlaceholderAPI.setPlaceholders(player, LANG_ILLEGAL_ABILITIES);
+                                blue.sendTitle(message, "", 5, 20, 5);
+                                red.sendTitle(message, "", 5, 20, 5);
+                                return;
+                            case NULL:
+                                message = "Player " + player.getName() + " null Bender";
                                 blue.sendTitle(message, "", 5, 20, 5);
                                 red.sendTitle(message, "", 5, 20, 5);
                                 return;

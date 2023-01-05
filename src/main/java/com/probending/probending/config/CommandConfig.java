@@ -65,7 +65,9 @@ public class CommandConfig extends AbstractConfig {
         ArenaPlayerKillPlayer("Player.KillOther", Arrays.asList("")),
 
         ArenaSpectatorJoinPlayer("Player.SpectatorJoin", Arrays.asList("")),
-        ArenaSpectatorQuitPlayer("Player.SpectatorLeave", Arrays.asList(""));
+        ArenaSpectatorQuitPlayer("Player.SpectatorLeave", Arrays.asList("")),
+
+        LeaveArenaTeamByItem("Player.LeaveTeamByItem", Arrays.asList(""));
 
         private final String configPath;
 
