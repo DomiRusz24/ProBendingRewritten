@@ -103,7 +103,16 @@ public class PreArena implements PlaceholderObject, PerTick {
     }
 
     public boolean isFull() {
-        return blueRegion.getTeam().isFull() && redRegion.getTeam().isFull();
+        if (blueRegion.getTeam().isFull() && redRegion.getTeam().isFull()) {
+            return true;
+        }
+
+        if (arena.getArenaConfig().getAutoStart() != -1) {
+            int amount = arena.getArenaConfig().getAutoStart();
+            return blueRegion.getTeam().getCurrentSize() >= amount && redRegion.getTeam().getCurrentSize() >= amount;
+        }
+
+        return false;
     }
 
     public int getCurrentSize() {
