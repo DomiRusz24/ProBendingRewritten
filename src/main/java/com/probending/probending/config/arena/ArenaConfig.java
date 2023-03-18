@@ -15,6 +15,8 @@ public class ArenaConfig extends AbstractArenaConfig {
     private final ConfigValue<Integer> roundTime = new ConfigValue<>("RoundTime", 180, this, true);
     private final ConfigValue<Integer> roundWin = new ConfigValue<>("RoundWin", 3, this, true);
     private final ConfigValue<Integer> minimalPlayerAmount = new ConfigValue<>("MinimalPlayerAmount", 2, this, true);
+
+    private final ConfigValue<Integer> autoStart = new ConfigValue<>("AutoStart", -1, this, true);
     private ConfigValue<Boolean> damage = new ConfigValue<>("Damage", true, this);
     private ConfigValue<Boolean> publicArena = new ConfigValue<>("Public", true, this);
     private ConfigValue<List<String>> bannedAbilities = new ConfigValue<>("BannedAbilities", Arrays.asList(""), this);
@@ -107,5 +109,9 @@ public class ArenaConfig extends AbstractArenaConfig {
 
     public boolean getRunLeaveCommandInMenu() {
         return runLeaveCommandInMenu.getValue();
+    }
+
+    public int getAutoStart() {
+        return autoStart.getValue();
     }
 }
