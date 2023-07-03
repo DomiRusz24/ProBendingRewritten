@@ -51,31 +51,23 @@ public class PBListener implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) return;
 
-        Player debug = (Player) event.getDamager();
-
-        //TODO: REMOVE DEBUGER
-
         ActivePlayer damager = ProBending.playerM.getActivePlayer((Player) event.getDamager());
         ActivePlayer entity = ProBending.playerM.getActivePlayer((Player) event.getEntity());
 
         if (damager == null && entity == null) {
-            debug.sendMessage("1");
             return;
         }
         if (damager == null || entity == null) {
-            debug.sendMessage("2 (you: " + (damager == null) + " it: " + (entity == null) + ")");
             event.setCancelled(true);
             return;
         }
 
         if (!damager.getArena().equals(entity.getArena())) {
-            debug.sendMessage("3");
             event.setCancelled(true);
             return;
         }
 
         if (damager.getTeamTag() == entity.getTeamTag()) {
-            debug.sendMessage("4");
             event.setCancelled(true);
             return;
         }
@@ -86,7 +78,6 @@ public class PBListener implements Listener {
         Bukkit.getPluginManager().callEvent(pbPlayerEvent);
 
         if (pbPlayerEvent.isCancelled()) {
-            debug.sendMessage("6");
             event.setCancelled(true);
             return;
         }
