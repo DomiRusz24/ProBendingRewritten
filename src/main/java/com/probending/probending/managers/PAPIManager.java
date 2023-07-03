@@ -35,7 +35,7 @@ public class PAPIManager extends me.domirusz24.plugincore.managers.PAPIManager {
             String arenaName = params.split("_")[1];
             Arena arena = ProBending.arenaM.getArena(arenaName);
             if (arena == null) return null;
-            return arena.onPlaceholderRequest("%" + params.replaceAll("arena." + arenaName, "") + "%");
+            return arena.onPlaceholderRequest(params.replaceAll("arena_" + arenaName + "_", ""));
         }
         return null;
     }
